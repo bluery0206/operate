@@ -1,0 +1,68 @@
+@font-face {
+    font-family: ProductSans-Black;
+    src: url(../static/fonts/ProductSans-Black.ttf);
+}
+@font-face {
+    font-family: ProductSans-Bold;
+    src: url(../static/fonts/ProductSans-Bold.ttf);
+}
+@font-face {
+    font-family: ProductSans-Italic;
+    src: url(../static/fonts/ProductSans-Italic.ttf);
+}
+@font-face {
+    font-family: ProductSans-Light;
+    src: url(../static/fonts/ProductSans-Light.ttf);
+}
+@font-face {
+    font-family: ProductSans-Medium;
+    src: url(../static/fonts/ProductSans-Medium.ttf);
+}
+@font-face {
+    font-family: ProductSans-Regular;
+    src: url(../static/fonts/ProductSans-Regular.ttf);
+}
+@font-face {
+    font-family: ProductSans-Thin;
+    src: url(../static/fonts/ProductSans-Thin.ttf);
+}
+
+:root {
+    --shadow: rgba(0, 0, 0, 0.25);
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: ProductSans-Regular;
+}
+
+main {
+	border: 1px solid red;
+    min-height: calc(100dvh - 3em);
+    padding: 0 5%;
+}
+
+header {
+    display: flex;
+    padding: 0 10dvw;
+    height: 3em;
+    border: 1px solid red;
+    background: white;
+    box-shadow: 2px 2px 5px 2px var(--shadow);
+    align-items: center;
+    justify-content: space-between;
+}
+
+footer {
+    border: 1px solid red;
+    padding: 20dvh 10dvh;
+}
+
+nav {
+    display: flex;
+    padding: 0 4dvw;
+    height: 3em;
+    border: 1px solid red;
+}
