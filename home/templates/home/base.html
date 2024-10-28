@@ -20,14 +20,15 @@
 		</form>
 
 		<div>
-			<a href="#">Home</a>
-			<a href="#">Profiles</a>
-			<a href="#">Archives</a>
+			<a class="btn" href="{% url 'operate-home' %}">Home</a>
+			<a class="btn" href="{% url 'profiles' %}">Profiles</a>
+			<a class="btn" href="#">Archives</a>
 		</div>
 
 		<div>
-			<a href="#">User</a>
-			<a href="#">Logout</a>
+			<a class="btn" href="#">User</a>
+			<a class="btn" href="admin/">Admin</a>
+			<a class="btn" href="#">Logout</a>
 		</div>
 	</header>
 

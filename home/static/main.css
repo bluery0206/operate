@@ -31,6 +31,10 @@
     --shadow: rgba(0, 0, 0, 0.25);
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: ProductSans-Bold;
+}
+
 * {
 	padding: 0;
 	margin: 0;
@@ -60,9 +64,68 @@ footer {
     padding: 20dvh 10dvh;
 }
 
-nav {
-    display: flex;
-    padding: 0 4dvw;
-    height: 3em;
+.new_profiles {
+    padding                 : 2% 0;
+    display                 : grid;
+    grid-template-columns   : 48% 48%;
+    justify-content         : space-between;
+
+    .card {
+        margin: 2% 0;
+
+        .content {
+            margin-top              : 2%;
+            grid-template-columns   : 150px calc((100% - 150px) - 1em);
+            justify-content         : space-between;
+        }
+    }
+}
+
+.card {
+    border          : 1px solid red;
+    padding         : 1em 1.5em;
+    border-radius   : 10px;
+
+    .header {
+/*            border: 1px solid red;*/
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+
+        .actions {
+/*                border: 1px solid red;*/
+            display: flex;
+            gap: 0.5em;
+        }
+    }
+
+    .content {
+        display: grid;
+
+        .picture {
+            border  : 1px solid red;
+            height  : 150px;
+            width   : 150px;
+
+            img {
+                object-fit: contain;
+            }
+        }
+
+        .details {
+/*            border: 1px solid red;*/
+            padding: 0.5em 0;
+        }
+    }
+}
+
+.btn {
+    padding: 0.25em 0.75em;
+    border: none;
+    border-radius: 10px;
     border: 1px solid red;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    text-decoration: none;
 }
