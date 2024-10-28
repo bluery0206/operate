@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include("home.urls")),
     path('', include("user.urls")),
     path('', include("profiles.urls")),
+    path('', include("archives.urls")),
 ]
 
 if settings.DEBUG:
