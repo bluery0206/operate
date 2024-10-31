@@ -1,0 +1,146 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+	<!-- 
+	<div class="filter-bar">
+		<form method="GET" class="search-form">
+			<input type="search" name="search" placeholder="Search">
+
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">
+					search
+				</span>
+			</button>
+		</form>
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					account_box
+				</span>
+				FaceSearch
+			</button>
+
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						upload_file
+					</span>
+					Upload an image
+				</a>
+
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						photo_camera
+					</span>
+					Open camera
+				</a>
+			</div>
+		</div>
+		<form method="GET" class="filter-form">
+
+			<input type="search" name="designation" placeholder="Designation">
+			<select name="rank" id="rank">
+				<option value="">Rank</option>
+				<option value="#">#</option>
+			</select>
+			<div>
+				<select name="sort_order" id="sort_order">
+					<option value="">Others</option>
+				</select>
+			</div>
+			<div>
+				<select name="sort_order" id="sort_order">
+					<option value="ascending">Ascending</option>
+					<option value="descending">Descending</option>
+				</select>
+			</div>
+
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">
+					filter_alt
+				</span>
+				Filter
+			</button>
+		</form>
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					more_vert
+				</span>
+			</button>
+
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						add
+					</span>
+					Add new profile
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						archive
+					</span>
+					Archive all
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						delete
+					</span>
+					Delete All
+				</a>
+			</div>
+		</div>
+	</div>
+	-->
+
+	<div class="profile">
+		<div class="header">
+			<h2>Mark Ryan's Profile</h2>
+
+			<div class="actions">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						edit
+					</span>
+					Edit Profile
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						archive
+					</span>
+					Add to archive
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						delete
+					</span>
+					Delete
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						file_export
+					</span>
+					Export as .docx
+				</a>
+			</div>
+		</div>
+
+		<div class="content">
+			<div class="picture">
+				<img src="" alt="">
+			</div>
+			
+			<div class="details">
+				<div>Name: </div>
+				<div>Age: </div>
+				<div>Address: </div>
+				<div>Civil Status: </div>
+				<div>Date Last Edited: </div>
+				<div>Date Profiled: </div>
+				<div>Date Assigned: </div>
+				<div>Date Relieved: </div>
+				<div>Designation: </div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}

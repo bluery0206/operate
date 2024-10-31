@@ -1,0 +1,152 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
+	<h2>Inmate Profiles</h2>
+
+	
+	<div class="filter-bar">
+
+		<!--==================== 
+			Search by text 
+		===================-->
+		<form method="GET" class="search-form">
+			<input type="search" name="search" placeholder="Search">
+
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">
+					search
+				</span>
+			</button>
+		</form>
+
+		<!--==================== 
+			Search by face 
+		===================-->
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					account_box
+				</span>
+				FaceSearch
+			</button>
+
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						upload_file
+					</span>
+					Upload an image
+				</a>
+
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						photo_camera
+					</span>
+					Open camera
+				</a>
+			</div>
+		</div>
+
+		<!--==================== 
+			Filters
+		===================-->
+		<form method="GET" class="filter-form">
+
+			<input type="search" name="crime_violated" placeholder="Crime Violated">
+
+			<!--==================== 
+				
+			===================-->
+			<div>
+				<select name="sort_order" id="sort_order">
+					<option value="">Others</option>
+				</select>
+			</div>
+
+			<!--==================== 
+				Sort order
+			===================-->
+			<div>
+				<select name="sort_order" id="sort_order">
+					<option value="ascending">Ascending</option>
+					<option value="descending">Descending</option>
+				</select>
+			</div>
+
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">
+					filter_alt
+				</span>
+				Filter
+			</button>
+		</form>
+
+		<!--==================== 
+			User actions 
+		===================-->
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					more_vert
+				</span>
+			</button>
+
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						add
+					</span>
+					Add new profile
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						archive
+					</span>
+					Archive all
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						delete
+					</span>
+					Delete All
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="profiles-list">
+		<div class="personnel card">
+			<div class="header">
+				<div>
+					<span class="material-symbols-outlined">
+						schedule
+					</span>
+					dateprofiled
+				</div>
+
+				<div class="actions">
+					<a class="btn" href="#">
+						<span class="material-symbols-outlined">
+							open_in_new
+						</span>
+						View
+					</a>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="picture">
+					<img src="" alt="">
+				</div>
+
+				<div class="details">
+					<div>name</div>
+					<div>address</div>
+					<div>datearrested</div>
+					<div>crimeviolated</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}

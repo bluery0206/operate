@@ -29,6 +29,15 @@
 
 :root {
     --shadow: rgba(0, 0, 0, 0.25);
+    --black: rgb(80, 80, 80);
+
+    --white: rgb(240, 240, 240);
+    --white-1: rgb(220, 220, 220);
+    --white-2: rgb(200, 200, 200);
+
+    --radius-small: 7px;
+
+    --font-small: 0.85em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 main {
 	border: 1px solid red;
     min-height: calc(100dvh - 3em);
-    padding: 0 5%;
+    padding: 1% 10%;
 }
 
 header {
@@ -57,6 +66,17 @@ header {
     box-shadow: 2px 2px 5px 2px var(--shadow);
     align-items: center;
     justify-content: space-between;
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+
+        a {
+            display: flex;
+            align-items: center;
+        }
+    }
 }
 
 footer {
@@ -65,7 +85,6 @@ footer {
 }
 
 .new_profiles {
-    padding                 : 2% 0;
     display                 : grid;
     grid-template-columns   : 48% 48%;
     justify-content         : space-between;
@@ -75,8 +94,6 @@ footer {
 
         .content {
             margin-top              : 2%;
-            grid-template-columns   : 150px calc((100% - 150px) - 1em);
-            justify-content         : space-between;
         }
     }
 }
@@ -85,6 +102,7 @@ footer {
     border          : 1px solid red;
     padding         : 1em 1.5em;
     border-radius   : 10px;
+    min-width       : 340px;
 
     .header {
 /*            border: 1px solid red;*/
@@ -101,6 +119,8 @@ footer {
 
     .content {
         display: grid;
+        grid-template-columns   : 150px calc((100% - 150px) - 0.5em);
+        justify-content         : space-between;
 
         .picture {
             border  : 1px solid red;
@@ -122,10 +142,139 @@ footer {
 .btn {
     padding: 0.25em 0.75em;
     border: none;
-    border-radius: 10px;
-    border: 1px solid red;
     outline: none;
     background: none;
     cursor: pointer;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    border: 1px solid var(--black);
+    border-radius: var(--radius-small);
+    font-size: var(--font-small);
+}
+
+input, select {
+    padding: 0.25em 0.75em;
+    border: none;
+    outline: none;
+    background: none;
+    gap: 0.25em;
+    border: 1px solid var(--black);
+    border-radius: var(--radius-small);
+    font-size: var(--font-small);
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-small);
+    outline: 1px solid var(--black);
+    padding: 0 0.5em 0 1em;
+    width: fit-content;
+
+    input, button {
+        padding: 0;
+        border: none;
+        outline: none;
+    }
+
+}
+
+
+.dropdown{
+    width: fit-content;
+
+    button {
+        width: 100%;
+        display: flex;
+        gap: 0.5em;
+        align-items: center;
+    }
+
+    .content {
+        display: none;
+        position: absolute;
+        background: var(--white);
+        color: white;
+        width: inherit;
+        box-shadow: 2px 2px 5px 2px var(--shadow);
+
+        .btn {
+            border: none;
+            border-radius: 0;
+        }
+
+        .btn:hover {
+            background: var(--white-1);
+            outline: 2px solid var(--white-2);
+        }
+    }
+}
+.dropdown:hover {
+    .content {
+        display: grid;
+    }
+}
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    outline: 1px solid var(--black);
+    border-radius: var(--radius-small);
+    margin: 1em 0;
+    padding: 0.5em;
+
+    .filter-form {
+        gap: 0.25em;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.profiles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.profile {
+    border-radius: var(--radius-small);
+    box-shadow: 2px 2px 5px 2px var(--shadow);
+    border: 1px solid var(--black);
+    padding: 2em 2em;
+    margin-top: 1%;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+    }
+
+    .content {
+        margin: 1em 0;
+        display: grid;
+        grid-template-columns   : 200px calc((100% - 200px) - 1em * 2);
+        justify-content         : space-between;
+
+    .picture {
+        border  : 1px solid red;
+        height  : 200px;
+        width   : 200px;
+
+        img {
+            object-fit: contain;
+        }
+    }
+
+    .details{
+        border: 1px solid red;
+    }
 }

@@ -6,6 +6,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 	<title>Operate</title>
 </head>
 <body>
@@ -14,21 +15,132 @@
 			OPERATE
 		</div>	
 
-		<form method="POST">
-			<input type="search" name="">
-			<button type="submit">Search</button>
+
+		<!--==================== 
+			Search by text 
+		===================-->
+		<form method="GET" class="search-form">
+			<input type="search" name="search">
+
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">
+					search
+				</span>
+			</button>
 		</form>
 
-		<div>
-			<a class="btn" href="{% url 'operate-home' %}">Home</a>
-			<a class="btn" href="{% url 'profiles' %}">Profiles</a>
-			<a class="btn" href="#">Archives</a>
+		<!--==================== 
+			Search by face 
+		===================-->
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					account_box
+				</span>
+				FaceSearch
+			</button>
+
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						upload_file
+					</span>
+					Upload an image
+				</a>
+
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						photo_camera
+					</span>
+					Open camera
+				</a>
+			</div>
 		</div>
 
-		<div>
-			<a class="btn" href="#">User</a>
-			<a class="btn" href="admin/">Admin</a>
-			<a class="btn" href="#">Logout</a>
+		<nav>
+			<a class="btn" href="{% url 'operate-home' %}">
+				<span class="material-symbols-outlined">
+					home
+				</span>
+				Home
+			</a>
+			<div class="dropdown">
+				<button class="btn">
+					<span class="material-symbols-outlined">
+						Group
+					</span>
+					Profiles
+				</button>
+
+				<div class="content">
+					<a class="btn" href="{% url 'profiles-personnels' %}">
+						<span class="material-symbols-outlined">
+							local_police
+						</span>
+						Personnel
+					</a>
+					<a class="btn" href="{% url 'profiles-inmates' %}">
+						<span class="material-symbols-outlined">
+							person_alert
+						</span>
+						Inmates
+					</a>
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="btn">
+					<span class="material-symbols-outlined">
+						files
+					</span>
+					Archives
+				</button>
+
+				<div class="content">
+					<a class="btn" href="{% url 'archived-personnels' %}">
+						<span class="material-symbols-outlined">
+							local_police
+						</span>
+						Personnel
+					</a>
+					<a class="btn" href="{% url 'archived-inmates' %}">
+						<span class="material-symbols-outlined">
+							person_alert
+						</span>
+						Inmates
+					</a>
+				</div>
+			</div>
+		</nav>
+
+		<!--==================== 
+			User action
+		===================-->
+		<div class="dropdown">
+			<button class="btn">
+				<span class="material-symbols-outlined">
+					account_circle
+				</span>
+			</button>
+			<div class="content">
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						person
+					</span>
+					User
+				</a>
+				<a class="btn" href="/admin/">
+					<span class="material-symbols-outlined">
+						admin_panel_settings
+					</span>
+					Admin
+				</a>
+				<a class="btn" href="#">
+					<span class="material-symbols-outlined">
+						logout
+					</span>
+					Logout
+				</a>
+			</div>
 		</div>
 	</header>
 
