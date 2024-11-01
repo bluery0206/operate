@@ -3,9 +3,8 @@
 
 {% block content %}
 
-	<h2>Inmate Profiles</h2>
+	<h2>Personnel Profiles (Archived)</h2>
 
-	
 	<div class="filter-bar">
 
 		<!--==================== 
@@ -54,7 +53,15 @@
 		===================-->
 		<form method="GET" class="filter-form">
 
-			<input type="search" name="crime_violated" placeholder="Crime Violated">
+			<input type="search" name="designation" placeholder="Designation">
+
+			<!--==================== 
+				Search by rank 
+			===================-->
+			<select name="rank" id="rank">
+				<option value="">Rank</option>
+				<option value="#">#</option>
+			</select>
 
 			<!--==================== 
 				
@@ -117,47 +124,43 @@
 	</div>
 
 	<div class="profiles-list">
-		{% if inmates %}
-			<div class="inmates">
-				<h2>Newly addeed inmates</h2>
-
-				{% for inmate in inmates %}
-					<div class="inmate card">
-						<div class="header">
-							<div>
-								<span class="material-symbols-outlined">
-									schedule
-								</span>
-								{{ inmate.date_profiled }}
-							</div>
-
-							<div class="actions">
-								<a class="btn" href="{% url 'profile' inmate.pk %}">
-									<span class="material-symbols-outlined">
-										open_in_new
-									</span>
-									View
-								</a>
-							</div>
+		{% if personnels %}
+			{% for personnel in personnels %}
+				<div class="personnel card">
+					<div class="header">
+						<div>
+							<span class="material-symbols-outlined">
+								schedule
+							</span>
+							{{ personnel.profile.date_profiled }}
 						</div>
 
-						<div class="content">
-							<div class="picture">
-								<img src="{{ inmate.thumbnail.url }}" alt="">
-							</div>
-
-							<div class="details">
-								<div>Name: {{ inmate|full_name }}</div>
-								<div>Address: {{ inmate.address }}</div>
-								<div>Date assigned: {{ inmate.date_assigned }}</div>
-								<div>Designation: {{ inmate.crime_violated }}</div>
-							</div>
+						<div class="actions">
+							<a class="btn" href="{% url 'profile' personnel.profile %}">
+								<span class="material-symbols-outlined">
+									open_in_new
+								</span>
+								View
+							</a>
 						</div>
 					</div>
-				{% endfor %}
-			</div>
+
+					<div class="content">
+						<div class="picture">
+							<img src="{{ personnel.profile.thumbnail.url }}" alt="">
+						</div>
+
+						<div class="details">
+							<div>Name: {{ personnel.profile.rank|upper }} {{ personnel.profile|full_name }}</div>
+							<div>Address: {{ personnel.profile.address }}</div>
+							<div>Date assigned: {{ personnel.profile.date_arrested }}</div>
+							<div>Designation: {{ personnel.profile.designation }}</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
 		{% else %}
-			<h2>There are no inmates profiled.</h2>
+			<h2>There are no personnels archived.</h2>
 		{% endif %}
 	</div>
 {% endblock content %}

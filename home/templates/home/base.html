@@ -96,13 +96,13 @@
 				</button>
 
 				<div class="content">
-					<a class="btn" href="{% url 'archived-personnels' %}">
+					<a class="btn" href="{% url 'archives-personnels' %}">
 						<span class="material-symbols-outlined">
 							local_police
 						</span>
 						Personnel
 					</a>
-					<a class="btn" href="{% url 'archived-inmates' %}">
+					<a class="btn" href="{% url 'archives-inmates' %}">
 						<span class="material-symbols-outlined">
 							person_alert
 						</span>
@@ -134,12 +134,15 @@
 					</span>
 					Admin
 				</a>
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						logout
-					</span>
-					Logout
-				</a>
+				<form action="{% url 'user-logout' %}" method="POST">
+					{% csrf_token %}
+					<button class="btn" type="submit">
+						<span class="material-symbols-outlined">
+							logout
+						</span>
+						Logout
+					</button>
+				</form>
 			</div>
 		</div>
 	</header>

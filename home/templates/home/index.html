@@ -1,83 +1,93 @@
 {% extends 'home/base.html' %}
+{% load custom_filters %}
 
 {% block content %}
 	<div class="new_profiles">
-		<div class="personnels">
-			<h2>Newly addeed personnels</h2>
 
-			<div class="personnel card">
-				<div class="header">
-					<div>
-						<span class="material-symbols-outlined">
-							schedule
-						</span>
+		{% if personnels %}
+			<div class="personnels">
+				<h2>Newly addeed personnels</h2>
 
-						dateprofiled
+				{% for personnel in personnels %}
+					<div class="personnel card">
+						<div class="header">
+							<div>
+								<span class="material-symbols-outlined">
+									schedule
+								</span>
+								{{ personnel.date_profiled }}
+							</div>
+
+							<div class="actions">
+								<a class="btn" href="{% url 'profile' personnel.pk %}">
+									<span class="material-symbols-outlined">
+										open_in_new
+									</span>
+									View
+								</a>
+							</div>
+						</div>
+
+						<div class="content">
+							<div class="picture">
+								<img src="{{ personnel.thumbnail.url }}" alt="">
+							</div>
+
+							<div class="details">
+								<div>Name: {{ personnel.rank|upper }} {{ personnel|full_name }}</div>
+								<div>Address: {{ personnel.address }}</div>
+								<div>Date assigned: {{ personnel.date_assigned }}</div>
+								<div>Designation: {{ personnel.designation }}</div>
+							</div>
+						</div>
 					</div>
+				{% endfor %}
+			</div>		
+		{% else %}
+			<h3>There are no personnels profiled.</h3>
+		{% endif %}
 
-					<div class="actions">
-						<a class="btn" href="#">
-							<span class="material-symbols-outlined">
-								open_in_new
-							</span>
-							View
-						</a>
-					</div>
-				</div>
+		{% if inmates %}
+			<div class="inmates">
+				<h2>Newly addeed inmates</h2>
 
-				<div class="content">
-					<div class="picture">
-						<img src="" alt="">
-					</div>
+				{% for inmate in inmates %}
+					<div class="inmate card">
+						<div class="header">
+							<div>
+								<span class="material-symbols-outlined">
+									schedule
+								</span>
+								{{ inmate.date_profiled }}
+							</div>
 
-					<div class="details">
-						<div>rank</div>
-						<div>name</div>
-						<div>address</div>
-						<div>dateassigned</div>
-						<div>designation</div>
+							<div class="actions">
+								<a class="btn" href="{% url 'profile' inmate.pk %}">
+									<span class="material-symbols-outlined">
+										open_in_new
+									</span>
+									View
+								</a>
+							</div>
+						</div>
+
+						<div class="content">
+							<div class="picture">
+								<img src="{{ inmate.thumbnail.url }}" alt="">
+							</div>
+
+							<div class="details">
+								<div>Name: {{ inmate|full_name }}</div>
+								<div>Address: {{ inmate.address }}</div>
+								<div>Date assigned: {{ inmate.date_assigned }}</div>
+								<div>Designation: {{ inmate.crime_violated }}</div>
+							</div>
+						</div>
 					</div>
-				</div>
+				{% endfor %}
 			</div>
-		</div>
-
-		<div class="inmates">
-			<h2>Newly addeed inmates</h2>
-			
-			<div class="inmate card">
-				<div class="header">
-					<div>
-						<span class="material-symbols-outlined">
-							schedule
-						</span>
-
-						dateprofiled
-					</div>
-
-					<div class="actions">
-						<a class="btn" href="#">
-							<span class="material-symbols-outlined">
-								open_in_new
-							</span>
-							View
-						</a>
-					</div>
-				</div>
-
-				<div class="content">
-					<div class="picture">
-						<img src="" alt="">
-					</div>
-
-					<div class="details">
-						<div>name</div>
-						<div>address</div>
-						<div>datearrested</div>
-						<div>crimeviolated</div>
-					</div>
-				</div>
-			</div>
-			
-		</div>
+		{% else %}
+			<h2>There are no inmates profiled.</h2>
+		{% endif %}
 	</div>
 {% endblock content %}

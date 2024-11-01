@@ -2,8 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-	path("personnel/", views.personnel, name="archived-personnels"),
-	path("inmates/", views.inmate, name="archived-inmates"),
+	path("archives/personnel/", views.personnel, name="archives-personnels"),
+	path("archives/inmates/", views.inmate, name="archives-inmates"),
+	path("archives/add/<int:pk>/", views.archive, name="archives-add"),
 
-	path("profile/<int:pk>", views.profile, name="archived-profile"),
+	path("profile/<int:object>/", views.profile, name="archived-profile"),
 ]

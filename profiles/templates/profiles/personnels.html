@@ -1,4 +1,5 @@
 {% extends 'home/base.html' %}
+{% load custom_filters %}
 
 {% block content %}
 
@@ -123,38 +124,41 @@
 	</div>
 
 	<div class="profiles-list">
-		<div class="personnel card">
-			<div class="header">
-				<div>
-					<span class="material-symbols-outlined">
-						schedule
-					</span>
-					dateprofiled
-				</div>
+		{% if personnels %}
+			{% for personnel in personnels %}
+				<div class="personnel card">
+					<div class="header">
+						<div>
+							<span class="material-symbols-outlined">
+								schedule
+							</span>
+							{{ personnel.date_profiled }}
+						</div>
 
-				<div class="actions">
-					<a class="btn" href="{% url 'profile' 1 %}">
-						<span class="material-symbols-outlined">
-							open_in_new
-						</span>
-						View
-					</a>
-				</div>
-			</div>
+						<div class="actions">
+							<a class="btn" href="{% url 'profile' personnel.pk %}">
+								<span class="material-symbols-outlined">
+									open_in_new
+								</span>
+								View
+							</a>
+						</div>
+					</div>
 
-			<div class="content">
-				<div class="picture">
-					<img src="" alt="">
-				</div>
+					<div class="content">
+						<div class="picture">
+							<img src="{{ personnel.thumbnail.url }}" alt="">
+						</div>
 
-				<div class="details">
-					<div>rank</div>
-					<div>name</div>
-					<div>address</div>
-					<div>dateassigned</div>
-					<div>designation</div>
+						<div class="details">
+							<div>Name: {{ personnel.rank|upper }} {{ personnel|full_name }}</div>
+							<div>Address: {{ personnel.address }}</div>
+							<div>Date assigned: {{ personnel.date_arrested }}</div>
+							<div>Designation: {{ personnel.designation }}</div>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
+			{% endfor %}
+		{% endif %}
 	</div>
 {% endblock content %}

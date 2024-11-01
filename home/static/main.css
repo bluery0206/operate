@@ -99,10 +99,11 @@ footer {
 }
 
 .card {
-    border          : 1px solid red;
+    border          : 1px solid var(--black);
     padding         : 1em 1.5em;
     border-radius   : 10px;
     min-width       : 340px;
+    box-shadow: 2px 2px 5px 2px var(--shadow);
 
     .header {
 /*            border: 1px solid red;*/
@@ -123,12 +124,14 @@ footer {
         justify-content         : space-between;
 
         .picture {
-            border  : 1px solid red;
+            border  : 1px solid var(--black);
             height  : 150px;
             width   : 150px;
 
             img {
-                object-fit: contain;
+                height: inherit;
+                width: inherit;
+                object-fit: cover;
             }
         }
 
@@ -224,6 +227,7 @@ input, select {
     outline: 1px solid var(--black);
     border-radius: var(--radius-small);
     margin: 1em 0;
+    box-shadow: 2px 2px 5px 2px var(--shadow);
     padding: 0.5em;
 
     .filter-form {
@@ -251,6 +255,11 @@ input, select {
         justify-content: space-between;
         align-items: center;
 
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
         .actions {
             display: flex;
             align-items: center;
@@ -258,7 +267,7 @@ input, select {
         }
     }
 
-    .content {
+    .info {
         margin: 1em 0;
         display: grid;
         grid-template-columns   : 200px calc((100% - 200px) - 1em * 2);
@@ -268,13 +277,16 @@ input, select {
         border  : 1px solid red;
         height  : 200px;
         width   : 200px;
+        overflow: hidden;
 
         img {
-            object-fit: contain;
+            height: inherit;
+            width: inherit;
+            object-fit: cover;
         }
     }
 
     .details{
-        border: 1px solid red;
+/*        border: 1px solid red;*/
     }
 }

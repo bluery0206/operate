@@ -1,8 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# Used Django's default login and logout view so they're not here but on the urls.py
+
+@login_required
 def home(request):
 	return render(request, "user/index.html")
 
-def user(request, username):
+@login_required
+def user(request):
 	return render(request, "user/index.html")

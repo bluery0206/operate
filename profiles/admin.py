@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import (
+    Personnel,
+    Inmate,
+)
 
-# Register your models here.
+admin.site.register(Personnel)
+admin.site.register(Inmate)

@@ -1,0 +1,46 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+	<div class="profile">
+		<div class="header">
+			<div class="title">
+				<a class="btn" href="javascript:history.go(-1)">
+					<span class="material-symbols-outlined">
+						arrow_back_ios
+					</span>
+					Back
+				</a>
+				<h2>{{ profile.f_name }}'s Profile</h2>
+			</div>
+		</div>
+
+		<div class="info">
+			<div class="picture">
+				<img src="{{ profile.thumbnail.url }}" alt="">
+			</div>
+			
+			<div class="details">
+				<form method="POST">
+					{% csrf_token %}
+
+					{{ form }}
+
+					<div class="actions">
+						<button class="btn" type="submit">
+							<span class="material-symbols-outlined">
+								save
+							</span>
+							Save changes
+						</button>
+						<a class="btn" href="javascript:history.go(-1)">
+							<span class="material-symbols-outlined">
+								cancel
+							</span>
+							Cancel
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock content %}
