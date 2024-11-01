@@ -8,8 +8,8 @@ urlpatterns = [
 	path("personnel/<int:pk>/", views.profile_personnel, name="profile-personnel"),
 	path("inmate/<int:pk>/", views.profile_inmate, name="profile-inmate"),
 
-	path("personnel/<int:pk>/edit/", views.profile_personnel_update, name="profile-personnel-update"),
-	path("inmate/<int:pk>/edit/", views.profile_inmate_update, name="profile-inmate-update"),
+	path("personnel/<int:pk>/update/", views.profile_personnel_update, name="profile-personnel-update"),
+	path("inmate/<int:pk>/update/", views.profile_inmate_update, name="profile-inmate-update"),
 
 	path("personnel/add/", views.profile_personnel_add, name="profile-personnel-add"),
 	path("inmate/add/", views.profile_inmate_add, name="profile-inmate-add"),

@@ -2,12 +2,12 @@ from django.db.models.constraints import UniqueConstraint
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
+
+from home.utils import get_full_name
 from profiles.models import (
 	Personnel,
 	Inmate
 )
-
-from home.utils import get_full_name
 
 
 class Archive(models.Model):
@@ -19,23 +19,21 @@ class Archive(models.Model):
 		abstract = True
 
 
-class Personnel(Archive):
+class ArchivePersonnel(Archive):
 	profile = models.OneToOneField(
 		Personnel, 
 		on_delete = models.CASCADE,
-		related_name='archive'
+		related_name='archivepersonnel'
 	)
 
 	def __str__(self):
 		return get_full_name(self.profile) + "'s Archived Profile"
 
-
-
-class Inmate(Archive):
+class ArchiveInmate(Archive):
 	profile = models.OneToOneField(
-		Personnel, 
+		Inmate, 
 		on_delete = models.CASCADE,
-		related_name='archive'
+		related_name='archivepersonnel'
 	)
 
 	def __str__(self):

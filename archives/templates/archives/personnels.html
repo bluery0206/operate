@@ -103,44 +103,37 @@
 			<div class="content">
 				<a class="btn" href="#">
 					<span class="material-symbols-outlined">
-						add
-					</span>
-					Add new profile
-				</a>
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
 						archive
 					</span>
 					Archive all
 				</a>
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						delete
-					</span>
-					Delete All
+					<span class="material-symbols-outlined">delete</span>
+					<span>Delete All</span>
 				</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="profiles-list">
-		{% if personnels %}
-			{% for personnel in personnels %}
+		{% if archived_personnels %}
+			{% for personnel in archived_personnels %}
 				<div class="personnel card">
 					<div class="header">
 						<div>
-							<span class="material-symbols-outlined">
-								schedule
-							</span>
-							{{ personnel.profile.date_profiled }}
+							<span class="material-symbols-outlined">schedule</span>
+							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
 						</div>
 
 						<div class="actions">
-							<a class="btn" href="{% url 'archives-profile' personnel.profile.pk %}?next=">
-								<span class="material-symbols-outlined">
-									open_in_new
-								</span>
-								View
+							<a class="btn" href="{% url 'archives-personnel-profile' personnel.pk %}">
+								<span class="material-symbols-outlined">open_in_new</span>
+							</a>
+							<a class="btn" href="{% url 'profile-personnel-update' personnel.profile.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">edit</span>
+							</a>
+							<a class="btn" href="{% url 'archive-personnel-remove' personnel.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">unarchive</span>
 							</a>
 						</div>
 					</div>
@@ -151,10 +144,12 @@
 						</div>
 
 						<div class="details">
-							<div>Name: {{ personnel.profile.rank|upper }} {{ personnel.profile|full_name }}</div>
-							<div>Address: {{ personnel.profile.address }}</div>
-							<div>Date assigned: {{ personnel.profile.date_arrested }}</div>
-							<div>Designation: {{ personnel.profile.designation }}</div>
+							<div>Name:			{{ personnel.profile|full_name }} </div>
+							<div>Rank: 			{{ personnel.profile.rank|upper }}</div> 
+							<div>Address: 		{{ personnel.profile.address }} </div>
+							<div>Date assigned:	{{ personnel.profile.date_assigned }} </div>
+							<div>Date relieved: {{ personnel.profile.date_relieved }} </div>
+							<div>Designation: 	{{ personnel.profile.designation }} </div>
 						</div>
 					</div>
 				</div>

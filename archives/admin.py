@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import (
-    Personnel,
-    Inmate,
+    ArchivePersonnel,
+    ArchiveInmate,
 )
 
-admin.site.register(Personnel)
-admin.site.register(Inmate)
+admin.site.register(ArchivePersonnel)
+admin.site.register(ArchiveInmate)

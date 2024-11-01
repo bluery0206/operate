@@ -88,66 +88,55 @@
 		===================-->
 		<div class="dropdown">
 			<button class="btn">
-				<span class="material-symbols-outlined">
-					more_vert
-				</span>
+				<span class="material-symbols-outlined">more_vert</span>
 			</button>
 
 			<div class="content">
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						add
-					</span>
-					Add new profile
+					<span class="material-symbols-outlined">unarchive</span>
+					<span>Unarchive all</span>
 				</a>
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						archive
-					</span>
-					Archive all
-				</a>
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						delete
-					</span>
-					Delete All
+					<span class="material-symbols-outlined">delete</span>
+					<span>Delete All</span>
 				</a>
 			</div>
 		</div>
 	</div>
 
 	<div class="profiles-list">
-		{% if inmates %}
-			{% for inmate in inmates %}
+		{% if archived_inmates %}
+			{% for inmate in archived_inmates %}
 				<div class="inmate card">
 					<div class="header">
 						<div>
-							<span class="material-symbols-outlined">
-								schedule
-							</span>
-							{{ inmate.date_profiled }}
+							<span class="material-symbols-outlined">schedule</span>
+							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
 						</div>
 
 						<div class="actions">
-							<a class="btn" href="{% url 'profile' inmate.pk %}">
-								<span class="material-symbols-outlined">
-									open_in_new
-								</span>
-								View
+							<a class="btn" href="{% url 'archives-inmate-profile' inmate.pk %}">
+								<span class="material-symbols-outlined">open_in_new</span>
+							</a>
+							<a class="btn" href="{% url 'profile-inmate-update' inmate.profile.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">edit</span>
+							</a>
+							<a class="btn" href="{% url 'archive-inmate-remove' inmate.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">unarchive</span>
 							</a>
 						</div>
 					</div>
 
 					<div class="content">
 						<div class="picture">
-							<img src="{{ inmate.thumbnail.url }}" alt="">
+							<img src="{{ inmate.profile.thumbnail.url }}" alt="">
 						</div>
 
 						<div class="details">
-							<div>Name: {{ inmate|full_name }}</div>
-							<div>Address: {{ inmate.address }}</div>
-							<div>Date assigned: {{ inmate.date_assigned }}</div>
-							<div>Designation: {{ inmate.crime_violated }}</div>
+							<div>Name: {{ inmate.profile|full_name }}</div>
+							<div>Address: {{ inmate.profile.address }}</div>
+							<div>Date assigned: {{ inmate.profile.date_assigned }}</div>
+							<div>Designation: {{ inmate.profile.crime_violated }}</div>
 						</div>
 					</div>
 				</div>

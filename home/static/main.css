@@ -286,7 +286,7 @@ input, select {
         }
     }
 
-    .details{
+    .details{   
         form {
             display: grid;
             grid-template-columns: calc((100% - 150px) - 2em) 150px;

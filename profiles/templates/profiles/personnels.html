@@ -94,10 +94,6 @@
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">delete</span>
-					<span>Delete All</span>
-				</a>
 			</div>
 		</div>
 	</div>
@@ -119,8 +115,8 @@
 							<a class="btn" href="{% url 'profile-personnel-update' personnel.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">edit</span>
 							</a>
-							<a class="btn" href="{% url 'profile-personnel-delete' personnel.pk %}?prev={{request.path}}">
-								<span class="material-symbols-outlined">delete</span>
+							<a class="btn" href="{% url 'archive-personnel-add' personnel.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">archive</span>
 							</a>
 						</div>
 					</div>
@@ -134,7 +130,7 @@
 							<div>Name: {{ personnel|full_name }}</div>
 							<div>Rank: {{ personnel.rank|upper }} </div> 
 							<div>Address: {{ personnel.address }}</div>
-							<div>Date assigned: {{ personnel.date_arrested }}</div>
+							<div>Date assigned: {{ personnel.date_assigned }}</div>
 							<div>Designation: {{ personnel.designation }}</div>
 						</div>
 					</div>

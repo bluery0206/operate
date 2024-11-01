@@ -1,76 +1,107 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Personnel, Inmate
-from profiles import models as profiles
+
+from .models import ArchivePersonnel, ArchiveInmate
+from profiles.models import Personnel, Inmate
 from home.utils import get_full_name
 
-context = {}
 
-# Create your views here.
-def personnel(request):
+def personnels(request):
+	context = {
+		'archived_personnels': ArchivePersonnel.objects.all()
+	}
 	return render(request, "archives/personnels.html", context)
 
-def inmate(request):
-	return render(request, "archives/inmates.html")
 
-def profile(request, pk):
-	return render(request, "archives/profile.html", context)
-
-def archive(request, pk):
-	return render(request, "archives/archive_confirm.html", context)
-
-def remove(request, pk):
-	return render(request, "archives/archive_confirm.html", context)
+def inmates(request):
+	context = {
+		'archived_inmates': ArchiveInmate.objects.all()
+	}
+	return render(request, "archives/inmates.html", context)
 
 
+def profile_personnel(request, pk):
+	context = {
+		'profile': get_object_or_404(ArchivePersonnel, pk=pk)
+	}
+	return render(request, "archives/profile_personnel.html", context)
 
-# 	from django.shortcuts import render, get_object_or_404, redirect
-# from .models import Personnel, Inmate
-# from profiles import models as profiles
-# from home.utils import get_full_name
-# context = {}
 
-# # Create your views here.
-# def personnel(request):
-# 	personnels = Personnel.objects.all()
+def profile_inmate(request, pk):
+	context = {
+		'profile': get_object_or_404(ArchiveInmate, pk=pk)
+	}
+	return render(request, "archives/profile_inmate.html", context)
 
-# 	context['personnels'] = personnels
-# 	return render(request, "archives/personnels.html", context)
 
-# def inmate(request):
-# 	return render(request, "archives/inmates.html")
+def archive_personnel_add(request, pk):
+	prev 	= request.GET.get("prev", "")
 
-# def profile(request, pk):
-# 	profile = get_object_or_404(Personnel, pk=pk)
-	
-# 	context["profile"] 	= profile
-# 	return render(request, "archives/profile.html", context)
+	profile = get_object_or_404(Personnel, pk=pk)
+	user	= request.user
 
-# def archive(request, pk):
-# 	prev_page 	= request.GET.get("next", "")
+	if request.method == "POST":
+		archive = ArchivePersonnel(profile=profile, archive_by=user)
+		archive.save()
+		return redirect(prev)
 
-# 	profile = get_object_or_404(profiles.Personnel, pk=pk)
-# 	user	= request.user
+	context = {
+		'title': "Add archive",
+		'action': f"add {get_full_name(profile)} to",
+		'profile': profile,
+	}
+	return render(request, "archives/archives_confirm_template.html", context)
 
-# 	if request.method == "POST":
-# 		archive = Personnel(profile=profile, archive_by=user)
-# 		archive.save()
-# 		return redirect(prev_page)
 
-# 	context['action'] = f"add {get_full_name(profile)} to"
-# 	context['profile'] = profile
-# 	return render(request, "archives/archive_confirm.html", context)
+def archive_inmate_add(request, pk):
+	prev 	= request.GET.get("prev", "")
+	profile = get_object_or_404(Inmate, pk=pk)
+	user	= request.user
 
-# def remove(request, pk):
-# 	prev_page 	= request.GET.get("next", "")
+	if request.method == "POST":
+		archive = ArchiveInmate(profile=profile, archive_by=user)
+		archive.save()
+		return redirect(prev)
 
-# 	profile = get_object_or_404(Personnel, pk=pk)
-# 	user	= request.user
+	context = {
+		'title': "Add archive",
+		'action': f"add {get_full_name(profile)} to",
+		'profile': profile,
+	}
+	return render(request, "archives/archives_confirm_template.html", context)
 
-# 	if request.method == "POST":
-# 		archive = Personnel(profile=profile, archive_by=user)
-# 		archive.delete()
-# 		return redirect(prev_page)
 
-# 	context['action'] = f"remove {get_full_name(profile)} from"
-# 	context['profile'] = profile
-# 	return render(request, "archives/archive_confirm.html", context)
+def archive_personnel_remove(request, pk):
+	prev	= request.GET.get("prev", "")
+	archive = get_object_or_404(ArchivePersonnel, pk=pk)
+
+	if request.method == "POST":
+		archive.delete()
+		return redirect(prev)
+
+	context = {
+		'title': "Remove archive",
+		'action': f"remove {get_full_name(archive.profile)} from",
+		'archive': archive,
+	}
+	return render(request, "archives/archives_confirm_template.html", context)
+
+
+def archive_inmate_remove(request, pk):
+	prev	= request.GET.get("prev", "")
+	archive = get_object_or_404(ArchiveInmate, pk=pk)
+
+	if request.method == "POST":
+		archive.delete()
+		return redirect(prev)
+
+	context = {
+		'title': "Remove archive",
+		'action': f"remove {get_full_name(archive.profile)} from",
+		'archive': archive,
+	}
+	return render(request, "archives/archives_confirm_template.html", context)
+
+
+
+
+

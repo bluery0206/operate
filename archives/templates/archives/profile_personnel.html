@@ -15,13 +15,13 @@
 			</div>
 
 			<div class="actions">
-				<a class="btn" href="{% url 'profile-edit'  profile.profile.pk%}?next={{request.path}}">
+				<a class="btn" href="{% url 'profile-personnel-update' profile.pk %}?next={{request.path}}">
 					<span class="material-symbols-outlined">
 						edit
 					</span>
 					Edit Profile
 				</a>
-				<a class="btn" href="{% url 'archives-remove' profile.profile.pk %}?next={{request.path}}">
+				<a class="btn" href="?next={{request.path}}">
 					<span class="material-symbols-outlined">
 						unarchive
 					</span>
@@ -59,15 +59,16 @@
 			</div>
 			
 			<div class="details">
-				<div>Name: {{ profile.profile|full_name }}</div>
-				<div>Age: {{ profile.profile.age }}</div>
-				<div>Address: {{ profile.profile.address }} </div>
-				<div>Civil Status: {{ profile.profile.civil_status }}</div>
-				<div>Date Last Edited: {{ profile.profile.f_name }}</div>
-				<div>Date Profiled: {{ profile.profile.date_profiled }}</div>
-				<div>Date Assigned: {{ profile.profile.date_assigned }}</div>
-				<div>Date Relieved: {{ profile.profile.date_relieved }}</div>
-				<div>Designation: {{ profile.profile.designation }}</div>
+				<div>Name: profile.profile|full_name</div>
+				<div>Rank: profile.rank|upper</div>
+				<div>Age: profile.profile.age</div>
+				<div>Address: profile.profile.address </div>
+				<div>Civil Status: profile.profile.civil_status</div>
+				<div>Date Last Edited: profile.profile.f_name</div>
+				<div>Date Profiled: profile.profile.date_profiled</div>
+				<div>Date Assigned: profile.profile.date_assigned</div>
+				<div>Date Relieved: profile.profile.date_relieved</div>
+				<div>Designation: profile.profile.designation</div>
 			</div>
 		</div>
 	</div>

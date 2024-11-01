@@ -33,7 +33,8 @@
 							</div>
 
 							<div class="details">
-								<div>Name: {{ personnel.rank|upper }} {{ personnel|full_name }}</div>
+								<div>Name: {{ personnel|full_name }}</div>
+								<div>Rank: {{ personnel.rank|upper }} </div> 
 								<div>Address: {{ personnel.address }}</div>
 								<div>Date assigned: {{ personnel.date_assigned }}</div>
 								<div>Designation: {{ personnel.designation }}</div>
@@ -78,7 +79,8 @@
 							<div class="details">
 								<div>Name: {{ inmate|full_name }}</div>
 								<div>Address: {{ inmate.address }}</div>
-								<div>Date assigned: {{ inmate.date_arrested }}</div>
+								<div>Date arrested: {{ inmate.date_arrested }}</div>
+								<div>Date committed: {{ inmate.date_committed }}</div>
 								<div>Designation: {{ inmate.crime_violated }}</div>
 							</div>
 						</div>

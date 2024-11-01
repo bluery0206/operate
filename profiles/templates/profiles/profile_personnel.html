@@ -59,16 +59,9 @@
 				<div>Civil Status: {{ profile.civil_status}}</div>
 				<div>Date Last Edited: {{ profile.f_name}}</div>
 				<div>Date Profiled: {{ profile.date_profiled}}</div>
-
-				{% if profile.p_type == "personnel" %}
-					<div>Date Assigned: {{ profile.date_assigned}}</div>
-					<div>Date Relieved: {{ profile.date_relieved}}</div>
-					<div>Designation: {{ profile.designation}}</div>
-				{% elif profile.p_type == "inmate" %}
-					<div>Date Arrested: {{ profile.date_arrested }}</div>
-					<div>Date Arrested: {{ profile.date_committed }}</div>
-					<div>Date assigned: {{ inmate.crime_violated }}</div>
-				{% endif %}	
+				<div>Date Assigned: {{ profile.date_assigned}}</div>
+				<div>Date Relieved: {{ profile.date_relieved}}</div>
+				<div>Designation: {{ profile.designation}}</div>
 			</div>
 		</div>
 	</div>
