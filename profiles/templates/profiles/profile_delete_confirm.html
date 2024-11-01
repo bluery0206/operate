@@ -1,17 +1,24 @@
 {% extends 'home/base.html' %}
 
 {% block content %}
-	<div class="raft">
+	<div class="confirm">
 		<div class="header">
-			<h2>Add to archive</h2>
+			<div class="title">
+				<a class="btn" href="javascript:history.go(-1)">Return</a>
+				<h2>Profile Deletion</h2>
+			</div>
 		</div>
 
 		<div class="description">
-			<p>Are you sure to {{ action }} the archives?</p>
+			<p>Are you sure to delete {{ profile }}?</p>
 		</div>
+
 
 		<form method="POST">
 			{% csrf_token %}
+
+			{{ form }}
+
 			<div class="actions">
 				<button class="btn" type="submit">Confirm</button>
 				<a class="btn" href="javascript:history.go(-1)">Cancel</a>

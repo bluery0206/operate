@@ -4,6 +4,9 @@
 {% block content %}
 	<div class="new_profiles">
 
+		<!--================
+			Personnel
+		=================-->
 		{% if personnels %}
 			<div class="personnels">
 				<h2>Newly addeed personnels</h2>
@@ -12,18 +15,14 @@
 					<div class="personnel card">
 						<div class="header">
 							<div>
-								<span class="material-symbols-outlined">
-									schedule
-								</span>
-								{{ personnel.date_profiled }}
+								<span class="material-symbols-outlined">schedule</span>
+								<span>{{ personnel.date_profiled }}</span>
 							</div>
 
 							<div class="actions">
-								<a class="btn" href="{% url 'profile' personnel.pk %}">
-									<span class="material-symbols-outlined">
-										open_in_new
-									</span>
-									View
+								<a class="btn" href="{% url 'profile-personnel' personnel.pk %}">
+									<span class="material-symbols-outlined">open_in_new</span>
+									<span>View</span>
 								</a>
 							</div>
 						</div>
@@ -44,9 +43,13 @@
 				{% endfor %}
 			</div>		
 		{% else %}
-			<h3>There are no personnels profiled.</h3>
+			<h2>There are no personnels profiled.</h2>
 		{% endif %}
 
+
+		<!--================
+			Inmates
+		=================-->
 		{% if inmates %}
 			<div class="inmates">
 				<h2>Newly addeed inmates</h2>
@@ -55,18 +58,14 @@
 					<div class="inmate card">
 						<div class="header">
 							<div>
-								<span class="material-symbols-outlined">
-									schedule
-								</span>
-								{{ inmate.date_profiled }}
+								<span class="material-symbols-outlined">schedule</span>
+								<span>{{ inmate.date_profiled }}</span>
 							</div>
 
 							<div class="actions">
-								<a class="btn" href="{% url 'profile' inmate.pk %}">
-									<span class="material-symbols-outlined">
-										open_in_new
-									</span>
-									View
+								<a class="btn" href="{% url 'profile-inmate' inmate.pk %}">
+									<span class="material-symbols-outlined">open_in_new</span>
+									<span>View</span>
 								</a>
 							</div>
 						</div>
@@ -79,7 +78,7 @@
 							<div class="details">
 								<div>Name: {{ inmate|full_name }}</div>
 								<div>Address: {{ inmate.address }}</div>
-								<div>Date assigned: {{ inmate.date_assigned }}</div>
+								<div>Date assigned: {{ inmate.date_arrested }}</div>
 								<div>Designation: {{ inmate.crime_violated }}</div>
 							</div>
 						</div>

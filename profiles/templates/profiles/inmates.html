@@ -13,12 +13,7 @@
 		===================-->
 		<form method="GET" class="search-form">
 			<input type="search" name="search" placeholder="Search">
-
-			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">
-					search
-				</span>
-			</button>
+			<button class="btn" type="submit"><span class="material-symbols-outlined">search</span></button>
 		</form>
 
 		<!--==================== 
@@ -26,25 +21,19 @@
 		===================-->
 		<div class="dropdown">
 			<button class="btn">
-				<span class="material-symbols-outlined">
-					account_box
-				</span>
-				FaceSearch
+				<span class="material-symbols-outlined">account_box</span>
+				<span>FaceSearch</span>
 			</button>
 
 			<div class="content">
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						upload_file
-					</span>
-					Upload an image
+					<span class="material-symbols-outlined">upload_fil</span>
+					<span>Upload an image</span>
 				</a>
 
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						photo_camera
-					</span>
-					Open camera
+					<span class="material-symbols-outlined">photo_camera</span>
+					<span>Open camera</span>
 				</a>
 			</div>
 		</div>
@@ -76,10 +65,8 @@
 			</div>
 
 			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">
-					filter_alt
-				</span>
-				Filter
+				<span class="material-symbols-outlined">filter_alt</span>
+				<span>Filter</span>
 			</button>
 		</form>
 
@@ -87,30 +74,20 @@
 			User actions 
 		===================-->
 		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">
-					more_vert
-				</span>
-			</button>
+			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 
 			<div class="content">
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						add
-					</span>
-					Add new profile
+				<a class="btn" href="{% url 'profile-inmate-add' %}?prev={{request.path}}">
+					<span class="material-symbols-outlined">add</span>
+					<span>Add new profile</span>
 				</a>
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						archive
-					</span>
-					Archive all
+					<span class="material-symbols-outlined">archive</span>
+					<span>Archive all</span>
 				</a>
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						delete
-					</span>
-					Delete All
+					<span class="material-symbols-outlined">delete</span>
+					<span>Delete All</span>
 				</a>
 			</div>
 		</div>
@@ -118,44 +95,42 @@
 
 	<div class="profiles-list">
 		{% if inmates %}
-			<div class="inmates">
-				<h2>Newly addeed inmates</h2>
-
-				{% for inmate in inmates %}
-					<div class="inmate card">
-						<div class="header">
-							<div>
-								<span class="material-symbols-outlined">
-									schedule
-								</span>
-								{{ inmate.date_profiled }}
-							</div>
-
-							<div class="actions">
-								<a class="btn" href="{% url 'profile' inmate.pk %}">
-									<span class="material-symbols-outlined">
-										open_in_new
-									</span>
-									View
-								</a>
-							</div>
+			{% for inmate in inmates %}
+				<div class="inmate card">
+					<div class="header">
+						<div>
+							<span class="material-symbols-outlined">schedule</span>
+							<span>{{ inmate.date_profiled }}</span>
 						</div>
 
-						<div class="content">
-							<div class="picture">
-								<img src="{{ inmate.thumbnail.url }}" alt="">
-							</div>
-
-							<div class="details">
-								<div>Name: {{ inmate|full_name }}</div>
-								<div>Address: {{ inmate.address }}</div>
-								<div>Date assigned: {{ inmate.date_assigned }}</div>
-								<div>Designation: {{ inmate.crime_violated }}</div>
-							</div>
+						<div class="actions">
+							<a class="btn" href="{% url 'profile-inmate' inmate.pk %}">
+								<span class="material-symbols-outlined">open_in_new</span>
+							</a>
+							<a class="btn" href="{% url 'profile-inmate-update' inmate.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">edit</span>
+							</a>
+							<a class="btn" href="{% url 'profile-inmate-delete' inmate.pk %}?prev={{request.path}}">
+								<span class="material-symbols-outlined">delete</span>
+							</a>
 						</div>
 					</div>
-				{% endfor %}
-			</div>
+
+					<div class="content">
+						<div class="picture">
+							<img src="{{ inmate.thumbnail.url }}" alt="">
+						</div>
+
+						<div class="details">
+							<div>Name: {{ inmate|full_name }}</div>
+							<div>Address: {{ inmate.address }}</div>
+							<div>Date arrested: {{ inmate.date_arrested }}</div>
+							<div>Date committed: {{ inmate.date_committed }}</div>
+							<div>Designation: {{ inmate.crime_violated }}</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
 		{% else %}
 			<h2>There are no inmates profiled.</h2>
 		{% endif %}

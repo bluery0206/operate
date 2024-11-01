@@ -13,3 +13,40 @@ def get_full_name(profile:object, m_initial:bool=True):
 		full_name += f" {profile.suffix}"
 
 	return full_name
+
+
+def saveProfilePicture(ori_img, id):
+	profile = Profile.objects.get(id=id)
+
+	ori_img = Image.open(ori_img.path)
+
+	width, height = ori_img.size
+
+	# To set the height or width of the least size
+	size 	= width if height > width else height
+
+	# Finding the center
+	left 	= (width - size) / 2
+	top 	= (height - size) / 2
+	right 	= (width + size) / 2
+	bottom 	= (height + size) / 2
+
+	new_img = ori_img.crop((left, top, right, bottom))
+	new_img = new_img.resize((300, 300))
+
+	# Just for name
+	time 	= timezone.now().strftime("%Y%m%d%H%M%S")
+
+	new_img_name = "display_images/" + time + ".png"
+	ori_img_name = "model_images/" + time + ".png"
+
+	# Save images
+	new_img.save("media/" + new_img_name)
+	ori_img.save("media/" + ori_img_name)
+
+	# Change image values
+	profile.image_display 	= new_img_name
+	profile.image_model 	= ori_img_name
+
+	profile.save()
+

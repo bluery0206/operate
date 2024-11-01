@@ -135,8 +135,8 @@ LOGIN_REDIRECT_URL = 'operate-home'
 LOGIN_URL = 'user-login'
 
 # Saving files
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
 # Sending Email

@@ -41,6 +41,7 @@ class Profile(models.Model):
 		abstract = True
 
 class Personnel(Profile):
+	p_type = models.CharField(max_length=10, default="personnel")
 	rank			= models.CharField(
 		max_length=10,
 		choices = (
@@ -92,8 +93,9 @@ class Personnel(Profile):
 		return get_full_name(self) + "'s Profile"
 
 class Inmate(Profile):
-	date_arrested	= models.DateField()
-	date_committed	= models.DateField(null=True, blank=True)
+	p_type = models.CharField(max_length=10, default="personnel")
+	date_arrested	= models.DateTimeField()
+	date_committed	= models.DateTimeField(null=True, blank=True)
 	crime_violated	= models.TextField()
 
 	class Meta:
@@ -110,6 +112,7 @@ class Inmate(Profile):
 					'civil_status',
 					'date_profiled',
 					'date_arrested',
+					'date_committed',
 					'crime_violated'
 				],
 				name="unique-inmate-profile"

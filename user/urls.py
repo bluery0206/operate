@@ -31,6 +31,4 @@ urlpatterns = [
 			template_name='user/password_reset_complete.html'
 		), name = "password_reset_complete"
 	),
-
-	# path("<str:username>/", views.user, name="user"),
 ]

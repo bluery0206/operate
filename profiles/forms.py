@@ -7,13 +7,11 @@ from .models import (
 	Inmate
 )
 
-
 class CreatePersonnel(ModelForm):
 	class Meta:
 		model = Personnel
 		fields = [
 			'thumbnail',
-			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
@@ -54,7 +52,6 @@ class CreateInmate(ModelForm):
 		model = Inmate
 		fields = [
 			'thumbnail',
-			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
@@ -64,6 +61,7 @@ class CreateInmate(ModelForm):
 			'civil_status',
 			'date_profiled',
 			'date_arrested',
+			'date_committed',
 			'crime_violated',
 		]
 
@@ -82,5 +80,6 @@ class UpdateInmate(ModelForm):
 			'civil_status',
 			'date_profiled',
 			'date_arrested',
+			'date_committed',
 			'crime_violated',
 		]

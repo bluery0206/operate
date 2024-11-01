@@ -102,7 +102,7 @@ footer {
     border          : 1px solid var(--black);
     padding         : 1em 1.5em;
     border-radius   : 10px;
-    min-width       : 340px;
+    min-width       : 450px;
     box-shadow: 2px 2px 5px 2px var(--shadow);
 
     .header {
@@ -270,7 +270,7 @@ input, select {
     .info {
         margin: 1em 0;
         display: grid;
-        grid-template-columns   : 200px calc((100% - 200px) - 1em * 2);
+        grid-template-columns   : 200px calc((100% - 200px) - 1em);
         justify-content         : space-between;
 
     .picture {
@@ -287,6 +287,22 @@ input, select {
     }
 
     .details{
-/*        border: 1px solid red;*/
+
+        form {
+            display: grid;
+            grid-template-columns: calc((100% - 150px) - 2em) 150px;
+            justify-content: space-between;
+
+            fieldset {
+                border: none;
+                outline: none;
+            }
+
+            .actions {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5em;
+            }
+        }
     }
 }

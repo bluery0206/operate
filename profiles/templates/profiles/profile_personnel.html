@@ -1,0 +1,75 @@
+{% extends 'home/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<div class="profile">
+		<div class="header">
+			<div class="title">
+				<a class="btn" href="javascript:history.go(-1)">
+					<span class="material-symbols-outlined">arrow_back_ios</span>
+					<span>Back</span>
+				</a>
+
+				<h2>{{ profile.f_name }}'s Profile</h2>
+			</div>
+
+			<div class="actions">
+				<a class="btn" href="{% url 'profile-personnel-update' profile.pk %}?prev={{request.path}}">
+					<span class="material-symbols-outlined">edit</span>
+					<span>Edit Profile</span>
+				</a>
+				<a class="btn" href="?prev={{request.path}}">
+					<span class="material-symbols-outlined">archive</span>
+					<span>Add to archive</span>
+				</a>
+				
+				<div class="dropdown">
+					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
+
+					<div class="content">
+						<a class="btn" href="#">
+							<span class="material-symbols-outlined">file_export</span>
+							<span>Export as .docx</span>
+						</a>
+						<a class="btn" href="{% url 'profile-personnel-delete' profile.pk %}">
+							<span class="material-symbols-outlined">delete</span>
+							<span>Delete</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="info">
+			<div class="picture">
+				<img src="{{ profile.thumbnail.url }}" alt="thumbnail">
+			</div>
+			
+			<div class="details">
+				<div>Age: {{ profile.p_type}}</div>
+				
+				<div>Name: {{ profile|full_name}}</div>
+				
+				{% if profile.p_type == "personnel" %}
+					<div>Rank: {{ profile.rank|upper }}</div>
+				{% endif %}	
+
+				<div>Age: {{ profile.age}}</div>
+				<div>Address: {{ profile.address}} </div>
+				<div>Civil Status: {{ profile.civil_status}}</div>
+				<div>Date Last Edited: {{ profile.f_name}}</div>
+				<div>Date Profiled: {{ profile.date_profiled}}</div>
+
+				{% if profile.p_type == "personnel" %}
+					<div>Date Assigned: {{ profile.date_assigned}}</div>
+					<div>Date Relieved: {{ profile.date_relieved}}</div>
+					<div>Designation: {{ profile.designation}}</div>
+				{% elif profile.p_type == "inmate" %}
+					<div>Date Arrested: {{ profile.date_arrested }}</div>
+					<div>Date Arrested: {{ profile.date_committed }}</div>
+					<div>Date assigned: {{ inmate.crime_violated }}</div>
+				{% endif %}	
+			</div>
+		</div>
+	</div>
+{% endblock content %}
