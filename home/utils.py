@@ -1,3 +1,8 @@
+from PIL import Image
+from django.utils import timezone
+
+
+
 def get_full_name(profile:object, m_initial:bool=True):
 	full_name = profile.l_name
 
@@ -15,21 +20,16 @@ def get_full_name(profile:object, m_initial:bool=True):
 	return full_name
 
 
-def saveProfilePicture(ori_img, id):
-	profile = Profile.objects.get(id=id)
-
-	ori_img = Image.open(ori_img.path)
-
+def save_profile_picture(profile):	
+	ori_img = Image.open(profile.raw_image.path)
+	print(ori_img)
 	width, height = ori_img.size
 
 	# To set the height or width of the least size
 	size 	= width if height > width else height
 
 	# Finding the center
-	left 	= (width - size) / 2
-	top 	= (height - size) / 2
-	right 	= (width + size) / 2
-	bottom 	= (height + size) / 2
+	left, top, right, bottom = get_img_size(width, height, size)
 
 	new_img = ori_img.crop((left, top, right, bottom))
 	new_img = new_img.resize((300, 300))
@@ -37,16 +37,23 @@ def saveProfilePicture(ori_img, id):
 	# Just for name
 	time 	= timezone.now().strftime("%Y%m%d%H%M%S")
 
-	new_img_name = "display_images/" + time + ".png"
-	ori_img_name = "model_images/" + time + ".png"
+	new_img_name = "thumbnails/" + time + ".png"
+	ori_img_name = "raw_images/" + time + ".png"
 
 	# Save images
 	new_img.save("media/" + new_img_name)
 	ori_img.save("media/" + ori_img_name)
 
 	# Change image values
-	profile.image_display 	= new_img_name
-	profile.image_model 	= ori_img_name
+	profile.thumbnail 	= new_img_name
+	profile.raw_image 	= ori_img_name
 
-	profile.save()
+	res = profile.save()
 
+def get_img_size(width, height, size) -> list:
+	left 	= (width - size) / 2
+	top 	= (height - size) / 2
+	right 	= (width + size) / 2
+	bottom 	= (height + size) / 2
+
+	return [left, top, right, bottom]

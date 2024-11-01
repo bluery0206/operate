@@ -24,10 +24,7 @@ class Profile(models.Model):
 	suffix			= models.CharField(max_length=10, blank=True, default=None)
 	age 			= models.IntegerField()
 	address			= models.TextField()
-	civil_status	= models.CharField(
-		blank=True,
-		max_length	= 20,
-		choices		= (
+	civil_status	= models.CharField(blank=True, max_length=20, choices=(
 			('single', 'Single'),
 			('married', 'Married'),
 			('widowed', 'Widowed'),
@@ -41,10 +38,8 @@ class Profile(models.Model):
 		abstract = True
 
 class Personnel(Profile):
-	p_type = models.CharField(max_length=10, default="personnel")
-	rank			= models.CharField(
-		max_length=10,
-		choices = (
+	p_type	= models.CharField(max_length=10, default="personnel")
+	rank	= models.CharField(max_length=10, choices = (
 			('pgen', 'Police General, PGEN'),
 			('pltgen', 'Police Lieutenant General, PLTGEN'),
 			('pmgen', 'Police Major General, PMGEN'),

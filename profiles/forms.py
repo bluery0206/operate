@@ -11,7 +11,7 @@ class CreatePersonnel(ModelForm):
 	class Meta:
 		model = Personnel
 		fields = [
-			'thumbnail',
+			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
@@ -31,7 +31,7 @@ class UpdatePersonnel(ModelForm):
 	class Meta:
 		model = Personnel
 		fields = [
-			'thumbnail',
+			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
@@ -51,7 +51,7 @@ class CreateInmate(ModelForm):
 	class Meta:
 		model = Inmate
 		fields = [
-			'thumbnail',
+			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
@@ -70,7 +70,7 @@ class UpdateInmate(ModelForm):
 	class Meta:
 		model = Inmate
 		fields = [
-			'thumbnail',
+			'raw_image',
 			'f_name',
 			'l_name',
 			'm_name',
