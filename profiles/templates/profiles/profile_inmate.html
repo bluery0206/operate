@@ -18,10 +18,19 @@
 					<span class="material-symbols-outlined">edit</span>
 					<span>Edit Profile</span>
 				</a>
-				<a class="btn" href="?prev={{request.path}}">
-					<span class="material-symbols-outlined">archive</span>
-					<span>Add to archive</span>
-				</a>
+
+				{% if profile.archiveinmate %}
+					<a class="btn" href="{% url 'archive-inmate-remove' profile.archiveinmate.pk %}?prev={{request.path}}">
+						<span class="material-symbols-outlined">unarchive</span>
+						<span>Unarchive</span>
+					</a>
+				{% else %}
+					<a class="btn" href="{% url 'archive-inmate-add' profile.pk %}?prev={{request.path}}">
+						<span class="material-symbols-outlined">archive</span>
+						<span>Add to archive</span>
+					</a>
+				{% endif %}
+
 				
 				<div class="dropdown">
 					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
@@ -46,7 +55,7 @@
 			</div>
 			
 			<div class="details">
-				<div>Age: {{ profile.p_type}}</div>
+				<div>p_type: {{ profile.p_type}}</div>
 				<div>Name: {{ profile|full_name}}</div>
 				<div>Age: {{ profile.age}}</div>
 				<div>Address: {{ profile.address}} </div>

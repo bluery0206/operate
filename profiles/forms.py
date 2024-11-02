@@ -83,3 +83,4 @@ class UpdateInmate(ModelForm):
 			'date_committed',
 			'crime_violated',
 		]
+

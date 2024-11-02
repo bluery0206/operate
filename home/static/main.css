@@ -48,12 +48,6 @@ h1, h2, h3, h4, h5, h6 {
 	font-family    : ProductSans-Regular;
 }
 
-main {
-	border      : 1px solid red;
-    min-height  : calc(100dvh - 3em);
-    padding     : 1% 10%;
-}
-
 header {
     box-shadow      : 2px 2px 5px 2px var(--shadow);
     justify-content : space-between;
@@ -77,6 +71,12 @@ header {
             align-items: center;
         }
     }
+}
+
+main {
+    border      : 1px solid red;
+    min-height  : calc(100dvh - 3em);
+    padding     : 1% 7dvw;
 }
 
 footer {
@@ -242,11 +242,20 @@ input, select {
     box-shadow: 2px 2px 5px 2px var(--shadow);
     padding: 0.5em;
 
+    input[type="search"] {
+        width: 125px;
+    }
+
     .filter-form {
         gap: 0.25em;
         flex-wrap: wrap;
         display: flex;
         align-items: center;
+    }
+
+    .actions {
+        display: flex;
+        gap: 0.5em;
     }
 }
 

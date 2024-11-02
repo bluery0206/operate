@@ -12,8 +12,20 @@
 			Search by text 
 		===================-->
 		<form method="GET" class="search-form">
-			<input type="search" name="search" placeholder="Search">
-			<button class="btn" type="submit"><span class="material-symbols-outlined">search</span></button>
+			<input type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}">
+
+			<input type="hidden" name="crime_violated" value="{{ filters.crime_violated }}">
+			<input type="hidden" name="sort_by" value="{{ filters.sort_by }}">
+			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
+
+			<div class="actions">
+				<button class="btn" type="submit" title="Search">
+					<span class="material-symbols-outlined">search</span>
+				</button>
+				<button class="btn" type="submit" name="reset_search" title="Reset search" value="reset_search">
+					<span class="material-symbols-outlined">search_off</span>
+				</button>
+			</div>
 		</form>
 
 		<!--==================== 
@@ -43,30 +55,38 @@
 		===================-->
 		<form method="GET" class="filter-form">
 
-			<input type="search" name="crime_violated" placeholder="Crime Violated">
+			<input type="hidden" name="search" value="{% if filters.search %} {{ filters.search }} {% endif %}">
+			<input type="search" name="crime_violated" placeholder="Crime Violated" value="{% if filters.crime_violated %} {{ filters.crime_violated }} {% endif %}">
 
 			<!--==================== 
 				
 			===================-->
-			<div>
-				<select name="sort_order" id="sort_order">
-					<option value="">Others</option>
-				</select>
-			</div>
+			<select name="sort_by" title="Sort by">
+				{% if sort_choices %}
+					{% for pair in sort_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
+
+						{{ pair.0 }}
+					{% endfor %}
+				{% endif %}
+			</select>
 
 			<!--==================== 
 				Sort order
 			===================-->
-			<div>
-				<select name="sort_order" id="sort_order">
-					<option value="ascending">Ascending</option>
-					<option value="descending">Descending</option>
-				</select>
-			</div>
+			<select name="sort_order" id="sort_order" title="Sort order">
+				{% if order_choices %}
+					{% for pair in order_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
 
-			<button class="btn" type="submit">
+			<button class="btn" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
-				<span>Filter</span>
+			</button>
+			<button class="btn" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
+				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
 		</form>
 

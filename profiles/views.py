@@ -2,22 +2,147 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreatePersonnel, CreateInmate, UpdatePersonnel, UpdateInmate
 from .models import Personnel, Inmate
 from home.utils import save_profile_picture
-
+from django.db.models import Q
 
 def personnels(request):
+	sort_choices = [
+		['l_name', "Last Name"],
+		['f_name', "First Name"],
+		['age', "Age"],
+		['date_profiled',"Date Profiled"],
+		['date_assigned',"Date Assigned"],
+		['date_relieved',"Date Relieved"],
+	]
+
+	order_choices = [
+		['descending',"Descending"],
+		['ascending', "Ascending"],
+	]
+
 	context = {
-		'personnels': Personnel.objects.exclude(archivepersonnel__isnull=False)
+		'personnels'	: Personnel.objects.exclude(archivepersonnel__isnull=False),
+		'ranks'			: [rank[0] for rank in Personnel.RANKS],
+		'sort_choices'	: sort_choices,
+		'order_choices'	: order_choices,
+		'filters'		: {}
 	}
+
+	if request.method == "GET":
+		reset_filter		= request.GET.get("reset_filter", None)
+		reset_search		= request.GET.get("reset_search", None)
+		search		= request.GET.get("search", "").strip()
+
+		if not reset_search and search:
+			context['personnels'] = Personnel.objects.filter(
+		        Q(f_name__icontains=search) |
+		        Q(l_name__icontains=search) |
+		        Q(m_name__icontains=search)
+	        )
+		else:
+			search = ""
+
+		if reset_filter:
+			designation	= None
+			rank		= None
+			sort_by		= None
+			sort_order	= None
+		else:
+			designation	= request.GET.get("designation", "")
+			rank		= request.GET.get("rank", "")
+			sort_by		= request.GET.get("sort_by", "")
+			sort_order	= request.GET.get("sort_order", "descending")
+
+			designation = designation.strip()
+
+			if designation:
+				context['personnels'] = context['personnels'].filter(designation__icontains=designation)
+
+			if rank:
+				context['personnels'] = context['personnels'].filter(rank=rank)
+
+			if sort_by:
+				if sort_order == "descending":
+					sort_by = "-" + sort_by
+				context['personnels'] = context['personnels'].order_by(sort_by)
+
+			context['filters'] = {
+				'designation': designation,
+				'rank': rank,
+				'sort_by': sort_by,
+				'sort_order': sort_order,
+				'sort_order': sort_order,
+			}
+
+		context['filters'].update({"search": search})
+
 	return render(request, "profiles/personnels.html", context)
 
 
 def inmates(request):
+	sort_choices = [
+		['l_name', "Last Name"],
+		['f_name', "First Name"],
+		['age', "Age"],
+		['date_profiled',"Date Profiled"],
+		['date_arresetd',"Date Arrested"],
+		['date_committed',"Date Committed"],
+	]
+
+	order_choices = [
+		['descending',"Descending"],
+		['ascending', "Ascending"],
+	]
+
 	context = {
-		'inmates': Inmate.objects.exclude(archiveinmate__isnull=False)
+		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False),
+		'sort_choices'	: sort_choices,
+		'order_choices'	: order_choices,
+		'filters'		: {}
 	}
+
+	if request.method == "GET":
+		reset_filter		= request.GET.get("reset_filter", "")
+		reset_search		= request.GET.get("reset_search", "")
+		search		= request.GET.get("search", "").strip()
+
+		if not reset_search and search:
+			context['inmates'] = Inmate.objects.filter(
+		        Q(f_name__icontains=search) |
+		        Q(l_name__icontains=search) |
+		        Q(m_name__icontains=search)
+	        )
+		else:
+			search = ""
+
+		if reset_filter:
+			crime_violated	= None
+			sort_by		= None
+			sort_order	= None
+		else:
+			crime_violated	= request.GET.get("crime_violated", "")
+			sort_by		= request.GET.get("sort_by", "")
+			sort_order	= request.GET.get("sort_order", "descending")
+
+			crime_violated = crime_violated.strip()
+
+			if crime_violated:
+				context['inmates'] = context['inmates'].filter(crime_violated__icontains=crime_violated)
+
+			if sort_by:
+				if sort_order == "descending":
+					sort_by = "-" + sort_by
+				context['inmates'] = context['inmates'].order_by(sort_by)
+
+			context['filters'] = {
+				'crime_violated': crime_violated,
+				'sort_by': sort_by,
+				'sort_order': sort_order,
+			}
+
+		context['filters'].update({"search": search})
 	return render(request, "profiles/inmates.html", context)
 
-
+ 
 def profile_personnel(request, pk):
 	context = {
 		'profile': get_object_or_404(Personnel, pk=pk),
