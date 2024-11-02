@@ -33,7 +33,7 @@ class ArchiveInmate(Archive):
 	profile = models.OneToOneField(
 		Inmate, 
 		on_delete = models.CASCADE,
-		related_name='archivepersonnel'
+		related_name='archiveinmate'
 	)
 
 	def __str__(self):

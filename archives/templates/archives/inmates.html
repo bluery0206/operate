@@ -109,13 +109,10 @@
 			{% for inmate in archived_inmates %}
 				<div class="inmate card">
 					<div class="header">
-						<div>
-							<span class="material-symbols-outlined">schedule</span>
-							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
-						</div>
-
+						<div></div>
+ 
 						<div class="actions">
-							<a class="btn" href="{% url 'archives-inmate-profile' inmate.pk %}">
+							<a class="btn" href="{% url 'archive-inmate-profile' inmate.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
 							<a class="btn" href="{% url 'profile-inmate-update' inmate.profile.pk %}?prev={{request.path}}">
@@ -133,9 +130,11 @@
 						</div>
 
 						<div class="details">
+							<span>{{ inmate.archive_date }} by {{ inmate.archive_by }}</span>
 							<div>Name: {{ inmate.profile|full_name }}</div>
 							<div>Address: {{ inmate.profile.address }}</div>
-							<div>Date assigned: {{ inmate.profile.date_assigned }}</div>
+							<div>Date arrested: {{ inmate.profile.date_arrested }}</div>
+							<div>Date committed: {{ inmate.profile.date_committed }}</div>
 							<div>Designation: {{ inmate.profile.crime_violated }}</div>
 						</div>
 					</div>

@@ -18,11 +18,19 @@
 					<span class="material-symbols-outlined">edit</span>
 					<span>Edit Profile</span>
 				</a>
-				<a class="btn" href="?prev={{request.path}}">
-					<span class="material-symbols-outlined">archive</span>
-					<span>Add to archive</span>
-				</a>
-				
+
+				{% if profile.archivepersonnel %}
+					<a class="btn" href="{% url 'archive-personnel-remove' profile.archivepersonnel.pk %}?next={{request.path}}">
+						<span class="material-symbols-outlined">unarchive</span>
+						<span>Unarchive</span>
+					</a>
+				{% else %}
+					<a class="btn" href="{% url 'archive-personnel-add' profile.pk %}?prev={{request.path}}">
+						<span class="material-symbols-outlined">archive</span>
+						<span>Add to archive</span>
+					</a>
+				{% endif %}
+
 				<div class="dropdown">
 					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 

@@ -6,14 +6,14 @@ from home.utils import save_profile_picture
 
 def personnels(request):
 	context = {
-		'personnels': Personnel.objects.all(),
+		'personnels': Personnel.objects.exclude(archivepersonnel__isnull=False)
 	}
 	return render(request, "profiles/personnels.html", context)
 
 
 def inmates(request):
 	context = {
-		'inmates': Inmate.objects.all(),
+		'inmates': Inmate.objects.exclude(archiveinmate__isnull=False)
 	}
 	return render(request, "profiles/inmates.html", context)
 

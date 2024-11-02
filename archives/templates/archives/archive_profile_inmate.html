@@ -1,0 +1,60 @@
+{% extends 'home/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<div class="profile">
+		<div class="header">
+			<div class="title">
+				<a class="btn" href="javascript:history.go(-1)">
+					<span class="material-symbols-outlined">arrow_back_ios</span>
+					<span>Back</span>
+				</a>
+				
+				<h2>{{ archive.profile.f_name }}'s Profile</h2>
+			</div>
+
+			<div class="actions">
+				<a class="btn" href="{% url 'profile-inmate-update' archive.profile.pk %}?next={{request.path}}">
+					<span class="material-symbols-outlined">edit</span>
+					<span>Edit Profile</span>
+				</a>
+				<a class="btn" href="{% url 'archive-inmate-remove' archive.pk %}?next={{request.path}}">
+					<span class="material-symbols-outlined">unarchive</span>
+					<span>Unarchive</span>
+				</a>
+				
+				<div class="dropdown">
+					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
+
+					<div class="content">
+						<a class="btn" href="#">
+							<span class="material-symbols-outlined">file_export</span>
+							<span>Export as .docx</span>
+						</a>
+						<a class="btn" href="#">
+							<span class="material-symbols-outlined">delete</span>
+							<span>Delete</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="info">
+			<div class="picture">
+				<img src="{{ archive.profile.thumbnail.url }}" alt="">
+			</div>
+			
+			<div class="details">
+				<div>Name: {{archive.profile|full_name}}</div>
+				<div>Age: {{archive.profile.age}}</div>
+				<div>Address: {{archive.profile.address}} </div>
+				<div>Civil Status: {{archive.profile.civil_status}}</div>
+				<div>Date Profiled: {{archive.profile.date_profiled}}</div>
+				<div>Date Arrested: {{archive.profile.date_arrested}}</div>
+				<div>Date Committed: {{archive.profile.date_commited}}</div>
+				<div>Crime violated: {{archive.profile.crime_violated}}</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}

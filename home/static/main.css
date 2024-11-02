@@ -28,16 +28,13 @@
 }
 
 :root {
-    --shadow: rgba(0, 0, 0, 0.25);
-    --black: rgb(80, 80, 80);
-
-    --white: rgb(240, 240, 240);
-    --white-1: rgb(220, 220, 220);
-    --white-2: rgb(200, 200, 200);
-
-    --radius-small: 7px;
-
-    --font-small: 0.85em;
+    --shadow        : rgba(0, 0, 0, 0.25);
+    --black         : rgb(80, 80, 80);
+    --white         : rgb(240, 240, 240);
+    --white-1       : rgb(220, 220, 220);
+    --white-2       : rgb(200, 200, 200);
+    --radius-small  : 7px;
+    --font-small    : 0.85em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,32 +42,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 * {
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: ProductSans-Regular;
+	padding        : 0;
+	margin         : 0;
+	box-sizing     : border-box;
+	font-family    : ProductSans-Regular;
 }
 
 main {
-	border: 1px solid red;
-    min-height: calc(100dvh - 3em);
-    padding: 1% 10%;
+	border      : 1px solid red;
+    min-height  : calc(100dvh - 3em);
+    padding     : 1% 10%;
 }
 
 header {
-    display: flex;
-    padding: 0 10dvw;
-    height: 3em;
-    border: 1px solid red;
-    background: white;
-    box-shadow: 2px 2px 5px 2px var(--shadow);
-    align-items: center;
-    justify-content: space-between;
+    box-shadow      : 2px 2px 5px 2px var(--shadow);
+    justify-content : space-between;
+    border          : 1px solid red;
+    align-items     : center;
+    background      : var(--white);
+    padding         : 0.5em 10dvw;
+    display         : flex;
+    flex-wrap: wrap;
+    min-height          : 3em;
+    position: sticky;
+    top:0;
 
     nav {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
+        display     : flex;
+        align-items : center;
+        gap         : 0.5em;
 
         a {
             display: flex;
@@ -80,8 +80,8 @@ header {
 }
 
 footer {
-    border: 1px solid red;
-    padding: 20dvh 10dvh;
+    border  : 1px solid red;
+    padding : 20dvh 10dvh;
 }
 
 .new_profiles {
@@ -90,54 +90,63 @@ footer {
     justify-content         : space-between;
 
     .card {
-        margin: 2% 0;
+        margin      : 2% 0;
+        width   : 100%;
 
         .content {
             margin-top              : 2%;
+            grid-template-columns   : 150px calc((100% - 150px) - 0.5em);
+            justify-content         : space-between;
+
+            .picture {
+                width   : 150px;
+            }
         }
     }
 }
 
 .card {
     border          : 1px solid var(--black);
-    padding         : 1em 1.5em;
     border-radius   : 10px;
-    min-width       : 450px;
-    box-shadow: 2px 2px 5px 2px var(--shadow);
+    width           : 250px;
+    box-shadow      : 2px 2px 5px 2px var(--shadow);
 
     .header {
-/*            border: 1px solid red;*/
-        display         : flex;
+        display: flex;
+        padding         : 0.5em 1em 0 1em;
         justify-content : space-between;
         align-items     : center;
+        margin-bottom: 0.75em ;
 
         .actions {
-/*                border: 1px solid red;*/
-            display: flex;
-            gap: 0.5em;
+            display : flex;
+            gap     : 0.25em;
+    flex-wrap: wrap;
+        }
+
+        .details {
+            padding: 0.5em 1em;
         }
     }
 
     .content {
         display: grid;
-        grid-template-columns   : 150px calc((100% - 150px) - 0.5em);
-        justify-content         : space-between;
+        
 
         .picture {
             border  : 1px solid var(--black);
             height  : 150px;
-            width   : 150px;
+            width   : 100%;
 
             img {
-                height: inherit;
-                width: inherit;
-                object-fit: cover;
+                height      : inherit;
+                width       : inherit;
+                object-fit  : cover;
             }
         }
 
         .details {
-/*            border: 1px solid red;*/
-            padding: 0.5em 0;
+            padding: 0.5em 1em;
         }
     }
 }
@@ -155,10 +164,12 @@ footer {
     border: 1px solid var(--black);
     border-radius: var(--radius-small);
     font-size: var(--font-small);
+    height: 2.5em;
 }
 
 input, select {
     padding: 0.25em 0.75em;
+    height: 2.5em;
     border: none;
     outline: none;
     background: none;
@@ -222,6 +233,7 @@ input, select {
 
 .filter-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content:space-between;
     outline: 1px solid var(--black);
@@ -232,6 +244,7 @@ input, select {
 
     .filter-form {
         gap: 0.25em;
+        flex-wrap: wrap;
         display: flex;
         align-items: center;
     }
@@ -254,6 +267,7 @@ input, select {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
 
         .title {
             display: flex;
@@ -263,6 +277,7 @@ input, select {
         .actions {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 0.5em;
         }
     }
@@ -288,8 +303,8 @@ input, select {
 
     .details{   
         form {
-            display: grid;
-            grid-template-columns: calc((100% - 150px) - 2em) 150px;
+            display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
 
             fieldset {
@@ -298,6 +313,7 @@ input, select {
             }
 
             .actions {
+                width: 150px;
                 display: flex;
                 flex-direction: column;
                 gap: 0.5em;

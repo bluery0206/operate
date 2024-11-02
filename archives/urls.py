@@ -5,8 +5,8 @@ urlpatterns = [
 	path("personnel/", views.personnels, name="archives-personnels"),
 	path("inmates/", views.inmates, name="archives-inmates"),
 
-	path("personnel/profile/<int:pk>/", views.profile_personnel, name="archives-personnel-profile"),
-	path("inmate/profile/<int:pk>/", views.profile_inmate, name="archives-inmate-profile"),
+	path("personnel/profile/<int:pk>/", views.archive_profile_personnel, name="archive-personnel-profile"),
+	path("inmate/profile/<int:pk>/", views.archive_profile_inmate, name="archive-inmate-profile"),
 
 	path("personnel/add/<int:pk>/", views.archive_personnel_add, name="archive-personnel-add"),
 	path("inmate/add/<int:pk>/", views.archive_inmate_add, name="archive-inmate-add"),

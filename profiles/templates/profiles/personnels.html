@@ -104,8 +104,6 @@
 				<div class="personnel card">
 					<div class="header">
 						<div>
-							<span class="material-symbols-outlined">schedule</span>
-							<span>{{ personnel.date_profiled }}</span>
 						</div>
 
 						<div class="actions">
@@ -130,6 +128,7 @@
 							<div>Name: {{ personnel|full_name }}</div>
 							<div>Rank: {{ personnel.rank|upper }} </div> 
 							<div>Address: {{ personnel.address }}</div>
+							<div>Date profiled: {{ personnel.date_profiled }}</div>
 							<div>Date assigned: {{ personnel.date_assigned }}</div>
 							<div>Designation: {{ personnel.designation }}</div>
 						</div>

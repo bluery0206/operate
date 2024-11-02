@@ -94,10 +94,7 @@
 			{% for inmate in inmates %}
 				<div class="inmate card">
 					<div class="header">
-						<div>
-							<span class="material-symbols-outlined">schedule</span>
-							<span>{{ inmate.date_profiled }}</span>
-						</div>
+						<div></div>
 
 						<div class="actions">
 							<a class="btn" href="{% url 'profile-inmate' inmate.pk %}">
@@ -118,6 +115,7 @@
 						</div>
 
 						<div class="details">
+							<span>Date Profile: {{ inmate.date_profiled }}</span>
 							<div>Name: {{ inmate|full_name }}</div>
 							<div>Address: {{ inmate.address }}</div>
 							<div>Date arrested: {{ inmate.date_arrested }}</div>

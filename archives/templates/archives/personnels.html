@@ -13,11 +13,7 @@
 		<form method="GET" class="search-form">
 			<input type="search" name="search" placeholder="Search">
 
-			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">
-					search
-				</span>
-			</button>
+			<button class="btn" type="submit"><span class="material-symbols-outlined">search</span></button>
 		</form>
 
 		<!--==================== 
@@ -25,25 +21,19 @@
 		===================-->
 		<div class="dropdown">
 			<button class="btn">
-				<span class="material-symbols-outlined">
-					account_box
-				</span>
-				FaceSearch
+				<span class="material-symbols-outlined">account_box</span>
+				<span>FaceSearch</span>
 			</button>
 
 			<div class="content">
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						upload_file
-					</span>
-					Upload an image
+					<span class="material-symbols-outlined">upload_file</span>
+					<span>Upload an image</span>
 				</a>
 
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						photo_camera
-					</span>
-					Open camera
+					<span class="material-symbols-outlined">photo_camera</span>
+					<span>Open camera</span>
 				</a>
 			</div>
 		</div>
@@ -83,10 +73,8 @@
 			</div>
 
 			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">
-					filter_alt
-				</span>
-				Filter
+				<span class="material-symbols-outlined">filter_alt</span>
+				<span>Filter</span>
 			</button>
 		</form>
 
@@ -94,18 +82,12 @@
 			User actions 
 		===================-->
 		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">
-					more_vert
-				</span>
-			</button>
+			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 
 			<div class="content">
 				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						archive
-					</span>
-					Archive all
+					<span class="material-symbols-outlined">unarchive</span>
+					<span>Unarchive all</span>
 				</a>
 				<a class="btn" href="#">
 					<span class="material-symbols-outlined">delete</span>
@@ -120,13 +102,10 @@
 			{% for personnel in archived_personnels %}
 				<div class="personnel card">
 					<div class="header">
-						<div>
-							<span class="material-symbols-outlined">schedule</span>
-							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
-						</div>
-
+						<div></div>
+						
 						<div class="actions">
-							<a class="btn" href="{% url 'archives-personnel-profile' personnel.pk %}">
+							<a class="btn" href="{% url 'archive-personnel-profile' personnel.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
 							<a class="btn" href="{% url 'profile-personnel-update' personnel.profile.pk %}?prev={{request.path}}">
@@ -144,6 +123,7 @@
 						</div>
 
 						<div class="details">
+							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
 							<div>Name:			{{ personnel.profile|full_name }} </div>
 							<div>Rank: 			{{ personnel.profile.rank|upper }}</div> 
 							<div>Address: 		{{ personnel.profile.address }} </div>

@@ -8,8 +8,8 @@ context = {
 
 @login_required
 def home(request):
-	personnels = Personnel.objects.order_by("-date_profiled")[:5]
-	inmates = Inmate.objects.order_by("-date_profiled")[:5]
+	personnels = Personnel.objects.exclude(archivepersonnel__isnull=False).order_by("-date_profiled")[:5]
+	inmates = Inmate.objects.exclude(archiveinmate__isnull=False).order_by("-date_profiled")[:5]
 
 	context["personnels"] = personnels
 	context["inmates"] = inmates
