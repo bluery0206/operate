@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-	path("personnel/", views.personnels, name="profiles-personnels"),
+	path("personnels/", views.personnels, name="profiles-personnels"),
 	path("inmates/", views.inmates, name="profiles-inmates"),
 
 	path("personnel/<int:pk>/", views.profile_personnel, name="profile-personnel"),
@@ -17,6 +17,9 @@ urlpatterns = [
 	path("personnel/delete/<int:pk>/", views.profile_personnel_delete, name="profile-personnel-delete"),
 	path("inmate/delete/<int:pk>/", views.profile_inmate_delete, name="profile-inmate-delete"),
 
-	path("template/new/", views.profile_template_upload, name="profile-template-upload"),
-	path("generate/docx/<int:pk>", views.profile_inmate_to_docx, name="profile-inmate-to-docx"),
+	path("generate/inmate/docx/<int:pk>", views.profile_inmate_to_docx, name="profile-inmate-to-docx"),
+	path("generate/personnel/docx/<int:pk>", views.profile_personnel_to_docx, name="profile-personnel-to-docx"),
+
+	path("personnel/delete/all/", views.delete_all_personnel, name="delete-all-personnel"),
+	path("inmate/delete/all/", views.delete_all_inmate, name="delete-all-inmate"),
 ] 

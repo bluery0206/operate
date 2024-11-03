@@ -85,13 +85,9 @@
 			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 
 			<div class="content">
-				<a class="btn" href="#">
+				<a class="btn" href="{% url 'unarchive-all-personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">unarchive</span>
 					<span>Unarchive all</span>
-				</a>
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">delete</span>
-					<span>Delete All</span>
 				</a>
 			</div>
 		</div>

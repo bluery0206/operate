@@ -120,5 +120,59 @@ def archive_inmate_remove(request, pk):
 
 
 
+def unarchive_all_inmate(request):
+	prev 	= request.GET.get("prev", "")
+	
+
+	if request.method == "POST":
+
+		ArchiveInmate.objects.all().delete()
+		return redirect(prev)
+
+	return render(request, "archives/profile_unarchive_all.html")
 
 
+def unarchive_all_personnel(request):
+	prev 	= request.GET.get("prev", "")
+
+	if request.method == "POST":
+
+		ArchivePersonnel.objects.all().delete()
+		return redirect(prev)
+
+	return render(request, "archives/profile_unarchive_all.html")
+
+
+def archive_all_personnel(request):
+	prev 	= request.GET.get("prev", "")
+	# archive_by	
+	# profile
+	if request.method == "POST":
+		profiles = Personnel.objects.all()
+		user = request.user
+
+		for profile in profiles:
+			archive = ArchivePersonnel.objects.create(archive_by=user, profile=profile)
+			archive.save()
+
+		return redirect(prev)
+
+	return render(request, "archives/profile_archive_all.html")
+
+
+
+def archive_all_inmate(request):
+	prev 	= request.GET.get("prev", "")
+	# archive_by	
+	# profile
+	if request.method == "POST":
+		profiles = Inmate.objects.all()
+		user = request.user
+
+		for profile in profiles:
+			archive = ArchiveInmate.objects.create(archive_by=user, profile=profile)
+			archive.save()
+
+		return redirect(prev)
+
+	return render(request, "archives/profile_archive_all.html")

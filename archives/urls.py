@@ -14,6 +14,13 @@ urlpatterns = [
 	path("personnel/remove/<int:pk>/", views.archive_personnel_remove, name="archive-personnel-remove"),
 	path("inmate/remove/<int:pk>/", views.archive_inmate_remove, name="archive-inmate-remove"),
 
-	# path("archives/remove/<int:pk>/", views.remove, name="archives-remove"),
+	path("unarchive/all/inmate/", views.unarchive_all_inmate, name="unarchive-all-inmate"),
+	path("unarchive/all/personnel/", views.unarchive_all_personnel, name="unarchive-all-personnel"),
+
+	path("archive/all/inmate/", views.archive_all_inmate, name="archive-all-inmate"),
+	path("archive/all/personnel/", views.archive_all_personnel, name="archive-all-personnel"),
 
 ]
+
+	# path("archives/remove/<int:pk>/", views.remove, name="archives-remove"),
+

@@ -1,13 +1,19 @@
+from django.http import HttpResponse
+from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import (
 	render, 
 	redirect, 
 	get_object_or_404
 )	
-from django.db.models import Q
 
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Inches
 from docx import Document
+
+from datetime import datetime
+from pathlib import Path
+import os
 
 from .models import Personnel, Inmate, Template
 from home.utils import save_profile_picture, get_full_name
@@ -18,7 +24,6 @@ from .forms import (
 	UpdateInmate, 
 	TemplateUploadForm
 )
-from pathlib import Path
 
 
 def personnels(request):
@@ -321,20 +326,30 @@ def profile_inmate_to_docx(request, pk):
 		'[[age]]',
 		'[[address]]',
 		'[[civil_status]]',
-		'[[date_profiled]]',
 		'[[date_arrested]]',
 		'[[date_committed]]',
 		'[[crime_violated]]'
 	]
+
+	if profile.date_arrested != None:
+		date_arrested = datetime.fromisoformat(str(profile.date_arrested))
+		date_arrested = date_arrested.strftime("%B %d, %Y, %I:%M %p")
+	else:
+		date_arrested = profile.date_arrested
+
+	if profile.date_committed != None:
+		date_committed = datetime.fromisoformat(str(profile.date_committed))
+		date_committed = date_committed.strftime("%B %d, %Y, %I:%M %p")
+	else:
+		date_committed = profile.date_committed
 
 	data = [
 		get_full_name(profile),
 		profile.age,
 		profile.address,
 		profile.civil_status.replace("_", " ").title(),
-		profile.date_profiled,
-		profile.date_arrested,
-		profile.date_committed,
+		date_arrested,
+		date_committed,
 		profile.crime_violated
 	]
 
@@ -353,7 +368,81 @@ def profile_inmate_to_docx(request, pk):
 			
 			p.alignment = 1
 
-			print("NABUTANG NA ANG PIKYOR")
+	for table in doc.tables:
+		for row in table.rows:
+			cell = row.cells[1]
+			# Check each paragraph in the second cell for placeholders
+			for paragraph in cell.paragraphs:
+				for field, value in zip(fields, data):
+					if field in paragraph.text:
+						paragraph.text = paragraph.text.replace(field, str(value))
+
+	output_path = f"{str(Path(str(Path().cwd())))}\\media\\outputs\\{str(get_full_name(profile, True))}.docx"
+	doc.save(output_path)
+
+
+	with open(output_path, 'rb') as f:
+		response = HttpResponse(
+			f.read(),
+			content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+		)
+		response['Content-Disposition'] = f'attachment; filename="{str(get_full_name(profile, True))}.docx"'
+	os.remove(output_path)
+	return response
+
+
+def profile_personnel_to_docx(request, pk):
+	template	= Template.objects.get(template_name__icontains="personnel")
+	profile		= Personnel.objects.get(pk=pk)
+
+	fields = [
+		'[[rank]]',
+		'[[name]]',
+		'[[age]]',
+		'[[address]]',
+		'[[civil_status]]',
+		'[[date_assigned]]',
+		'[[date_relieved]]',
+		'[[designation]]'
+	]
+
+	if profile.date_assigned != None:
+		date_assigned = datetime.fromisoformat(str(profile.date_assigned))
+		date_assigned = date_assigned.strftime("%B %d, %Y, %I:%M %p")
+	else:
+		date_assigned = profile.date_assigned
+
+	if profile.date_relieved != None:
+		date_relieved = datetime.fromisoformat(str(profile.date_relieved))
+		date_relieved = date_relieved.strftime("%B %d, %Y, %I:%M %p")
+	else:
+		date_relieved = profile.date_relieved
+
+	data = [
+		profile.rank.upper(),
+		get_full_name(profile),
+		profile.age,
+		profile.address,
+		profile.civil_status.replace("_", " ").title(),
+		date_assigned,
+		date_relieved,
+		profile.designation
+	]
+
+	doc = Document(template.template_file.path)
+
+	for p in doc.paragraphs:
+		if "raw_image" in p.text:
+			p.clear()
+
+			run = p.add_run()
+			run.add_picture(
+				profile.raw_image.path, 
+				width=Inches(2), 
+				height=Inches(2)
+			)
+			
+			p.alignment = 1
 
 	for table in doc.tables:
 		for row in table.rows:
@@ -364,16 +453,41 @@ def profile_inmate_to_docx(request, pk):
 					if field in paragraph.text:
 						paragraph.text = paragraph.text.replace(field, str(value))
 
-	output_path = str(Path(str(Path().cwd()) + "\\media\\outputs"))
-	print("NASAVE NA ANG BOANG NGA FILE.")
-	print(output_path)
+	output_path = f"{str(Path(str(Path().cwd())))}\\media\\outputs\\{str(get_full_name(profile))}.docx"
+	doc.save(output_path)
+	
 
-	doc.save(f"{output_path}\\{str(get_full_name(profile))}.docx")
+	with open(output_path, 'rb') as f:
+		response = HttpResponse(
+			f.read(),
+			content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+		)
+		response['Content-Disposition'] = f'attachment; filename="{str(get_full_name(profile))}.docx"'
+	os.remove(output_path)
+	return response
+
+
+def delete_all_inmate(request):
+	prev 	= request.GET.get("prev", "")
+
+	if request.method == "POST":
+		Inmate.objects.all().delete()
+		return redirect(prev)
 
 	context = {
-		'template': template,
-		'profile': profile,
-		'fields': fields,
-		'data': data,
+		'profile' : "all profiles",
 	}
-	return render(request, "profiles/inmate_template.html", context)
+	return render(request, "profiles/profile_delete_confirm.html", context)
+
+
+def delete_all_personnel(request):
+	prev 	= request.GET.get("prev", "")
+
+	if request.method == "POST":
+		Personnel.objects.all().delete()
+		return redirect(prev)
+
+	context = {
+		'profile' : "all profiles",
+	}
+	return render(request, "profiles/profile_delete_confirm.html", context)

@@ -104,9 +104,13 @@
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="#">
+				<a class="btn" href="{% url 'archive-all-personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
+				</a>
+				<a class="btn" href="{% url 'delete-all-personnel' %}?prev={{request.path}}">
+					<span class="material-symbols-outlined">delete</span>
+					<span>Delete All</span>
 				</a>
 			</div>
 		</div>
