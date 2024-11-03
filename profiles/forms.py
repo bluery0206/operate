@@ -1,13 +1,15 @@
 from django.contrib.auth.models import User
-from django.forms import ModelForm
+from django import forms
 from home.utils import get_full_name
+from django.core.validators import FileExtensionValidator
 
 from .models import (
 	Personnel, 
-	Inmate
+	Inmate,
+	Template
 )
 
-class CreatePersonnel(ModelForm):
+class CreatePersonnel(forms.ModelForm):
 	class Meta:
 		model = Personnel
 		fields = [
@@ -27,7 +29,7 @@ class CreatePersonnel(ModelForm):
 		]
 
 
-class UpdatePersonnel(ModelForm):
+class UpdatePersonnel(forms.ModelForm):
 	class Meta:
 		model = Personnel
 		fields = [
@@ -47,7 +49,7 @@ class UpdatePersonnel(ModelForm):
 		]
 
 
-class CreateInmate(ModelForm):
+class CreateInmate(forms.ModelForm):
 	class Meta:
 		model = Inmate
 		fields = [
@@ -66,7 +68,7 @@ class CreateInmate(ModelForm):
 		]
 
 
-class UpdateInmate(ModelForm):
+class UpdateInmate(forms.ModelForm):
 	class Meta:
 		model = Inmate
 		fields = [
@@ -84,3 +86,12 @@ class UpdateInmate(ModelForm):
 			'crime_violated',
 		]
 
+class TemplateUploadForm(forms.ModelForm):
+	template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['docx'])])
+
+	class Meta:
+		model = Template
+		fields = [
+			'template_name',
+			'template',
+		]

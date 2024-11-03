@@ -1,8 +1,25 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreatePersonnel, CreateInmate, UpdatePersonnel, UpdateInmate
-from .models import Personnel, Inmate
-from home.utils import save_profile_picture
+from django.shortcuts import (
+	render, 
+	redirect, 
+	get_object_or_404
+)	
 from django.db.models import Q
+
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import Inches
+from docx import Document
+
+from .models import Personnel, Inmate, Template
+from home.utils import save_profile_picture, get_full_name
+from .forms import (
+	CreatePersonnel, 
+	CreateInmate, 
+	UpdatePersonnel, 
+	UpdateInmate, 
+	TemplateUploadForm
+)
+from pathlib import Path
+
 
 def personnels(request):
 	sort_choices = [
@@ -281,51 +298,82 @@ def profile_inmate_delete(request, pk):
 	return render(request, "profiles/profile_delete_confirm.html", context)
 
 
+def profile_template_upload(request):
+	if request.method == "POST":
+		form = TemplateUploadForm(request.POST, request.FILES)
 
+		if form.is_valid():
+			form.save()
+	else:
+		form= TemplateUploadForm()
 
+	context = {
+		"form": form
+	}
+	return render(request, "profiles/profile_template_upload.html", context)
 
+def profile_inmate_to_docx(request, pk):
+	template	= Template.objects.get(template_name__icontains="inmate")
+	profile		= Inmate.objects.get(pk=pk)
 
+	fields = [
+		'[[name]]',
+		'[[age]]',
+		'[[address]]',
+		'[[civil_status]]',
+		'[[date_profiled]]',
+		'[[date_arrested]]',
+		'[[date_committed]]',
+		'[[crime_violated]]'
+	]
 
+	data = [
+		get_full_name(profile),
+		profile.age,
+		profile.address,
+		profile.civil_status.replace("_", " ").title(),
+		profile.date_profiled,
+		profile.date_arrested,
+		profile.date_committed,
+		profile.crime_violated
+	]
 
+	doc = Document(template.template_file.path)
 
+	for p in doc.paragraphs:
+		if "raw_image" in p.text:
+			p.clear()
 
+			run = p.add_run()
+			run.add_picture(
+				profile.raw_image.path, 
+				width=Inches(2), 
+				height=Inches(2)
+			)
+			
+			p.alignment = 1
 
+			print("NABUTANG NA ANG PIKYOR")
 
+	for table in doc.tables:
+		for row in table.rows:
+			cell = row.cells[1]
+			# Check each paragraph in the second cell for placeholders
+			for paragraph in cell.paragraphs:
+				for field, value in zip(fields, data):
+					if field in paragraph.text:
+						paragraph.text = paragraph.text.replace(field, str(value))
 
-# def personnels(request):
-# 	personnels = Personnel.objects.filter(archive__isnull=True)
+	output_path = str(Path(str(Path().cwd()) + "\\media\\outputs"))
+	print("NASAVE NA ANG BOANG NGA FILE.")
+	print(output_path)
 
-# 	context["personnels"] 	= personnels
-# 	return render(request, "profiles/personnels.html", context)
+	doc.save(f"{output_path}\\{str(get_full_name(profile))}.docx")
 
-# def inmates(request):
-# 	return render(request, "profiles/inmates.html", context)
-
-# def profile(request, profile_type, pk):
-# 	profile = get_object_or_404(Personnel, pk=pk)
-	
-# 	context["prev"] 	= request.GET.get("prev", "")
-# 	context["profile"] 	= profile
-# 	return render(request, "profiles/profile.html", context)
-
-# def profile_update(request, pk):
-# 	# profile = get_object_or_404(Personnel, pk=pk)
-
-# 	# if request.method == "POST":
-# 	# 	form = UpdatePersonnel(request.POST, request.FILES, instance=profile)
-
-# 	# 	if form.is_valid():
-# 	# 		instance = form.save()
-
-# 	# 		# For updating profile picture
-# 	# 		# if 'image_model' in request.FILES:
-# 	# 		# 	saveProfilePicture(instance.image_model, instance.id)
-
-# 	# 		return redirect('profile', pk)
-# 	# else:
-# 	# 	form = UpdatePersonnel(instance=profile)
-
-# 	# context["profile"] 	= profile
-# 	# context["prev"] 	= request.GET.get("prev", "")
-# 	# context["form"] 	= form
-# 	return render(request, "profiles/profile_update.html", context)
+	context = {
+		'template': template,
+		'profile': profile,
+		'fields': fields,
+		'data': data,
+	}
+	return render(request, "profiles/inmate_template.html", context)

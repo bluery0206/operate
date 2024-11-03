@@ -107,6 +107,7 @@ class Personnel(Profile):
 		return get_full_name(self) + "'s Profile"
 
 class Inmate(Profile):
+	fields = I_FIELDS
 	p_type = models.CharField(max_length=10, default="inmate")
 	date_arrested	= models.DateTimeField()
 	date_committed	= models.DateTimeField(null=True, blank=True)
@@ -123,3 +124,13 @@ class Inmate(Profile):
 
 	def __str__(self):
 		return get_full_name(self) + "'s Profile"
+
+class Template(models.Model):
+	template_name = models.CharField(max_length=20)
+	template_file = models.FileField(upload_to="templates")
+
+	def __str__(self):
+		return self.template_name
+
+	def __repr__(self):
+		return self.template_name

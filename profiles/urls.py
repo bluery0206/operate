@@ -16,4 +16,7 @@ urlpatterns = [
 
 	path("personnel/delete/<int:pk>/", views.profile_personnel_delete, name="profile-personnel-delete"),
 	path("inmate/delete/<int:pk>/", views.profile_inmate_delete, name="profile-inmate-delete"),
+
+	path("template/new/", views.profile_template_upload, name="profile-template-upload"),
+	path("generate/docx/<int:pk>", views.profile_inmate_to_docx, name="profile-inmate-to-docx"),
 ] 
