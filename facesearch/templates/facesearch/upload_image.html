@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+	<h2>Facesearch</h2>	
+
+	<form method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+
+		{{ form }}
+
+		<div class="actions">
+			<button class="btn" type="submit">
+				<span class="material-symbols-outlined">upload_2</span>
+				<span>Upload</span>
+			</button>
+			
+		</div>
+	</form>
+{% endblock content %}

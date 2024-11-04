@@ -66,11 +66,9 @@ class Profile(models.Model):
 
 	# Images
 	thumbnail = models.FileField(
-		default		= "default.png", 
 		upload_to	= "thumbnails"
 	)
 	raw_image = models.FileField(
-		default 	= "default.png", 
 		upload_to	= "raw_images"
 	)
 

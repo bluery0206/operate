@@ -1,3 +1,7 @@
 from django.db import models
+import uuid
 
-# Create your models here.
+class UploadedImage(models.Model):
+	image = models.FileField(
+		upload_to = "searches"
+	)

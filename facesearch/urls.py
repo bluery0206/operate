@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-	path("", views.home, name="facesearch-home"),
+	path("", views.upload_image, name="facesearch-upload_image"),
 ]

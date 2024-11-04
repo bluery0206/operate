@@ -10,6 +10,8 @@ from .models import (
 )
 
 class CreatePersonnel(forms.ModelForm):
+	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+
 	class Meta:
 		model = Personnel
 		fields = [
@@ -30,6 +32,8 @@ class CreatePersonnel(forms.ModelForm):
 
 
 class UpdatePersonnel(forms.ModelForm):
+	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	
 	class Meta:
 		model = Personnel
 		fields = [
@@ -50,6 +54,8 @@ class UpdatePersonnel(forms.ModelForm):
 
 
 class CreateInmate(forms.ModelForm):
+	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	
 	class Meta:
 		model = Inmate
 		fields = [
@@ -69,6 +75,8 @@ class CreateInmate(forms.ModelForm):
 
 
 class UpdateInmate(forms.ModelForm):
+	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	
 	class Meta:
 		model = Inmate
 		fields = [
