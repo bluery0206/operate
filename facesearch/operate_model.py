@@ -1,528 +1,545 @@
-import numpy as np
+# import tensorflow as tf
+# from tensorflow.keras.models import Model
+# from tensorflow.keras.layers import (
+#     Layer,
+#     Conv2D,
+#     Dense,
+#     MaxPooling2D,
+#     Input,
+#     Flatten
+# )
 
-class Preprocessing():
-    def preprocess_image(self, image_path:str) -> np.ndarray:
-        """
-            Preprocess images.
+# from matplotlib import pyplot as plt
+# from pathlib import Path
+# import numpy as np
+# import cv2
+# import shutil
+# import random as rd
+# import string
 
-            Arguments:
-                image_path : The absolute path of the image.
+# class Preprocessing():
+#     def preprocess_image(self, image_path:str) -> np.ndarray:
+#         """
+#             Preprocess images.
 
-            Retuns: An array image pixel values.
-        """
+#             Arguments:
+#                 image_path : The absolute path of the image.
 
-        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-        image = self.crop_image_center(image)
-        image = self.resize_image(image, 105)
+#             Retuns: An array image pixel values.
+#         """
 
-        return image
+#         image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+#         image = self.crop_image_center(image)
+#         image = self.resize_image(image, 105)
 
-    def preprocess_dataset(self, source: object, target: object, reset: bool = False):
-        """
-            Preprocess images from source and saves it into the target directory.
+#         return image
 
-            Arguments:
-                source  : The directory where images are initially stored.
-                target  : The directory to store preprocessed images.
-                reset   : if True, resets target directory.
-        """
+#     def preprocess_dataset(self, source: object, target: object, reset: bool = False):
+#         """
+#             Preprocess images from source and saves it into the target directory.
 
-        if reset and target.exists():
-            fh.reset_directory(target)
+#             Arguments:
+#                 source  : The directory where images are initially stored.
+#                 target  : The directory to store preprocessed images.
+#                 reset   : if True, resets target directory.
+#         """
 
-        total_files = len([file for file in source.rglob('*') if file.is_file()])
-        progbar = tf.keras.utils.Progbar(total_files, unit_name="images")
+#         if reset and target.exists():
+#             fh.reset_directory(target)
 
-        for image in source.iterdir():
-            image_name = image.name
-            image_path = str(image)
+#         total_files = len([file for file in source.rglob('*') if file.is_file()])
+#         progbar = tf.keras.utils.Progbar(total_files, unit_name="images")
 
-            preprocessed_image = self.preprocess_image(image_path)
-            save_path = target.joinpath(image_name)
+#         for image in source.iterdir():
+#             image_name = image.name
+#             image_path = str(image)
 
-            res = fh.save_image(image=preprocessed_image, target=save_path)
+#             preprocessed_image = self.preprocess_image(image_path)
+#             save_path = target.joinpath(image_name)
 
-            progbar.add(1)
+#             res = fh.save_image(image=preprocessed_image, target=save_path)
 
-    def resize_image(self, image_array: list, new_size: int) -> np.ndarray:
-        """
-            Resizes image into a specified new size.
+#             progbar.add(1)
 
-            Retuns: A numpy array of the resized image.
-        """
+#     def resize_image(self, image_array: list, new_size: int) -> np.ndarray:
+#         """
+#             Resizes image into a specified new size.
 
-        return cv2.resize(image_array, dsize=(new_size, new_size))
+#             Retuns: A numpy array of the resized image.
+#         """
 
-    def crop_image_center(self, image_array: list[float]) -> np.ndarray:
-        """
-            Crops the image from the center.
+#         return cv2.resize(image_array, dsize=(new_size, new_size))
 
-            Retuns: A numpy array of the cropped image
-        """
+#     def crop_image_center(self, image_array: list[float]) -> np.ndarray:
+#         """
+#             Crops the image from the center.
 
-        height, width = image_array.shape
+#             Retuns: A numpy array of the cropped image
+#         """
 
-        # Finding shortest dimension
-        new_dimension = min(height, width)
+#         height, width = image_array.shape
 
-        # Finding the center
-        left    = int((width   - new_dimension) / 2)
-        top     = int((height  - new_dimension) / 2)
-        right   = int((width   + new_dimension) / 2)
-        bottom  = int((height  + new_dimension) / 2)
+#         # Finding shortest dimension
+#         new_dimension = min(height, width)
 
-        # Cropping the image
-        return image_array[top:bottom, left:right]
+#         # Finding the center
+#         left    = int((width   - new_dimension) / 2)
+#         top     = int((height  - new_dimension) / 2)
+#         right   = int((width   + new_dimension) / 2)
+#         bottom  = int((height  + new_dimension) / 2)
 
+#         # Cropping the image
+#         return image_array[top:bottom, left:right]
 
-    def augmentate_image(self, base_image: list[float], output_n: int) -> list[float]:
-        """
-            Augmentates image.
 
-            Args:
-                base_image  : The image to augmentate.
-                output_n    : The number of images that will be generated from the base_image each with different levels of augmentation.
+#     def augmentate_image(self, base_image: list[float], output_n: int) -> list[float]:
+#         """
+#             Augmentates image.
 
-            Retuns: A list of augmentated images (A list of numpy arrays).
-        """
+#             Args:
+#                 base_image  : The image to augmentate.
+#                 output_n    : The number of images that will be generated from the base_image each with different levels of augmentation.
 
-        augmented_images = []
+#             Retuns: A list of augmentated images (A list of numpy arrays).
+#         """
 
-        for i in range(output_n):
-            base_image = tf.image.stateless_random_brightness(base_image, max_delta=0.02, seed=(1, 2))
-            base_image = tf.image.stateless_random_contrast(base_image, lower=0.7, upper=1, seed=(1,3))
-            base_image = tf.image.stateless_random_flip_left_right(base_image, seed=(np.random.randint(100), np.random.randint(100)))
-            base_image = tf.image.stateless_random_jpeg_quality(base_image, min_jpeg_quality=75, max_jpeg_quality=95,  seed=(np.random.randint(100), np.random.randint(100)))
+#         augmented_images = []
 
-            augmented_images.append(base_image)
+#         for i in range(output_n):
+#             base_image = tf.image.stateless_random_brightness(base_image, max_delta=0.02, seed=(1, 2))
+#             base_image = tf.image.stateless_random_contrast(base_image, lower=0.7, upper=1, seed=(1,3))
+#             base_image = tf.image.stateless_random_flip_left_right(base_image, seed=(np.random.randint(100), np.random.randint(100)))
+#             base_image = tf.image.stateless_random_jpeg_quality(base_image, min_jpeg_quality=75, max_jpeg_quality=95,  seed=(np.random.randint(100), np.random.randint(100)))
 
-        return augmented_images
+#             augmented_images.append(base_image)
 
-    def augment_images_from_dir(self, source: object, target: object, output_n:int, reset:bool=False) -> None:
-        """
-            Augmentates image.
+#         return augmented_images
 
-            Args:
-                source  : Source directory.
-                target  : Target directory.
-                output_n: The number of images that will be generated from an image in the source directory each with different levels of augmentation.
-                reset   : If True, resets target directory else False
+#     def augment_images_from_dir(self, source: object, target: object, output_n:int, reset:bool=False) -> None:
+#         """
+#             Augmentates image.
 
-            Retuns: A list of augmentated images (A list of numpy arrays).
-        """
+#             Args:
+#                 source  : Source directory.
+#                 target  : Target directory.
+#                 output_n: The number of images that will be generated from an image in the source directory each with different levels of augmentation.
+#                 reset   : If True, resets target directory else False
 
-        if reset and target.exists():
-            FileHandler().reset_directory(target)
+#             Retuns: A list of augmentated images (A list of numpy arrays).
+#         """
 
-        total_files = len([file for file in source.rglob('*') if file.is_file()])
-        progbar = tf.keras.utils.Progbar(total_files, unit_name="images")
+#         if reset and target.exists():
+#             FileHandler().reset_directory(target)
 
-        for data in source.iterdir():
-            if data.is_dir():
-                continue
+#         total_files = len([file for file in source.rglob('*') if file.is_file()])
+#         progbar = tf.keras.utils.Progbar(total_files, unit_name="images")
 
-            base_name = data.stem
+#         for data in source.iterdir():
+#             if data.is_dir():
+#                 continue
 
-            image = self.image_to_tensor(str(data))
+#             base_name = data.stem
 
-            augmented_images = self.augmentate_image(image, output_n)
+#             image = self.image_to_tensor(str(data))
 
-            progbar.add(1)
+#             augmented_images = self.augmentate_image(image, output_n)
 
-            for augmented_image in augmented_images:
-                random_characters   = self.generate_random_string(2)
-                image_name          = f"{base_name}_{random_characters}.jpg"
+#             progbar.add(1)
 
-                save_path           = target.joinpath(image_name)
-                image_array         = augmented_image.numpy()
+#             for augmented_image in augmented_images:
+#                 random_characters   = self.generate_random_string(2)
+#                 image_name          = f"{base_name}_{random_characters}.jpg"
 
-                FileHandler().save_image(image_array, save_path)
+#                 save_path           = target.joinpath(image_name)
+#                 image_array         = augmented_image.numpy()
 
+#                 FileHandler().save_image(image_array, save_path)
 
-    def image_to_tensor(self, image_path: str, cvt_gray: bool = False) -> list:
-        """
-            Reads image as tensor.
 
-            Args:
-                image_path  : Aboslute image path.
-                cvt_gray    : If True, reads image as grayscale.
+#     def image_to_tensor(self, image_path: str, cvt_gray: bool = False) -> list:
+#         """
+#             Reads image as tensor.
 
-            Retuns: A tensor.
-        """
+#             Args:
+#                 image_path  : Aboslute image path.
+#                 cvt_gray    : If True, reads image as grayscale.
 
-        byte_img    = tf.io.read_file(image_path)
+#             Retuns: A tensor.
+#         """
 
-        if cvt_gray:
-            image_array = tf.io.decode_jpeg(byte_img, channels=1)
-        else:
-            image_array = tf.io.decode_jpeg(byte_img)
+#         byte_img    = tf.io.read_file(image_path)
 
-        return image_array
+#         if cvt_gray:
+#             image_array = tf.io.decode_jpeg(byte_img, channels=1)
+#         else:
+#             image_array = tf.io.decode_jpeg(byte_img)
 
-    def normalize_dataset(self, dataset: list) -> list:
-        """
-            Normalizes images of triplets within the given dataset.
+#         return image_array
 
-            Args:
-                dataset: Dataset.
+#     def normalize_dataset(self, dataset: list) -> list:
+#         """
+#             Normalizes images of triplets within the given dataset.
 
-            Retuns: Normalized dataset.
-        """
+#             Args:
+#                 dataset: Dataset.
 
-        new_data = []
+#             Retuns: Normalized dataset.
+#         """
 
-        progbar = tf.keras.utils.Progbar(len(dataset), unit_name="images")
+#         new_data = []
 
-        for triplet in dataset:
-            normalized_triplet = self.normalize_triplet(*triplet)
+#         progbar = tf.keras.utils.Progbar(len(dataset), unit_name="images")
 
-            new_data.append(normalized_triplet)
+#         for triplet in dataset:
+#             normalized_triplet = self.normalize_triplet(*triplet)
 
-            progbar.add(1)
+#             new_data.append(normalized_triplet)
 
-        return new_data
+#             progbar.add(1)
 
-    def normalize_triplet(self, anchor, positive, negative) -> list:
-        """
-            Normalizes images of given triplets.
+#         return new_data
 
-            Args:
-                anchor      : Anchor tensor.
-                positive    : Positive tensor.
-                negative    : Negative tensor.
+#     def normalize_triplet(self, anchor, positive, negative) -> list:
+#         """
+#             Normalizes images of given triplets.
 
-            Retuns: Normalized triplet.
-        """
+#             Args:
+#                 anchor      : Anchor tensor.
+#                 positive    : Positive tensor.
+#                 negative    : Negative tensor.
 
-        anchor     = self.normalize_image(anchor)
-        positive   = self.normalize_image(positive)
-        negative   = self.normalize_image(negative)
+#             Retuns: Normalized triplet.
+#         """
 
-        return [anchor, positive, negative]
+#         anchor     = self.normalize_image(anchor)
+#         positive   = self.normalize_image(positive)
+#         negative   = self.normalize_image(negative)
 
-    def normalize_image(self, image_array: list) -> list:
-        """
-            Normalizes given images.
+#         return [anchor, positive, negative]
 
-            Args:
-                image_array : image array.
+#     def normalize_image(self, image_array: list) -> list:
+#         """
+#             Normalizes given images.
 
-            Retuns: Normalized image.
-        """
+#             Args:
+#                 image_array : image array.
 
-        return image_array/ 255.0
+#             Retuns: Normalized image.
+#         """
 
-    def generate_random_string(self, output_n: int) -> str:
-        """
-            Duh. Do I need to explain
+#         return image_array/ 255.0
 
-            Args:
-                output_n: Length of the string to be generated.
+#     def generate_random_string(self, output_n: int) -> str:
+#         """
+#             Duh. Do I need to explain
 
-            Returns: Generated string
-        """
+#             Args:
+#                 output_n: Length of the string to be generated.
 
-        characters      = string.ascii_letters + string.digits
-        random_string   = ''.join(rd.choice(characters) for _ in range(output_n))
+#             Returns: Generated string
+#         """
 
-        return random_string
+#         characters      = string.ascii_letters + string.digits
+#         random_string   = ''.join(rd.choice(characters) for _ in range(output_n))
 
+#         return random_string
 
 
-class DistanceLayer(Layer):
-    def __init__(self, **kwargs):
-        super().__init__()
 
-    # Similarity calculation
-    def call(self, anchor, positive, negative):
-        anchor      = tf.convert_to_tensor(anchor)
-        positive    = tf.convert_to_tensor(positive)
-        negative    = tf.convert_to_tensor(negative)
+# class DistanceLayer(Layer):
+#     def __init__(self, **kwargs):
+#         super().__init__()
 
-        ap_distance = tf.reduce_sum(tf.square(anchor - positive), -1)
-        an_distance = tf.reduce_sum(tf.square(anchor - negative), -1)
+#     # Similarity calculation
+#     def call(self, anchor, positive, negative):
+#         anchor      = tf.convert_to_tensor(anchor)
+#         positive    = tf.convert_to_tensor(positive)
+#         negative    = tf.convert_to_tensor(negative)
 
-        return (ap_distance, an_distance)
+#         ap_distance = tf.reduce_sum(tf.square(anchor - positive), -1)
+#         an_distance = tf.reduce_sum(tf.square(anchor - negative), -1)
 
-class FileHandler():
-    def import_dataset(self, source: Path, target: Path, reset=False) -> None:
-        """
-            Imports image from source to target
+#         return (ap_distance, an_distance)
 
-            Args:
-                souce   : Where the images are from.
-                target  : Where the images will be imported to.
-                reset   : If set to true, will delete everything in the target directory.
+# class FileHandler():
+#     def import_dataset(self, source: Path, target: Path, reset=False) -> None:
+#         """
+#             Imports image from source to target
 
-            Expected source tree:
-            ```
-                source
-                  ├── person_1
-                  │     ├── image_1.jpg
-                  │     ├── ...
-                  │     └── image_100.jpg
-                  |   ...
-                  └── person_100
-                        ├── image_1.jpg
-                        ├── ...
-                        └── image_100.jpg
-            ```
+#             Args:
+#                 souce   : Where the images are from.
+#                 target  : Where the images will be imported to.
+#                 reset   : If set to true, will delete everything in the target directory.
 
-            Returns: None
-        """
+#             Expected source tree:
+#             ```
+#                 source
+#                   ├── person_1
+#                   │     ├── image_1.jpg
+#                   │     ├── ...
+#                   │     └── image_100.jpg
+#                   |   ...
+#                   └── person_100
+#                         ├── image_1.jpg
+#                         ├── ...
+#                         └── image_100.jpg
+#             ```
 
-        total_files = len([file for file in source.rglob('*') if file.is_file()])
-        progbar = tf.keras.utils.Progbar(total_files, unit_name="files")
+#             Returns: None
+#         """
 
-        if not target.exists():
-            target.mkdir(exist_ok=True)
+#         total_files = len([file for file in source.rglob('*') if file.is_file()])
+#         progbar = tf.keras.utils.Progbar(total_files, unit_name="files")
 
-        if reset:
-            self.reset_directory(target)
+#         if not target.exists():
+#             target.mkdir(exist_ok=True)
 
-        for person in source.iterdir():
-            if person.is_file():
-                continue
+#         if reset:
+#             self.reset_directory(target)
 
-            person_id = self.generate_random_string(4)
+#         for person in source.iterdir():
+#             if person.is_file():
+#                 continue
 
-            for image_path in person.iterdir():
-                if image_path.is_dir():
-                    continue
+#             person_id = self.generate_random_string(4)
 
-                image_path = str(image_path)
+#             for image_path in person.iterdir():
+#                 if image_path.is_dir():
+#                     continue
 
-                image_id = self.generate_random_string(8)
+#                 image_path = str(image_path)
 
-                image_name = f"{person_id}_{image_id}.jpg"
+#                 image_id = self.generate_random_string(8)
 
-                target_path = target.joinpath(image_name)
+#                 image_name = f"{person_id}_{image_id}.jpg"
 
-                self.save_image(image_path, target_path)
+#                 target_path = target.joinpath(image_name)
 
-                progbar.add(1)
+#                 self.save_image(image_path, target_path)
 
-    def save_image(self, image:str|np.ndarray|Path, target:str|Path) -> bool:
-        """
-            Saves an image into target path
+#                 progbar.add(1)
 
-            Args:
-                image   : The image itself. Can be a string path, a numpy array of pixel values, or a pathlib.Path object.
-                target  : Where the images will be saved.
-                reset   : If set to true, will delete everything in the target directory.
+#     def save_image(self, image:str|np.ndarray|Path, target:str|Path) -> bool:
+#         """
+#             Saves an image into target path
 
-            Returns: True if saved else False
+#             Args:
+#                 image   : The image itself. Can be a string path, a numpy array of pixel values, or a pathlib.Path object.
+#                 target  : Where the images will be saved.
+#                 reset   : If set to true, will delete everything in the target directory.
 
-            Example:
-                >>> import cv2
-                >>> from pathlib import Path
-                >>> fh = FileHandler()
-                >>> image = cv2.imread("image.jpg")
-                >>> target_path = Path("folder_name")
-                >>> fh.save_image(image, target_path)
-                True
-        """
+#             Returns: True if saved else False
 
-        # Converts string path into a pathlib.Path object.
-        # This is used to check if parent folder exists.
-        if isinstance(target, str):
-            target = Path(target)
+#             Example:
+#                 >>> import cv2
+#                 >>> from pathlib import Path
+#                 >>> fh = FileHandler()
+#                 >>> image = cv2.imread("image.jpg")
+#                 >>> target_path = Path("folder_name")
+#                 >>> fh.save_image(image, target_path)
+#                 True
+#         """
 
-        # Creates parent folders if they don't exist.
-        if not target.parent.parent.exists():
-            target.parent.parent.mkdir(exist_ok=True)
+#         # Converts string path into a pathlib.Path object.
+#         # This is used to check if parent folder exists.
+#         if isinstance(target, str):
+#             target = Path(target)
 
-        if not target.parent.exists():
-            target.parent.mkdir(exist_ok=True)
+#         # Creates parent folders if they don't exist.
+#         if not target.parent.parent.exists():
+#             target.parent.parent.mkdir(exist_ok=True)
 
-        target = str(target)
+#         if not target.parent.exists():
+#             target.parent.mkdir(exist_ok=True)
 
-        # OpenCV cannot create a copy of an image if the image is a path and not an array of pixel values.
-        # And so, we use OpenCV to read the image so that we can pass the image and create a copy of it.
-        if isinstance(image, str):
-            image = cv2.imread(image)
+#         target = str(target)
 
-        saved = cv2.imwrite(target, image)
+#         # OpenCV cannot create a copy of an image if the image is a path and not an array of pixel values.
+#         # And so, we use OpenCV to read the image so that we can pass the image and create a copy of it.
+#         if isinstance(image, str):
+#             image = cv2.imread(image)
 
-        return True if saved else False
+#         saved = cv2.imwrite(target, image)
 
-    def generate_random_string(self, output_n:int) -> str:
-        """
-            Generates random string in output_n times.
+#         return True if saved else False
 
-            Args:
-                output_n: How many strings will the output be.
+#     def generate_random_string(self, output_n:int) -> str:
+#         """
+#             Generates random string in output_n times.
 
-            Returns: Generated string
-        """
+#             Args:
+#                 output_n: How many strings will the output be.
 
-        characters      = string.ascii_letters + string.digits
-        random_string   = ''.join(rd.choice(characters) for _ in range(output_n))
+#             Returns: Generated string
+#         """
 
-        return random_string
+#         characters      = string.ascii_letters + string.digits
+#         random_string   = ''.join(rd.choice(characters) for _ in range(output_n))
 
-    def reset_directory(self, target:Path|str) -> None:
-        """
-            Resets a given directory.
+#         return random_string
 
-            Args:
-                target: The target directory. Can be a pathlib.Path object or a string.
+#     def reset_directory(self, target:Path|str) -> None:
+#         """
+#             Resets a given directory.
 
-            Returns: None
-        """
+#             Args:
+#                 target: The target directory. Can be a pathlib.Path object or a string.
 
-        if isinstance(target, str):
-            match (target):
-                case "anchor":
-                    target = ANC_DATASET_PATH
+#             Returns: None
+#         """
 
-                case "negative":
-                    target = NEG_DATASET_PATH
+#         if isinstance(target, str):
+#             match (target):
+#                 case "anchor":
+#                     target = ANC_DATASET_PATH
 
-                case "positive":
-                    target = POS_DATASET_PATH
+#                 case "negative":
+#                     target = NEG_DATASET_PATH
 
-                case "raw":
-                    target = RAW_DATASET_PATH
+#                 case "positive":
+#                     target = POS_DATASET_PATH
 
-                case "processed":
-                    target = PROC_DATASET_PATH
+#                 case "raw":
+#                     target = RAW_DATASET_PATH
 
-                case "augmented":
-                    target = AUG_DATASET_PATH
+#                 case "processed":
+#                     target = PROC_DATASET_PATH
 
-                case "dataset":
-                    target = DATASET_PATH
+#                 case "augmented":
+#                     target = AUG_DATASET_PATH
 
-        if not target.exists():
-            return
+#                 case "dataset":
+#                     target = DATASET_PATH
 
-        for path in target.iterdir():
-            if path.is_dir():
-                shutil.rmtree(path)
-            else:
-                path.unlink()
+#         if not target.exists():
+#             return
 
-    def save_triplet(self, triplet:list[str]) -> bool:
-        """
-            Saves a triplet.
+#         for path in target.iterdir():
+#             if path.is_dir():
+#                 shutil.rmtree(path)
+#             else:
+#                 path.unlink()
 
-            Args:
-                triplet: A list of stringed path of each: anchor, positive, negative images.
+#     def save_triplet(self, triplet:list[str]) -> bool:
+#         """
+#             Saves a triplet.
 
-            Returns: True if sucessful else false.
-        """
+#             Args:
+#                 triplet: A list of stringed path of each: anchor, positive, negative images.
 
-        anc_path, pos_path, neg_path  = triplet
+#             Returns: True if sucessful else false.
+#         """
 
-        # Create pathlib.Path objects.
-        anc = Path(anc_path)
-        pos = Path(pos_path)
-        neg = Path(neg_path)
+#         anc_path, pos_path, neg_path  = triplet
 
-        # Read images.
-        img_anc = cv2.imread(anc_path)
-        img_pos = cv2.imread(pos_path)
-        img_neg = cv2.imread(neg_path)
+#         # Create pathlib.Path objects.
+#         anc = Path(anc_path)
+#         pos = Path(pos_path)
+#         neg = Path(neg_path)
 
-        # For naming format.
-        # This is important to avoid duplicates causing errors.
-        triplet_id = self.generate_random_string(8)
+#         # Read images.
+#         img_anc = cv2.imread(anc_path)
+#         img_pos = cv2.imread(pos_path)
+#         img_neg = cv2.imread(neg_path)
 
-        anc_image_id = self.generate_random_string(4)
-        pos_image_id = self.generate_random_string(4)
-        neg_image_id = self.generate_random_string(4)
+#         # For naming format.
+#         # This is important to avoid duplicates causing errors.
+#         triplet_id = self.generate_random_string(8)
 
-        anc_is_saved = self.save_image(img_anc, ANC_DATASET_PATH.joinpath(triplet_id + "_" + anc_image_id + anc.suffix))
-        pos_is_saved = self.save_image(img_pos, POS_DATASET_PATH.joinpath(triplet_id + "_" + pos_image_id + pos.suffix))
-        neg_is_saved = self.save_image(img_neg, NEG_DATASET_PATH.joinpath(triplet_id + "_" + neg_image_id + neg.suffix))
+#         anc_image_id = self.generate_random_string(4)
+#         pos_image_id = self.generate_random_string(4)
+#         neg_image_id = self.generate_random_string(4)
 
-        return anc_is_saved and pos_is_saved and neg_is_saved
+#         anc_is_saved = self.save_image(img_anc, ANC_DATASET_PATH.joinpath(triplet_id + "_" + anc_image_id + anc.suffix))
+#         pos_is_saved = self.save_image(img_pos, POS_DATASET_PATH.joinpath(triplet_id + "_" + pos_image_id + pos.suffix))
+#         neg_is_saved = self.save_image(img_neg, NEG_DATASET_PATH.joinpath(triplet_id + "_" + neg_image_id + neg.suffix))
 
-    def save_triplets(self, triplets:list[str]) -> None:
-        """
-            Saves all generated triplet into each classes' folder.
+#         return anc_is_saved and pos_is_saved and neg_is_saved
 
-            Arguments:
-                triplets: a list of generated triplets.
-        """
+#     def save_triplets(self, triplets:list[str]) -> None:
+#         """
+#             Saves all generated triplet into each classes' folder.
 
-        # Just a trustee progressbar for aesthetic lol
-        triplets_len = len(triplets)
-        save_progbar = tf.keras.utils.Progbar(triplets_len)
+#             Arguments:
+#                 triplets: a list of generated triplets.
+#         """
 
-        print("\nSaving triplets...")
+#         # Just a trustee progressbar for aesthetic lol
+#         triplets_len = len(triplets)
+#         save_progbar = tf.keras.utils.Progbar(triplets_len)
 
-        for i in range(triplets_len):
-            self.save_triplet(triplets[i])
+#         print("\nSaving triplets...")
 
-            save_progbar.update(i + 1)
+#         for i in range(triplets_len):
+#             self.save_triplet(triplets[i])
 
-    def select_random_element(self, data_list:list):
-        """
-            Selects a random element from a given list.
+#             save_progbar.update(i + 1)
 
-            Arguments:
-                data_list: a list.
+#     def select_random_element(self, data_list:list):
+#         """
+#             Selects a random element from a given list.
 
-            Retuns: Randomly selected element from the given list.
-        """
+#             Arguments:
+#                 data_list: a list.
 
-        data_list_len   = (len(data_list) - 1)
-        random_index    = rd.randint(0, data_list_len)
+#             Retuns: Randomly selected element from the given list.
+#         """
 
-        element = data_list[random_index]
+#         data_list_len   = (len(data_list) - 1)
+#         random_index    = rd.randint(0, data_list_len)
 
-        return element
+#         element = data_list[random_index]
 
-    def get_images(self, source:Path, person:Path|None=None, sort:bool=False) -> list[Path]:
-        """
-            Fetches image from a given source. If person is specified, will fetch images with the same person_id as the given person pathlib.Path object.
+#         return element
 
-            Expected image name format:
-                personID_imageID.jpg, 5h43kj_lkj54.jpg, thisperson_lkj54.jpg
+#     def get_images(self, source:Path, person:Path|None=None, sort:bool=False) -> list[Path]:
+#         """
+#             Fetches image from a given source. If person is specified, will fetch images with the same person_id as the given person pathlib.Path object.
 
-            Arguments:
-                source  : A pathlib.Path object which the image(s) are from.
-                person  : A pathlib.Path object of the person.
-                sort    : If true, sorts the fetched image list.
+#             Expected image name format:
+#                 personID_imageID.jpg, 5h43kj_lkj54.jpg, thisperson_lkj54.jpg
 
-            Retuns: A list of pathlib.Path objects of each images.
-        """
+#             Arguments:
+#                 source  : A pathlib.Path object which the image(s) are from.
+#                 person  : A pathlib.Path object of the person.
+#                 sort    : If true, sorts the fetched image list.
 
-        images = None
+#             Retuns: A list of pathlib.Path objects of each images.
+#         """
 
-        if person:
-            person_id = person.stem.split("_")[0]
+#         images = None
 
-            images = list(source.glob(person_id + "_*.jpg"))
-        else:
-            images = list(source.glob("*.jpg"))
+#         if person:
+#             person_id = person.stem.split("_")[0]
 
-        if sort:
-            images = sorted(images)
+#             images = list(source.glob(person_id + "_*.jpg"))
+#         else:
+#             images = list(source.glob("*.jpg"))
 
-        return images
+#         if sort:
+#             images = sorted(images)
 
-    def open_images(self, image_paths:list[Path], as_gray:bool=False) -> np.ndarray:
-        """
-            Open images with opencv in a given list of pathlib.Path objects of the images.
+#         return images
 
-            Arguments:
-                image_paths : A list of pathlib.Path objects of the images.
-                as_gray     : If true, reads images as grayscale reducing its channel size from 3 to 1.
+#     def open_images(self, image_paths:list[Path], as_gray:bool=False) -> np.ndarray:
+#         """
+#             Open images with opencv in a given list of pathlib.Path objects of the images.
 
-            Retuns: A numpy array image values.
-        """
+#             Arguments:
+#                 image_paths : A list of pathlib.Path objects of the images.
+#                 as_gray     : If true, reads images as grayscale reducing its channel size from 3 to 1.
 
-        opened_images = []
+#             Retuns: A numpy array image values.
+#         """
 
-        for image_path in image_paths:
-            if as_gray:
-                image = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
-            else:
-                image = cv2.imread(str(image_path))
+#         opened_images = []
 
-            opened_images.append(image)
+#         for image_path in image_paths:
+#             if as_gray:
+#                 image = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+#             else:
+#                 image = cv2.imread(str(image_path))
 
-        return np.array(opened_images)
+#             opened_images.append(image)
+
+#         return np.array(opened_images)
