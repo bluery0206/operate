@@ -11,11 +11,12 @@ from .operate_model import Preprocessing
 
 prep = Preprocessing()
 
-cwd				= Path().cwd()
-media_path		= cwd.joinpath("media")
-
-raw_image_path 	= media_path.joinpath("raw_image")
+cwd_path		= Path().cwd()
+media_path		= cwd_path.joinpath("media")
+database_path 	= media_path.joinpath("raw_image")
 searches_path 	= media_path.joinpath("searches")
+fs_path			= cwd_path.joinpath("facesearch")
+models_path		= fs_path.joinpath("snn_models")
 
 def upload_image(request):
 	print(str(raw_image_path))
@@ -24,25 +25,18 @@ def upload_image(request):
 		form = UploadedImageForm(request.POST, request.FILES)
 
 		if form.is_valid():
-			# uploaded_image.name: Name of the file.
-			# uploaded_image.size: File size.
-			# uploaded_image.content_type
-
 			form.save()
 
-			image 		= request.FILES['image'].name
-			image_path 	= searches_path.joinpath(image)
-			print("\n\nnew matadafaka:", image_path)
+			# access image
+			request_img = request.FILES['image'].name
+			image_path 	= searches_path.joinpath(request_img)
+			image		= cv2.imread(str(image_path))
 
-			opened_img 	= cv2.imread(str(image_path))
-			img = cv2.resize(opened_img, (400, 400))
+			# Search
+			model_path	= str(models_path.joinpath("snn.h5"))
+			model		= load_model(model_path)
 
-			# # just to fucking preview the image.
-			# cv2.imshow("udk",img)
-			# cv2.waitKey(0)  # Wait for a key press to close the window
-			# cv2.destroyAllWindows()
-			# print("\n\nnew matadafaka:", opened_img)
-
+			# Delete the image
 			image_path.unlink()
 	else:
 		form = UploadedImageForm()
@@ -61,12 +55,12 @@ def upload_image(request):
 
 # 	return [anc, anc_emb]
 
-# def load_model(model_path):
-# 	snn = tf.keras.models.load_model(
-# 		model_path,
-# 		custom_objects = {
-# 			'DistanceLayer' : DistanceLayer
-# 		}
-# 	)
+def load_model(model_path):
+	snn = tf.keras.models.load_model(
+		model_path,
+		custom_objects = {
+			'DistanceLayer' : DistanceLayer
+		}
+	)
 
-# 	emb_gen = snn.get_layer('EmbeddingGenerator')
+	emb_gen = snn.get_layer('EmbeddingGenerator')

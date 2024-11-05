@@ -25,6 +25,12 @@ from .forms import (
 	TemplateUploadForm
 )
 
+cwd_path = Path().cwd()
+media_path = cwd_path.joinpath("media")
+outputs_path = media_path.joinpath("outputs")
+
+if not outputs_path.exists():
+	output_path.mkdir(exist_ok=False) 
 
 def personnels(request):
 	sort_choices = [
@@ -376,18 +382,18 @@ def profile_inmate_to_docx(request, pk):
 				for field, value in zip(fields, data):
 					if field in paragraph.text:
 						paragraph.text = paragraph.text.replace(field, str(value))
+	name		= str(get_full_name(profile, True))
+	file_name	= f"{name}.docx"
+	save_path	= outputs_path.joinpath(file_name)
+	doc.save(save_path)
 
-	output_path = f"{str(Path(str(Path().cwd())))}\\media\\outputs\\{str(get_full_name(profile, True))}.docx"
-	doc.save(output_path)
-
-
-	with open(output_path, 'rb') as f:
+	with open(save_path, 'rb') as f:
 		response = HttpResponse(
 			f.read(),
 			content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		)
-		response['Content-Disposition'] = f'attachment; filename="{str(get_full_name(profile, True))}.docx"'
-	os.remove(output_path)
+		response['Content-Disposition'] = f'attachment; filename="{file_name}.docx"'
+	os.remove(save_path)
 	return response
 
 
@@ -453,17 +459,19 @@ def profile_personnel_to_docx(request, pk):
 					if field in paragraph.text:
 						paragraph.text = paragraph.text.replace(field, str(value))
 
-	output_path = f"{str(Path(str(Path().cwd())))}\\media\\outputs\\{str(get_full_name(profile))}.docx"
-	doc.save(output_path)
+	name		= str(get_full_name(profile, True))
+	file_name	= f"{name}.docx"
+	save_path	= outputs_path.joinpath(file_name)
+	doc.save(save_path)
 	
 
-	with open(output_path, 'rb') as f:
+	with open(save_path, 'rb') as f:
 		response = HttpResponse(
 			f.read(),
 			content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		)
-		response['Content-Disposition'] = f'attachment; filename="{str(get_full_name(profile))}.docx"'
-	os.remove(output_path)
+		response['Content-Disposition'] = f'attachment; filename="{file_name}.docx"'
+	os.remove(save_path)
 	return response
 
 
