@@ -7,19 +7,26 @@ import numpy as np
 import cv2
 
 from .forms import UploadedImageForm
-from .operate_model import Preprocessing, DistanceLayer
+from .operate_model import Preprocessing, DistanceLayer, FileHandler
 
-prep = Preprocessing()
 
 cwd_path		= Path().cwd()
+
 media_path		= cwd_path.joinpath("media")
+
 database_path 	= media_path.joinpath("raw_image")
 searches_path 	= media_path.joinpath("searches")
+
 fs_path			= cwd_path.joinpath("facesearch")
 models_path		= fs_path.joinpath("snn_models")
 
+prep	= Preprocessing()
+fh		= FileHandler()
+
 def upload_image(request):
-	print(str(raw_image_path))
+	context = {
+		"form": form
+	}
 
 	if request.method == "POST":
 		form = UploadedImageForm(request.POST, request.FILES)
@@ -37,20 +44,27 @@ def upload_image(request):
 			snn_model	= tf.keras.models.load_model(model_path, custom_objects={'DistanceLayer':DistanceLayer})
 			emb_gen		= snn_model.get_layer('EmbeddingGenerator')
 
+			# Achor embedding
 			anchor 		= prepare(image)
 			anchor_emb	= emb_gen.predict(anc, verbose=0)
 
+			# Database image paths
 			database_images = list(database_path.glob("*"))
 
 			threshold = 1
 
+			# Searching
 			best_candidate_dist, best_candidate_idx, candidates_list = search_face(database_images, anchor_emb, threshold)
+
+			context["best_candidate_dist"]	= best_candidate_dist
+			context["best_candidate_idx"]	= best_candidate_idx
+			context["candidates_list"]		= candidates_list
 
 			# Delete the image
 			image_path.unlink()
 	else:
 		form = UploadedImageForm()
-	return render(request, "facesearch/upload_image.html", {"form": form})
+	return render(request, "facesearch/upload_image.html", context)
 
 def prepare(image):
 	image = prep.preprocess_image(image)
