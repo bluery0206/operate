@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 
 from .forms import UploadedImageForm
-from .operate_model import Preprocessing
+from .operate_model import Preprocessing, DistanceLayer
 
 prep = Preprocessing()
 
@@ -32,9 +32,19 @@ def upload_image(request):
 			image_path 	= searches_path.joinpath(request_img)
 			image		= cv2.imread(str(image_path))
 
-			# Search
+			# Model instantiation
 			model_path	= str(models_path.joinpath("snn.h5"))
-			model		= load_model(model_path)
+			snn_model	= tf.keras.models.load_model(model_path, custom_objects={'DistanceLayer':DistanceLayer})
+			emb_gen		= snn_model.get_layer('EmbeddingGenerator')
+
+			anchor 		= prepare(image)
+			anchor_emb	= emb_gen.predict(anc, verbose=0)
+
+			database_images = list(database_path.glob("*"))
+
+			threshold = 1
+
+			best_candidate_dist, best_candidate_idx, candidates_list = search_face(database_images, anchor_emb, threshold)
 
 			# Delete the image
 			image_path.unlink()
@@ -42,25 +52,33 @@ def upload_image(request):
 		form = UploadedImageForm()
 	return render(request, "facesearch/upload_image.html", {"form": form})
 
+def prepare(image):
+	image = prep.preprocess_image(image)
+	image = prep.normalize_image(image)
+	image = tf.expand_dims(image, axis=2)
+	image = tf.expand_dims(image, axis=0)
+	return image	
 
+def search_face(database_images, anchor_emb, threshold):
+	# Best candidate initialization
+	best_candidate_dist	= threshold
+	best_candidate_idx	= False
 
-# def search(anchor):
-# 	anc = prep.preprocess_image(anchor)
+	candidates_list	= []
 
-# 	anc = prep.normalize_image(anc)
-# 	anc = tf.expand_dims(anc, axis=2)
+	for idx, validation_image in enumerate(database_images):
+		validation_image	= prepare(validation_image)
+		validation_emb		= emb_gen.predict(anc, verbose=0)
 
-# 	anc = tf.expand_dims(anc, axis=0)
-# 	anc_emb = emb_gen.predict(anc, verbose=0)
+		distance = np.linalg.norm(anchor_emb - validation_emb)
 
-# 	return [anc, anc_emb]
+		if distance <= best_candidate_dist:
+			best_candidate_dist	= distance
+			best_candidate_idx	= idx
 
-def load_model(model_path):
-	snn = tf.keras.models.load_model(
-		model_path,
-		custom_objects = {
-			'DistanceLayer' : DistanceLayer
-		}
-	)
+			candidates_list.append([best_candidate_dist, best_candidate_idx])
 
-	emb_gen = snn.get_layer('EmbeddingGenerator')
+		if distance == 0:
+			break
+
+	return [best_candidate_dist, best_candidate_idx, candidates_list]

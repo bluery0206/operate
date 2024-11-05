@@ -227,3 +227,19 @@ class Preprocessing():
 
         return random_string
 
+
+
+class DistanceLayer(Layer):
+    def __init__(self, **kwargs):
+        super().__init__()
+
+    # Similarity calculation
+    def call(self, anchor, positive, negative):
+        anchor      = tf.convert_to_tensor(anchor)
+        positive    = tf.convert_to_tensor(positive)
+        negative    = tf.convert_to_tensor(negative)
+
+        ap_distance = tf.reduce_sum(tf.square(anchor - positive), -1)
+        an_distance = tf.reduce_sum(tf.square(anchor - negative), -1)
+
+        return (ap_distance, an_distance)
