@@ -5,6 +5,10 @@
 
 	<h2>Facesearch</h2>	
 
+	<div class="preview">
+		<img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/>
+	</div>
+
 	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 
@@ -18,4 +22,28 @@
 			
 		</div>
 	</form>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const fileInput = document.getElementById("id_image"); // Use the form field's ID
+            const imagePreview = document.getElementById("imagePreview");
+
+            fileInput.addEventListener("change", function(event) {
+                // Check if a file is selected
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result; // Set preview image source
+                        imagePreview.style.display = 'block'; // Make the image visible
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
+                }
+            });
+        });
+    </script>
+
 {% endblock content %}

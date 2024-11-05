@@ -57,3 +57,4 @@ def get_img_size(width, height, size) -> list:
 	bottom 	= (height + size) / 2
 
 	return [left, top, right, bottom]
+
