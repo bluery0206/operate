@@ -1,8 +1,18 @@
+from django.utils import timezone
 import onnxruntime as ort
 from pathlib import Path 
 import numpy as np
 import cv2 
+
 from profiles.models import Personnel, Inmate
+
+cwd_path		= Path().cwd()
+media_path		= cwd_path.joinpath("media")
+database_path 	= media_path.joinpath("raw_images")
+searches_path 	= media_path.joinpath("searches")
+fs_path			= cwd_path.joinpath("facesearch")
+models_path		= fs_path.joinpath("snn_models")
+
 
 def crop_image_from_center(image):
     height, width = image.shape
@@ -102,3 +112,32 @@ def search_face(inp_image, val_images, threshold):
 		if dist <= 0: break
 
 	return cand_list if best_cand_idx else None
+
+def take_image():
+	image_name	= None
+	camera		= 0
+	cap			= cv2.VideoCapture(camera)
+
+	while cap.isOpened(): 
+		_, frame = cap.read()
+		
+		# Cut down frame to 500x500px
+		frame_size = 750
+		frame = frame[120:120 + frame_size, 200:200 + frame_size, :] # np.ndarray
+		
+		# Show image back to screen
+		cv2.imshow('Image Collection | press "q" to exit', frame)
+		
+		if cv2.waitKey(10) & 0XFF == ord('q'):
+			break
+		
+		if cv2.waitKey(10) & 0XFF == ord(' '):
+			time = timezone.now().strftime("%Y%m%d%H%M%S")
+			image_name = f"media/searches/{time}.jpg"
+			cv2.imwrite(image_name, frame)
+			break
+			
+	cap.release()
+	cv2.destroyAllWindows()
+	
+	return image_name
