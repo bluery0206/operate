@@ -501,3 +501,15 @@ def delete_all_personnel(request):
 		'profile' : "all profiles",
 	}
 	return render(request, "profiles/profile_delete_confirm.html", context)
+
+
+ 
+def profile(request, p_type, pk):
+	if p_type == "personnel":
+		profile =  get_object_or_404(Personnel, pk=pk)
+	else:
+		profile =  get_object_or_404(Inmate, pk=pk)
+	context = {
+		'profile': profile,
+	}
+	return render(request, "profiles/profile.html", context)
