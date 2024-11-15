@@ -32,31 +32,13 @@
 		<!--==================== 
 			Search by face 
 		===================-->
-		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">
-					account_box
-				</span>
-				FaceSearch
-			</button>
-
-			<div class="content">
-				<a class="btn" href="{% url 'facesearch-upload_image' %}">
-					<span class="material-symbols-outlined">
-						upload_file
-					</span>
-					Upload an image
-				</a>
-
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						photo_camera
-					</span>
-					Open camera
-				</a>
-			</div>
-		</div>
-
+		<a class="btn" href="{% url 'facesearch' %}">
+			<span class="material-symbols-outlined">
+				account_box
+			</span>
+			FaceSearch
+		</a>
+		
 		<nav>
 			<a class="btn" href="{% url 'operate-home' %}">
 				<span class="material-symbols-outlined">
