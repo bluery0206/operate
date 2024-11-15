@@ -14,18 +14,23 @@
 			</div>
 
 			<div class="actions">
-				<a class="btn" href="{% url 'profile-inmate-update' profile.pk %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">edit</span>
 					<span>Edit Profile</span>
 				</a>
-
-				{% if profile.archiveinmate %}
-					<a class="btn" href="{% url 'archive-inmate-remove' profile.archiveinmate.pk %}?prev={{request.path}}">
+			
+				{% if profile.archivepersonnel %}
+					<a class="btn" href="{% url 'archive-inmate-remove' profile.archivepersonnel.pk %}?prev={{request.path}}">
+						<span class="material-symbols-outlined">unarchive</span>
+						<span>Unarchive</span>
+					</a>
+				{% elif profile.archiveinmate %}
+					<a class="btn" href="{% url 'archive-inmate-remove' profile.archivepersonnel.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% else %}
-					<a class="btn" href="{% url 'archive-inmate-add' profile.pk %}?prev={{request.path}}">
+					<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">archive</span>
 						<span>Add to archive</span>
 					</a>
@@ -34,13 +39,12 @@
 				
 				<div class="dropdown">
 					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
-
 					<div class="content">
-						<a class="btn" href="{% url 'profile-inmate-to-docx' profile.pk %}">
-							<span class="material-symbols-outlined">file_export</span>
-							<span>Export as .docx</span>
+						<a class="btn" href="{% url 'profile-docx-download' profile.p_type profile.pk %}">
+							<span class="material-symbols-outlined">download</span>
+							<span>Download (.docx)</span>
 						</a>
-						<a class="btn" href="{% url 'profile-inmate-delete' profile.pk %}">
+						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
 							<span class="material-symbols-outlined">delete</span>
 							<span>Delete</span>
 						</a>
