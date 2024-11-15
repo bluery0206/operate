@@ -1,6 +1,7 @@
 **__pycache__/
-media/display_images/
-media/model_images/
-media/uploads_queue/
+media/raw_images/
+media/thumbnails/
+media/templates/
 .vscode/
-	
+venv/
+db.sqlite3
