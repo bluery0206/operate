@@ -5,7 +5,12 @@ urlpatterns = [
 	path("personnels/", views.personnels, name="profiles-personnels"),
 	path("inmates/", views.inmates, name="profiles-inmates"),
 
+
+
 	path("<str:p_type>/<int:pk>/", views.profile, name="profile"),
+	path("<str:p_type>/<int:pk>/edit/", views.profile_update, name="profile-update"),
+    
+
     
 	path("personnel/<int:pk>/", views.profile_personnel, name="profile-personnel"),
 	path("inmate/<int:pk>/", views.profile_inmate, name="profile-inmate"),

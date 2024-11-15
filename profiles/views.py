@@ -505,11 +505,34 @@ def delete_all_personnel(request):
 
  
 def profile(request, p_type, pk):
-	if p_type == "personnel":
-		profile =  get_object_or_404(Personnel, pk=pk)
-	else:
-		profile =  get_object_or_404(Inmate, pk=pk)
+	p_class =  Personnel if p_type == "personnel" else Inmate
+	profile	=  get_object_or_404(p_class, pk=pk)
+
 	context = {
 		'profile': profile,
 	}
 	return render(request, "profiles/profile.html", context)
+ 
+def profile_update(request, p_type, pk):
+	p_class, update_form = [Personnel, UpdatePersonnel] if p_type == "personnel" else [Inmate, UpdateInmate]
+	profile = get_object_or_404(p_class, pk=pk)
+
+	if request.method == "POST":
+		form = update_form(request.POST, request.FILES, instance=profile)
+
+		if form.is_valid():
+			instance = form.save()
+
+			# For updating profile picture
+			if 'raw_image' in request.FILES: save_profile_picture(instance)
+
+			return redirect('profile', p_type, pk)
+	else:
+		form = update_form(instance=profile)
+
+	context = {
+		'prev'		: request.GET.get("prev", ""),
+		'profile'	: profile,
+		'form'		: form,
+	}
+	return render(request, "profiles/profile_update.html", context)

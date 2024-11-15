@@ -41,7 +41,7 @@
 							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
-							<a class="btn" href="##########################?prev={{request.path}}">
+							<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">edit</span>
 							</a>
 							<a class="btn" href="##########################?prev={{request.path}}">
