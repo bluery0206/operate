@@ -32,20 +32,15 @@
 		{% if profiles %}
 			{% for dist, profile in profiles %}
 				<div class="profile card">
-					<h2>Top {{ forloop.counter }}</h2>
-					<p><b>Distance: {{ dist|floatformat:2 }}</b></p>
 					<div class="header">
-						<div></div>
+						<div>
+							<h2>Top {{ forloop.counter }}</h2>
+							<p><b>Distance: {{ dist|floatformat:2 }}</b></p>
+						</div>
 
 						<div class="actions">
 							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
-							</a>
-							<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
-								<span class="material-symbols-outlined">edit</span>
-							</a>
-							<a class="btn" href="##########################?prev={{request.path}}">
-								<span class="material-symbols-outlined">archive</span>
 							</a>
 						</div>
 					</div> 

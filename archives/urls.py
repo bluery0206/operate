@@ -20,6 +20,8 @@ urlpatterns = [
 	path("archive/all/inmate/", views.archive_all_inmate, name="archive-all-inmate"),
 	path("archive/all/personnel/", views.archive_all_personnel, name="archive-all-personnel"),
 
+
+	path("add/<str:p_type>/<int:pk>/", views.archive_add, name="archive-add"),
 ]
 
 	# path("archives/remove/<int:pk>/", views.remove, name="archives-remove"),
