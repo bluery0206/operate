@@ -30,7 +30,7 @@ media_path = cwd_path.joinpath("media")
 outputs_path = media_path.joinpath("outputs")
 
 if not outputs_path.exists():
-	output_path.mkdir(exist_ok=False) 
+	outputs_path.mkdir(exist_ok=False) 
 
 def personnels(request):
 	sort_choices = [
@@ -243,7 +243,8 @@ def profile_inmate_add(request):
 
 		if form.is_valid():
 			instance = form.save()
-			# saveProfilePicture(instance.image_model, instance.id)
+			if 'raw_image' in request.FILES:
+				save_profile_picture(instance)
 			return redirect(prev)
 	else:
 		form = CreateInmate()
@@ -262,7 +263,8 @@ def profile_personnel_add(request):
 
 		if form.is_valid():
 			instance = form.save()
-			# saveProfilePicture(instance.image_model, instance.id)
+			if 'raw_image' in request.FILES:
+				save_profile_picture(instance)
 			return redirect(prev)
 	else:
 		form = CreatePersonnel()

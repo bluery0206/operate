@@ -22,6 +22,48 @@
 			
 		</div>
 	</form>
+	<div class="profiles-list">
+		{% if result %}
+			{% for dist, profile in result %}
+				<div class="profile card">
+					<h2>Top {{ forloop.counter }}</h2>
+					<p><b>Distance: {{ dist|floatformat:2 }}</b></p>
+					<div class="header">
+						<div></div>
+
+						<div class="actions">
+							<a class="btn" href="##########################">
+								<span class="material-symbols-outlined">open_in_new</span>
+							</a>
+							<a class="btn" href="##########################?prev={{request.path}}">
+								<span class="material-symbols-outlined">edit</span>
+							</a>
+							<a class="btn" href="##########################?prev={{request.path}}">
+								<span class="material-symbols-outlined">archive</span>
+							</a>
+						</div>
+					</div> 
+
+					<div class="content">
+						<div class="picture">
+							<img src="{{ profile.thumbnail.url }}" alt="">
+						</div>
+
+						<div class="details">
+							<div>Name: {{ profile|full_name }}</div>
+							<div>Rank: {{ profile.rank|upper }} </div> 
+							<div>Address: {{ profile.address }}</div>
+							<div>Date profiled: {{ profile.date_profiled }}</div>
+							<div>Date assigned: {{ profile.date_assigned }}</div>
+							<div>Designation: {{ profile.designation }}</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<h2>No batig nawng found.</h2>
+		{% endif %}
+	</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
