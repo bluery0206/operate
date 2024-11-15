@@ -11,16 +11,16 @@
 			<div class="personnels">
 				<h2>Newly added personnels</h2>
 
-				{% for personnel in personnels %}
+				{% for profile in personnels %}
 					<div class="personnel card">
 						<div class="header">
 							<div>
 								<span class="material-symbols-outlined">schedule</span>
-								<span>{{ personnel.date_profiled }}</span>
+								<span>{{ profile.date_profiled }}</span>
 							</div>
 
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-personnel' personnel.pk %}">
+								<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 									<span class="material-symbols-outlined">open_in_new</span>
 									<span>View</span>
 								</a>
@@ -29,15 +29,15 @@
 
 						<div class="content">
 							<div class="picture">
-								<img src="{{ personnel.thumbnail.url }}" alt="">
+								<img src="{{ profile.thumbnail.url }}" alt="">
 							</div>
 
 							<div class="details">
-								<div>Name: {{ personnel|full_name }}</div>
-								<div>Rank: {{ personnel.rank|upper }} </div> 
-								<div>Address: {{ personnel.address }}</div>
-								<div>Date assigned: {{ personnel.date_assigned }}</div>
-								<div>Designation: {{ personnel.designation }}</div>
+								<div>Name: {{ profile|full_name }}</div>
+								<div>Rank: {{ profile.rank|upper }} </div> 
+								<div>Address: {{ profile.address }}</div>
+								<div>Date assigned: {{ profile.date_assigned }}</div>
+								<div>Designation: {{ profile.designation }}</div>
 							</div>
 						</div>
 					</div>
@@ -55,16 +55,16 @@
 			<div class="inmates">
 				<h2>Newly added inmates</h2>
 
-				{% for inmate in inmates %}
+				{% for profile in inmates %}
 					<div class="inmate card">
 						<div class="header">
 							<div>
 								<span class="material-symbols-outlined">schedule</span>
-								<span>{{ inmate.date_profiled }}</span>
+								<span>{{ profile.date_profiled }}</span>
 							</div>
 
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-inmate' inmate.pk %}">
+								<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 									<span class="material-symbols-outlined">open_in_new</span>
 									<span>View</span>
 								</a>
@@ -73,15 +73,15 @@
 
 						<div class="content">
 							<div class="picture">
-								<img src="{{ inmate.thumbnail.url }}" alt="">
+								<img src="{{ profile.thumbnail.url }}" alt="">
 							</div>
 
 							<div class="details">
-								<div>Name: {{ inmate|full_name }}</div>
-								<div>Address: {{ inmate.address }}</div>
-								<div>Date arrested: {{ inmate.date_arrested }}</div>
-								<div>Date committed: {{ inmate.date_committed }}</div>
-								<div>Designation: {{ inmate.crime_violated }}</div>
+								<div>Name: {{ profile|full_name }}</div>
+								<div>Address: {{ profile.address }}</div>
+								<div>Date arrested: {{ profile.date_arrested }}</div>
+								<div>Date committed: {{ profile.date_committed }}</div>
+								<div>Designation: {{ profile.crime_violated }}</div>
 							</div>
 						</div>
 					</div>
