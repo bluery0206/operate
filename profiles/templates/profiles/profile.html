@@ -20,12 +20,12 @@
 				</a>
 			
 				{% if profile.archivepersonnel %}
-					<a class="btn" href="{% url 'archive-inmate-remove' profile.archivepersonnel.pk %}?prev={{request.path}}">
+					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% elif profile.archiveinmate %}
-					<a class="btn" href="{% url 'archive-inmate-remove' profile.archivepersonnel.pk %}?prev={{request.path}}">
+					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>

@@ -18,29 +18,34 @@ from .forms import (
 )
 
 
+ORDER_CHOICES = [
+	['descending',"Descending"],
+	['ascending', "Ascending"],
+]
 
+COMMON_SORT_CHOICES = [
+	['l_name', "Last Name"],
+	['f_name', "First Name"],
+	['age', "Age"]
+]
+PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
+	['date_profiled',"Date Profiled"],
+	['date_assigned',"Date Assigned"],
+	['date_relieved',"Date Relieved"],
+]
+INMATE_SORT_CHOICES = [
+	['date_profiled',"Date Profiled"],
+	['date_arrested',"Date Arrested"],
+	['date_committed',"Date Committed"],
+]
 
 
 def personnels(request):
-	sort_choices = [
-		['l_name', "Last Name"],
-		['f_name', "First Name"],
-		['age', "Age"],
-		['date_profiled',"Date Profiled"],
-		['date_assigned',"Date Assigned"],
-		['date_relieved',"Date Relieved"],
-	]
-
-	order_choices = [
-		['descending',"Descending"],
-		['ascending', "Ascending"],
-	]
-
 	context = {
 		'personnels'	: Personnel.objects.exclude(archivepersonnel__isnull=False),
 		'ranks'			: [rank[0] for rank in Personnel.RANKS],
-		'sort_choices'	: sort_choices,
-		'order_choices'	: order_choices,
+		'sort_choices'	: PERSONNEL_SORT_CHOICES,
+		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {}
 	}
 
@@ -59,10 +64,7 @@ def personnels(request):
 			search = ""
 
 		if reset_filter:
-			designation	= None
-			rank		= None
-			sort_by		= None
-			sort_order	= None
+			designation, rank, sort_by, sort_order	= None, None, None, None
 		else:
 			designation	= request.GET.get("designation", "")
 			rank		= request.GET.get("rank", "")
@@ -71,22 +73,16 @@ def personnels(request):
 
 			designation = designation.strip()
 
-			if designation:
-				context['personnels'] = context['personnels'].filter(designation__icontains=designation)
-
-			if rank:
-				context['personnels'] = context['personnels'].filter(rank=rank)
-
+			if designation: context['personnels'] = context['personnels'].filter(designation__icontains=designation)
+			if rank: context['personnels'] = context['personnels'].filter(rank=rank)
 			if sort_by:
-				if sort_order == "descending":
-					sort_by = "-" + sort_by
-				context['personnels'] = context['personnels'].order_by(sort_by)
+				sort = "-" + sort_by if sort_order == "descending" else sort_by
+				context['personnels'] = context['personnels'].order_by(sort)
 
 			context['filters'] = {
 				'designation': designation,
 				'rank': rank,
 				'sort_by': sort_by,
-				'sort_order': sort_order,
 				'sort_order': sort_order,
 			}
 
@@ -99,24 +95,10 @@ def personnels(request):
 
 
 def inmates(request):
-	sort_choices = [
-		['l_name', "Last Name"],
-		['f_name', "First Name"],
-		['age', "Age"],
-		['date_profiled',"Date Profiled"],
-		['date_arresetd',"Date Arrested"],
-		['date_committed',"Date Committed"],
-	]
-
-	order_choices = [
-		['descending',"Descending"],
-		['ascending', "Ascending"],
-	]
-
 	context = {
 		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False),
-		'sort_choices'	: sort_choices,
-		'order_choices'	: order_choices,
+		'sort_choices'	: INMATE_SORT_CHOICES,
+		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {}
 	}
 
@@ -135,23 +117,18 @@ def inmates(request):
 			search = ""
 
 		if reset_filter:
-			crime_violated	= None
-			sort_by		= None
-			sort_order	= None
+			crime_violated, sort_by, sort_order	= None, None, None
 		else:
 			crime_violated	= request.GET.get("crime_violated", "")
-			sort_by		= request.GET.get("sort_by", "")
-			sort_order	= request.GET.get("sort_order", "descending")
+			sort_by			= request.GET.get("sort_by", "")
+			sort_order		= request.GET.get("sort_order", "descending")
 
 			crime_violated = crime_violated.strip()
 
-			if crime_violated:
-				context['inmates'] = context['inmates'].filter(crime_violated__icontains=crime_violated)
-
+			if crime_violated: context['inmates'] = context['inmates'].filter(crime_violated__icontains=crime_violated)
 			if sort_by:
-				if sort_order == "descending":
-					sort_by = "-" + sort_by
-				context['inmates'] = context['inmates'].order_by(sort_by)
+				sort = "-" + sort_by if sort_order == "descending" else sort_by
+				context['inmates'] = context['inmates'].order_by(sort)
 
 			context['filters'] = {
 				'crime_violated': crime_violated,
@@ -176,9 +153,10 @@ def profile_template_upload(request):
 		form= TemplateUploadForm()
 
 	context = {
-		"form": form
+		'prev'		: request.GET.get("prev", ""),
+		'form'		: form,
 	}
-	return render(request, "profiles/profile_template_upload.html", context)
+	return render(request, "profiles/profile_update.html", context)
 
 
 
@@ -259,7 +237,7 @@ def profile_delete(request, p_type, pk):
 		return redirect(prev) if prev else redirect(f"profiles-{p_type}s")
 
 	context = {
-		'title' 	: f"Delete {get_full_name(profile)}'s profile?",
+		'title' 	: f"Delete {get_full_name(profile)}'s Profile",
 		'warning' 	: f"You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
 	}
 	return render(request, "home/confirmation_page.html", context)
@@ -268,17 +246,19 @@ def profile_delete(request, p_type, pk):
 
 
 
-def delete_all(request, p_type):
+def profile_delete_all(request, p_type):
 	prev 	= request.GET.get("prev", "")
-	p_class = Personnel if p_type == "personnel" else Inmate
 
 	if request.method == "POST":
-		p_class.objects.all().delete()
+		if p_type == "personnel":
+			Personnel.objects.exclude(archivepersonnel__isnull=False).delete() 
+		else:
+			Inmate.objects.exclude(archiveinmate__isnull=False).delete() 
 
 		return redirect(prev)
 
 	context = {
-		'title' 	: f"Delete all profile?",
+		'title' 	: f"Delete All Profile",
 		'warning' 	: f"You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
 	}
 	return render(request, "home/confirmation_page.html", context)
@@ -287,7 +267,7 @@ def delete_all(request, p_type):
 
 
 
-def profile_docx_download(request, p_type, pk):
+def profile_docx_download(_, p_type, pk):
 	p_class = Personnel if p_type == "personnel" else Inmate
 
 	template	= Template.objects.get(template_name__icontains=p_type)

@@ -5,23 +5,10 @@ urlpatterns = [
 	path("personnel/", views.personnels, name="archives-personnels"),
 	path("inmates/", views.inmates, name="archives-inmates"),
 
-	path("personnel/profile/<int:pk>/", views.archive_profile_personnel, name="archive-personnel-profile"),
-	path("inmate/profile/<int:pk>/", views.archive_profile_inmate, name="archive-inmate-profile"),
-
-	path("personnel/add/<int:pk>/", views.archive_personnel_add, name="archive-personnel-add"),
-	path("inmate/add/<int:pk>/", views.archive_inmate_add, name="archive-inmate-add"),
-	
-	path("personnel/remove/<int:pk>/", views.archive_personnel_remove, name="archive-personnel-remove"),
-	path("inmate/remove/<int:pk>/", views.archive_inmate_remove, name="archive-inmate-remove"),
-
-	path("unarchive/all/inmate/", views.unarchive_all_inmate, name="unarchive-all-inmate"),
-	path("unarchive/all/personnel/", views.unarchive_all_personnel, name="unarchive-all-personnel"),
-
-	path("archive/all/inmate/", views.archive_all_inmate, name="archive-all-inmate"),
-	path("archive/all/personnel/", views.archive_all_personnel, name="archive-all-personnel"),
-
-
 	path("add/<str:p_type>/<int:pk>/", views.archive_add, name="archive-add"),
+	path("remove/<str:p_type>/<int:pk>/", views.archive_remove, name="archive-remove"),
+	path("add/<str:p_type>/all/", views.archive_add_all, name="archive-add-all"),
+	path("remove/<str:p_type>/all/", views.archive_remove_all, name="archive-remove-all"),
 ]
 
 	# path("archives/remove/<int:pk>/", views.remove, name="archives-remove"),

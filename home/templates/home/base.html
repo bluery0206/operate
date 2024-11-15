@@ -15,23 +15,7 @@
 			OPERATE
 		</div>	
 
-
-		<!--==================== 
-			Search by text 
-		===================-->
-		<!-- <form method="GET" class="search-form">
-			<input type="search" name="search">
-
-			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">
-					search
-				</span>
-			</button>
-		</form> -->
-
-		<!--==================== 
-			Search by face 
-		===================-->
+		<!-- facesearch by  -->
 		<a class="btn" href="{% url 'facesearch' %}">
 			<span class="material-symbols-outlined">
 				account_box
@@ -40,12 +24,15 @@
 		</a>
 		
 		<nav>
+			<!-- home -->
 			<a class="btn" href="{% url 'operate-home' %}">
 				<span class="material-symbols-outlined">
 					home
 				</span>
 				Home
 			</a>
+
+			<!-- profiles -->
 			<div class="dropdown">
 				<button class="btn">
 					<span class="material-symbols-outlined">
@@ -69,6 +56,8 @@
 					</a>
 				</div>
 			</div>
+
+			<!-- archives -->
 			<div class="dropdown">
 				<button class="btn">
 					<span class="material-symbols-outlined">
@@ -94,15 +83,14 @@
 			</div>
 		</nav>
 
-		<!--==================== 
-			User action
-		===================-->
+		<!-- ser action -->
 		<div class="dropdown">
 			<button class="btn">
 				<span class="material-symbols-outlined">
 					account_circle
 				</span>
 			</button>
+
 			<div class="content">
 				<a class="btn" href="#">
 					<span class="material-symbols-outlined">
@@ -131,9 +119,6 @@
 
 	<main>
 		{% block content %}
-
-
-		
 		{% endblock content %}
 	</main>
 

@@ -2,17 +2,12 @@
 {% load custom_filters %}
 
 {% block content %}
-
 	<h2>Inmate Profiles</h2>
 
-	
 	<div class="filter-bar">
-
-		<!--==================== 
-			Search by text 
-		===================-->
+		<!-- textsearch -->
 		<form method="GET" class="search-form">
-			<input type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}">
+			<input type="search" name="search" placeholder="Search by name" value="{{ filters.search }}">
 
 			<input type="hidden" name="crime_violated" value="{{ filters.crime_violated }}">
 			<input type="hidden" name="sort_by" value="{{ filters.sort_by }}">
@@ -28,39 +23,21 @@
 			</div>
 		</form>
 
-		<!--==================== 
-			Search by face 
-		===================-->
-		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">account_box</span>
-				<span>FaceSearch</span>
-			</button>
+		<!-- facesearch -->
+		<a class="btn" href="{% url 'facesearch' %}">
+			<span class="material-symbols-outlined">
+				account_box
+			</span>
+			FaceSearch
+		</a>
 
-			<div class="content">
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">upload_fil</span>
-					<span>Upload an image</span>
-				</a>
-
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">photo_camera</span>
-					<span>Open camera</span>
-				</a>
-			</div>
-		</div>
-
-		<!--==================== 
-			Filters
-		===================-->
+		<!-- Filters -->
 		<form method="GET" class="filter-form">
 
-			<input type="hidden" name="search" value="{% if filters.search %} {{ filters.search }} {% endif %}">
-			<input type="search" name="crime_violated" placeholder="Crime Violated" value="{% if filters.crime_violated %} {{ filters.crime_violated }} {% endif %}">
+			<input type="hidden" name="search" value="{{ filters.search }}">
+			<input type="search" name="crime_violated" placeholder="Crime Violated" value="{{ filters.crime_violated }}">
 
-			<!--==================== 
-				
-			===================-->
+			<!-- sort_by -->
 			<select name="sort_by" title="Sort by">
 				{% if sort_choices %}
 					{% for pair in sort_choices %}
@@ -71,9 +48,7 @@
 				{% endif %}
 			</select>
 
-			<!--==================== 
-				Sort order
-			===================-->
+			<!-- sort_order -->
 			<select name="sort_order" id="sort_order" title="Sort order">
 				{% if order_choices %}
 					{% for pair in order_choices %}
@@ -85,27 +60,26 @@
 			<button class="btn" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
 			</button>
+
 			<button class="btn" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
 				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
 		</form>
 
-		<!--==================== 
-			User actions 
-		===================-->
+		<!-- User actions -->
 		<div class="dropdown">
 			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'profile-inmate-add' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="{% url 'archive-all-inmate' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'archive-add-all' 'inmate' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="{% url 'delete-all-inmate' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-delete-all' 'inmate' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -115,19 +89,19 @@
 
 	<div class="profiles-list">
 		{% if inmates %}
-			{% for inmate in inmates %}
+			{% for profile in inmates %}
 				<div class="inmate card">
 					<div class="header">
 						<div></div>
 
 						<div class="actions">
-							<a class="btn" href="{% url 'profile-inmate' inmate.pk %}">
+							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
-							<a class="btn" href="{% url 'profile-inmate-update' inmate.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">edit</span>
 							</a>
-							<a class="btn" href="{% url 'archive-inmate-add' inmate.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">archive</span>
 							</a>
 						</div>
@@ -135,16 +109,16 @@
 
 					<div class="content">
 						<div class="picture">
-							<img src="{{ inmate.thumbnail.url }}" alt="">
+							<img src="{{ profile.thumbnail.url }}" alt="">
 						</div>
 
 						<div class="details">
-							<span>Date Profile: {{ inmate.date_profiled }}</span>
-							<div>Name: {{ inmate|full_name }}</div>
-							<div>Address: {{ inmate.address }}</div>
-							<div>Date arrested: {{ inmate.date_arrested }}</div>
-							<div>Date committed: {{ inmate.date_committed }}</div>
-							<div>Designation: {{ inmate.crime_violated }}</div>
+							<span>Date Profile: {{ profile.date_profiled }}</span>
+							<div>Name: {{ profile|full_name }}</div>
+							<div>Address: {{ profile.address }}</div>
+							<div>Date arrested: {{ profile.date_arrested }}</div>
+							<div>Date committed: {{ profile.date_committed }}</div>
+							<div>Designation: {{ profile.crime_violated }}</div>
 						</div>
 					</div>
 				</div>

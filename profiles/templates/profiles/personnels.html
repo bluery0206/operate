@@ -2,14 +2,10 @@
 {% load custom_filters %}
 
 {% block content %}
-
 	<h2>Personnel Profiles</h2>
-	{{ designations }}
-	<div class="filter-bar">
 
-		<!--==================== 
-			Search by text 
-		===================-->
+	<div class="filter-bar">
+		<!-- Search by text -->
 		<form method="GET" class="search-form">
 			<input type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}">
 
@@ -29,108 +25,94 @@
 			</div>
 		</form>
 
-		<!--==================== 
-			Search by face 
-		===================-->
-		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">account_box</span>
-				<span>FaceSearch</span>
-			</button>
+		<!-- Facesearch -->
+		<a class="btn" href="{% url 'facesearch' %}">
+			<span class="material-symbols-outlined">
+				account_box
+			</span>
+			FaceSearch
+		</a>
 
-			<div class="content">
-				<a class="btn" href="#" title="Upload a file">
-					<span class="material-symbols-outlined">upload_file</span>
-					<span>Upload an image</span>
-				</a>
-
-				<a class="btn" href="#" title="Open camera">
-					<span class="material-symbols-outlined">photo_camera</span>
-					<span>Open camera</span>
-				</a>
-			</div>
-		</div>
-
-
-		<!--==================== 
-			Filters
-		===================-->
+		<!-- Filter -->
 		<form method="GET" class="filter-form">
-			<input type="hidden" name="search" value="{% if filters.search %}{{ filters.search }}{% endif %}">
-			<input type="search" name="designation" placeholder="Designation" value="{% if filters.designation %}{{ filters.designation }}{% endif %}">
+			<input type="hidden" name="search" value="{{ filters.search }}">
+			<input type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
+			
 			<select name="rank" title="Filter by rank">
 				<option class="option_title"  value="">Ranks</option>
 				{% if ranks %}
 					{% for rank in ranks%}
-						<option value="{{ rank|lower }}" {% if filters.rank == rank %} selected {% endif %} >{{ rank|upper}}</option>
+						<option value="{{ rank|lower }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank|upper }}</option>
 					{% endfor %}
 				{% endif %}
 			</select>
+			
 			<select name="sort_by" title="Sort by">
 				<option class="option_title" value="">Sort by</option>
 				{% if sort_choices %}
 					{% for pair in sort_choices %}
-						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %} selected {% endif %}>{{ pair.1 }}</option>
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
 
 						{{ pair.0 }}
 					{% endfor %}
 				{% endif %}
 			</select>
+			
 			<select name="sort_order" id="sort_order" title="Sort order">
 				{% if order_choices %}
 					{% for pair in order_choices %}
-						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %} selected {% endif %}>{{ pair.1 }}</option>
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
 					{% endfor %}
 				{% endif %}
 			</select>
+
 			<button class="btn" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
 			</button>
+			
 			<button class="btn" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
 				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
 		</form>
 
-		<!--==================== 
-			User actions 
-		===================-->
+		<!-- Actions -->
 		<div class="dropdown">
 			<button class="btn">
 				<span class="material-symbols-outlined">more_vert</span>
 			</button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'profile-personnel-add' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="{% url 'archive-all-personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'archive-add-all' 'personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="{% url 'delete-all-personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
 			</div>
 		</div>
 	</div>
+
 	<div class="profiles-list">
 		{% if personnels %}
-			{% for personnel in personnels %}
+			{% for profile in personnels %}
 				<div class="personnel card">
 					<div class="header">
-						<div>
-						</div>
+						<div></div>
 
 						<div class="actions">
-							<a class="btn" href="{% url 'profile-personnel' personnel.pk %}">
+							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
-							<a class="btn" href="{% url 'profile-personnel-update' personnel.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">edit</span>
 							</a>
-							<a class="btn" href="{% url 'archive-personnel-add' personnel.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">archive</span>
 							</a>
 						</div>
@@ -138,16 +120,16 @@
 
 					<div class="content">
 						<div class="picture">
-							<img src="{{ personnel.thumbnail.url }}" alt="">
+							<img src="{{ profile.thumbnail.url }}" alt="">
 						</div>
 
 						<div class="details">
-							<div>Name: {{ personnel|full_name }}</div>
-							<div>Rank: {{ personnel.rank|upper }} </div> 
-							<div>Address: {{ personnel.address }}</div>
-							<div>Date profiled: {{ personnel.date_profiled }}</div>
-							<div>Date assigned: {{ personnel.date_assigned }}</div>
-							<div>Designation: {{ personnel.designation }}</div>
+							<div>Name: {{ profile|full_name }}</div>
+							<div>Rank: {{ profile.rank|upper }} </div> 
+							<div>Address: {{ profile.address }}</div>
+							<div>Date profiled: {{ profile.date_profiled }}</div>
+							<div>Date assigned: {{ profile.date_assigned }}</div>
+							<div>Designation: {{ profile.designation }}</div>
 						</div>
 					</div>
 				</div>
@@ -155,5 +137,8 @@
 		{% else %}
 			<h2>There are no personnel profiled.</h2>
 		{% endif %}
+
+
+	
 	</div>
 {% endblock content %}

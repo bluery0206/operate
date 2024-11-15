@@ -2,90 +2,87 @@
 {% load custom_filters %}
 
 {% block content %}
-
 	<h2>Personnel Profiles (Archived)</h2>
 
 	<div class="filter-bar">
-
-		<!--==================== 
-			Search by text 
-		===================-->
+		<!-- Search by text -->
 		<form method="GET" class="search-form">
-			<input type="search" name="search" placeholder="Search">
+			<input type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}">
 
-			<button class="btn" type="submit"><span class="material-symbols-outlined">search</span></button>
+			<input type="hidden" name="designation" value="{{ filters.designation }}">
+			<input type="hidden" name="rank" value="{{ filters.rank }}">
+			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
+			<input type="hidden" name="sort_by" value="{{ filters.sort_by }}">
+			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
+
+			<div class="actions">
+				<button class="btn" type="submit" title="Search">
+					<span class="material-symbols-outlined">search</span>
+				</button>
+				<button class="btn" type="submit" name="reset_search" title="Reset search" value="reset_search">
+					<span class="material-symbols-outlined">search_off</span>
+				</button>
+			</div>
 		</form>
 
-		<!--==================== 
-			Search by face 
-		===================-->
-		<div class="dropdown">
-			<button class="btn">
-				<span class="material-symbols-outlined">account_box</span>
-				<span>FaceSearch</span>
-			</button>
+		<!-- Facesearch -->
+		<a class="btn" href="{% url 'facesearch' %}">
+			<span class="material-symbols-outlined">
+				account_box
+			</span>
+			FaceSearch
+		</a>
 
-			<div class="content">
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">upload_file</span>
-					<span>Upload an image</span>
-				</a>
-
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">photo_camera</span>
-					<span>Open camera</span>
-				</a>
-			</div>
-		</div>
-
-		<!--==================== 
-			Filters
-		===================-->
+		<!-- Filter -->
 		<form method="GET" class="filter-form">
+			<input type="hidden" name="search" value="{{ filters.search }}">
+			<input type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
+			
+			<select name="rank" title="Filter by rank">
+				<option class="option_title"  value="">Ranks</option>
+				{% if ranks %}
+					{% for rank in ranks%}
+						<option value="{{ rank|lower }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank|upper }}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
+			
+			<select name="sort_by" title="Sort by">
+				<option class="option_title" value="">Sort by</option>
+				{% if sort_choices %}
+					{% for pair in sort_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
 
-			<input type="search" name="designation" placeholder="Designation">
-
-			<!--==================== 
-				Search by rank 
-			===================-->
-			<select name="rank" id="rank">
-				<option value="">Rank</option>
-				<option value="#">#</option>
+						{{ pair.0 }}
+					{% endfor %}
+				{% endif %}
+			</select>
+			
+			<select name="sort_order" id="sort_order" title="Sort order">
+				{% if order_choices %}
+					{% for pair in order_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
+					{% endfor %}
+				{% endif %}
 			</select>
 
-			<!--==================== 
-				
-			===================-->
-			<div>
-				<select name="sort_order" id="sort_order">
-					<option value="">Others</option>
-				</select>
-			</div>
-
-			<!--==================== 
-				Sort order
-			===================-->
-			<div>
-				<select name="sort_order" id="sort_order">
-					<option value="ascending">Ascending</option>
-					<option value="descending">Descending</option>
-				</select>
-			</div>
-
-			<button class="btn" type="submit">
+			<button class="btn" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
-				<span>Filter</span>
+			</button>
+			
+			<button class="btn" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
+				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
 		</form>
 
-		<!--==================== 
-			User actions 
-		===================-->
+		<!-- Actions -->
 		<div class="dropdown">
-			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
+			<button class="btn">
+				<span class="material-symbols-outlined">more_vert</span>
+			</button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'unarchive-all-personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'archive-remove-all' 'personnel' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">unarchive</span>
 					<span>Unarchive all</span>
 				</a>
@@ -94,20 +91,20 @@
 	</div>
 
 	<div class="profiles-list">
-		{% if archived_personnels %}
-			{% for personnel in archived_personnels %}
+		{% if personnels %}
+			{% for archive in personnels %}
 				<div class="personnel card">
 					<div class="header">
 						<div></div>
 						
 						<div class="actions">
-							<a class="btn" href="{% url 'archive-personnel-profile' personnel.pk %}">
+							<a class="btn" href="{% url 'profile' archive.profile.p_type  archive.profile.pk %}">
 								<span class="material-symbols-outlined">open_in_new</span>
 							</a>
-							<a class="btn" href="{% url 'profile-personnel-update' personnel.profile.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'profile-update' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">edit</span>
 							</a>
-							<a class="btn" href="{% url 'archive-personnel-remove' personnel.pk %}?prev={{request.path}}">
+							<a class="btn" href="{% url 'archive-remove' archive.profile.p_type archive.pk %}?prev={{request.path}}">
 								<span class="material-symbols-outlined">unarchive</span>
 							</a>
 						</div>
@@ -115,17 +112,17 @@
 
 					<div class="content">
 						<div class="picture">
-							<img src="{{ personnel.profile.thumbnail.url }}" alt="">
+							<img src="{{ archive.profile.thumbnail.url }}" alt="">
 						</div>
 
 						<div class="details">
-							<span>{{ personnel.archive_date }} by {{ personnel.archive_by }}</span>
-							<div>Name:			{{ personnel.profile|full_name }} </div>
-							<div>Rank: 			{{ personnel.profile.rank|upper }}</div> 
-							<div>Address: 		{{ personnel.profile.address }} </div>
-							<div>Date assigned:	{{ personnel.profile.date_assigned }} </div>
-							<div>Date relieved: {{ personnel.profile.date_relieved }} </div>
-							<div>Designation: 	{{ personnel.profile.designation }} </div>
+							<span>{{ archive.archive_date }} by {{ archive.archive_by }}</span>
+							<div>Name:			{{ archive.profile|full_name }} </div>
+							<div>Rank: 			{{ archive.profile.rank|upper }}</div> 
+							<div>Address: 		{{ archive.profile.address }} </div>
+							<div>Date assigned:	{{ archive.profile.date_assigned }} </div>
+							<div>Date relieved: {{ archive.profile.date_relieved }} </div>
+							<div>Designation: 	{{ archive.profile.designation }} </div>
 						</div>
 					</div>
 				</div>
