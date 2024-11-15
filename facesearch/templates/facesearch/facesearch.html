@@ -5,26 +5,32 @@
 
 	<h2>Facesearch</h2>	
 
-	<div class="preview">
-		<img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/>
-	</div>
+	<form method="POST" enctype="multipart/form-data" style="border: 1px solid red;">
+		<div class="preview">
+			<img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/>
+		</div>
 
-	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 
 		{{ form }}
 
-		<div class="actions">
-			<button class="btn" type="submit">
-				<span class="material-symbols-outlined">upload_2</span>
-				<span>Upload</span>
-			</button>
-			
-		</div>
+		<button class="btn" type="submit">
+			<span class="material-symbols-outlined">upload_2</span>
+			<span>Upload</span>
+		</button>
 	</form>
+	<form method="POST">
+		{% csrf_token %}
+
+		<button class="btn" name="open_camera" value="1" type="submit">
+			<span class="material-symbols-outlined">camera</span>
+			<span>Open camera</span>
+		</button>
+	</form>
+
 	<div class="profiles-list">
-		{% if result %}
-			{% for dist, profile in result %}
+		{% if profiles %}
+			{% for dist, profile in profiles %}
 				<div class="profile card">
 					<h2>Top {{ forloop.counter }}</h2>
 					<p><b>Distance: {{ dist|floatformat:2 }}</b></p>

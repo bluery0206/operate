@@ -1,9 +1,8 @@
 import onnxruntime as ort
 from pathlib import Path 
 import numpy as np
-import onnx
 import cv2 
-import random as rd
+from profiles.models import Personnel, Inmate
 
 def crop_image_from_center(image):
     height, width = image.shape
@@ -16,6 +15,51 @@ def crop_image_from_center(image):
 
     return image[top:bottom, left:right]
  
+def format_image_name(image_name):
+	return image_name.replace(" ", "_") if " " in image_name else image_name
+
+def get_profiles(cand_list, database_path):
+	database = list(database_path.glob("*"))
+	database = [str(image_path) for image_path in database]
+
+	cands_dist	= [float(dist) for dist, idx in cand_list]
+	cands_image	= [str(database[idx]) for dist, idx in cand_list]
+	cands_prof	= []
+	
+	for image in cands_image:
+		# getting image name from full path
+		image_name = image.split("\\")[-1]
+
+		personnel	= Personnel.objects.filter(raw_image__endswith=image_name).first()
+		inmate		= Inmate.objects.filter(raw_image__endswith=image_name).first()
+
+		# if personnel is not found then the image must be from inmate
+		profile = personnel if personnel else inmate
+
+		if profile: cands_prof.append(profile)
+
+	result = list(zip(cands_dist, cands_prof))
+	result = sorted(result, reverse=False)
+
+	return result
+
+def search(input_path:Path, database_path:Path, threshold:int=1):
+	input = open_gray_image(str(input_path))
+	input = preprocess_image(input)
+
+	# fetching and preprocessing database/validation images
+	database = list(database_path.glob("*"))
+	database = [open_gray_image(str(image_path)) for image_path in database]
+	database = [preprocess_image(image) for image in database]
+
+	result = search_face(
+		inp_image	= input, 
+		val_images	= database, 
+		threshold	= threshold
+	)
+
+	return result
+	
 def preprocess_image(image, img_size:int=105):
     cropped_image       = crop_image_from_center(image)
     resize_image        = cv2.resize(cropped_image, dsize=(img_size, img_size))
@@ -27,7 +71,6 @@ def preprocess_image(image, img_size:int=105):
 
 def open_gray_image(image_path):
 	return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
-
 
 def search_face(inp_image, val_images, threshold):
 	session_options = ort.SessionOptions()
@@ -58,4 +101,4 @@ def search_face(inp_image, val_images, threshold):
 
 		if dist <= 0: break
 
-	return [best_cand_dist, best_cand_idx, cand_list] if best_cand_idx else None
+	return cand_list if best_cand_idx else None
