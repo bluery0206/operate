@@ -1,7 +1,3 @@
 **__pycache__/
-media/raw_images/
-media/thumbnails/
-media/templates/
 .vscode/
 venv/
-db.sqlite3

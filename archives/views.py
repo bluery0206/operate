@@ -140,10 +140,11 @@ def archive_all_personnel(request):
 
 
 
+
+
 def archive_all_inmate(request):
 	prev 	= request.GET.get("prev", "")
-	# archive_by	
-	# profile
+
 	if request.method == "POST":
 		profiles = Inmate.objects.all()
 		user = request.user
