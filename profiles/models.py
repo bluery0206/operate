@@ -80,7 +80,7 @@ class Profile(models.Model):
 	age 			= models.IntegerField()
 	address			= models.TextField()
 	civil_status	= models.CharField(blank=True, max_length=20, choices=CIVIL_STATUS_CHOICES, default='single')
-	date_profiled = models.DateTimeField(default=timezone.now)
+	date_profiled = models.DateField(default=timezone.now)
 
 	class Meta:
 		abstract = True
@@ -88,8 +88,8 @@ class Profile(models.Model):
 class Personnel(Profile):
 	p_type	= models.CharField(max_length=10, default="personnel")
 	rank	= models.CharField(max_length=10, choices=RANKS, default='pat')
-	date_assigned	= models.DateTimeField()
-	date_relieved	= models.DateTimeField(blank=True, null=True)
+	date_assigned	= models.DateField()
+	date_relieved	= models.DateField(blank=True, null=True)
 	designation		= models.TextField()
 
 	class Meta:
@@ -107,8 +107,8 @@ class Personnel(Profile):
 class Inmate(Profile):
 	fields = I_FIELDS
 	p_type = models.CharField(max_length=10, default="inmate")
-	date_arrested	= models.DateTimeField()
-	date_committed	= models.DateTimeField(null=True, blank=True)
+	date_arrested	= models.DateField()
+	date_committed	= models.DateField(null=True, blank=True)
 	crime_violated	= models.TextField()
 
 	class Meta:

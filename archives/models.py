@@ -12,7 +12,7 @@ from profiles.models import (
 
 class Archive(models.Model):
 	# Common details
-	archive_date 	= models.DateTimeField(default=timezone.now)
+	archive_date 	= models.DateField(default=timezone.now)
 	archive_by		= models.ForeignKey(User, null=True, on_delete=models.SET_NULL, default=None)
 
 	class Meta:

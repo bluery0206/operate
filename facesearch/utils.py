@@ -85,7 +85,7 @@ def open_gray_image(image_path):
 def search_face(inp_image, val_images, threshold):
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(str(Path().cwd().joinpath("facesearch/snn_models/emb_gen.onnx")))
+	session = ort.InferenceSession(str(Path().cwd().joinpath("facesearch/snn_models/2024.11.16.02.52.onnx")))
 
 	input_name	= session.get_inputs()[0].name
 	output_name = session.get_outputs()[0].name

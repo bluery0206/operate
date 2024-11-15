@@ -29,6 +29,17 @@ class CreatePersonnel(forms.ModelForm):
 			'date_relieved',
 			'designation',
 		]
+		widgets = {
+            'date_profiled': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_assigned': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_relieved': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+        }
 
 
 class UpdatePersonnel(forms.ModelForm):
@@ -51,6 +62,18 @@ class UpdatePersonnel(forms.ModelForm):
 			'date_relieved',
 			'designation',
 		]
+		widgets = {
+            'date_profiled': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_assigned': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_relieved': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+        }
+
 
 
 class CreateInmate(forms.ModelForm):
@@ -72,6 +95,18 @@ class CreateInmate(forms.ModelForm):
 			'date_committed',
 			'crime_violated',
 		]
+		widgets = {
+            'date_profiled': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_arrested': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_committed': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+        }
+
 
 
 class UpdateInmate(forms.ModelForm):
@@ -93,6 +128,17 @@ class UpdateInmate(forms.ModelForm):
 			'date_committed',
 			'crime_violated',
 		]
+		widgets = {
+            'date_profiled': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_arrested': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_committed': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+        }
 
 class TemplateUploadForm(forms.ModelForm):
 	template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['docx'])])
