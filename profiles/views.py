@@ -187,9 +187,6 @@ def profile_template_upload(request):
 def profile(request, p_type, pk):
 	p_class =  Personnel if p_type == "personnel" else Inmate
 	
-	data = [field.name for field in p_class._meta.get_fields()]
-	print(data)
-
 	context = {
 		'profile': get_object_or_404(p_class, pk=pk),
 	}
