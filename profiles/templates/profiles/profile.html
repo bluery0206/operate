@@ -59,16 +59,19 @@
 			</div>
 			
 			<div class="details">
-				<div>p_type: {{ profile.p_type}}</div>
-				<div>Name: {{ profile|full_name}}</div>
-				<div>Age: {{ profile.age}}</div>
-				<div>Address: {{ profile.address}} </div>
-				<div>Civil Status: {{ profile.civil_status}}</div>
-				<div>Date Last Edited: {{ profile.f_name}}</div>
-				<div>Date Profiled: {{ profile.date_profiled}}</div>
-				<div>Date Arrested: {{ profile.date_arrested }}</div>
-				<div>Date Arrested: {{ profile.date_committed }}</div>
-				<div>Date assigned: {{ inmate.crime_violated }}</div>
+					<div>Name: {{ profile|full_name}}</div>
+					<div>Age: {{ profile.age}}</div>
+					<div>Address: {{ profile.address}} </div>
+					<div>Civil Status: {{ profile.civil_status}}</div>
+				{% if profile.p_type == 'personnel' %}
+					<div>Date Arrested: {{ profile.date_assigned }}</div>
+					<div>Date Arrested: {{ profile.date_relieved }}</div>
+					<div>Date assigned: {{ profile.designation }}</div>
+				{% else %}
+					<div>Date Arrested: {{ profile.date_arrested }}</div>
+					<div>Date Arrested: {{ profile.date_committed }}</div>
+					<div>Date assigned: {{ profile.crime_violated }}</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

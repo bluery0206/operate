@@ -4,9 +4,7 @@
 {% block content %}
 	<div class="new_profiles">
 
-		<!--================
-			Personnel
-		=================-->
+		<!-- Personnel -->
 		{% if personnels %}
 			<div class="personnels">
 				<h2>Newly added personnels</h2>
@@ -47,10 +45,7 @@
 			<h2>There are no personnels profiled.</h2>
 		{% endif %}
 
-
-		<!--================
-			Inmates
-		=================-->
+		<!-- Inmates -->
 		{% if inmates %}
 			<div class="inmates">
 				<h2>Newly added inmates</h2>
@@ -80,8 +75,7 @@
 								<div>Name: {{ profile|full_name }}</div>
 								<div>Address: {{ profile.address }}</div>
 								<div>Date arrested: {{ profile.date_arrested }}</div>
-								<div>Date committed: {{ profile.date_committed }}</div>
-								<div>Designation: {{ profile.crime_violated }}</div>
+								<div>Crime violated: {{ profile.crime_violated }}</div>
 							</div>
 						</div>
 					</div>
