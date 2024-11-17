@@ -2,40 +2,38 @@
 {% load custom_filters %}
 
 {% block content %}
+
 	<div class="profile">
 		<div class="header">
-			<div class="title">
-				<a class="btn" href="javascript:history.go(-1)">
-					<span class="material-symbols-outlined">arrow_back_ios</span>
-					<span>Back</span>
-				</a>
+			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
+				<span class="material-symbols-outlined">arrow_back_ios</span>
+				<span>Back</span>
+			</a>
 
-				<h2>{{ profile.f_name }}'s Profile</h2>
-			</div>
-
-			<div class="actions">
-				<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
+			<h2 class="title">{{ profile.f_name }}'s Profile</h2>
+			
+			<div class="buttons">
+				<a class="btn btn-success" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">edit</span>
 					<span>Edit Profile</span>
 				</a>
 			
 				{% if profile.archivepersonnel %}
-					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}">
+					<a class="btn btn-secondary" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% elif profile.archiveinmate %}
-					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}">
+					<a class="btn btn-secondary" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% else %}
-					<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
+					<a class="btn btn-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">archive</span>
 						<span>Add to archive</span>
 					</a>
 				{% endif %}
-
 				
 				<div class="dropdown">
 					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
@@ -53,26 +51,84 @@
 			</div>
 		</div>
 
-		<div class="info">
+		<div class="body">
 			<div class="picture">
-				<img src="{{ profile.thumbnail.url }}" alt="thumbnail">
+				<img src="{{ profile.thumbnail.url }}" alt="">
 			</div>
-			
-			<div class="details">
-					<div>Name: {{ profile|full_name}}</div>
-					<div>Age: {{ profile.age}}</div>
-					<div>Address: {{ profile.address}} </div>
-					<div>Civil Status: {{ profile.civil_status }}</div>
-					<div>Date Profiled: {{ profile.date_profiled|date:"M d, Y H:i a" }}</div>
-					{% if profile.p_type == 'personnel' %}
-					<div>Rank: {{ profile.rank|upper }}</div>
-					<div>Date Assigned: {{ profile.date_assigned|date:"M d, Y H:i a" }}</div>
-					<div>Date relieved: {{ profile.date_relieved|date:"M d, Y H:i" }}</div>
-					<div>Designation: {{ profile.designation }}</div>
+			<hr>
+			<div class="field-list">
+				<div class="field full-name">
+					<label for="">Full Name:</label>
+					<div class="field-list">
+						<div class="field">
+							<label for="">First name</label>
+							<input type="text" value="{{ profile.f_name|title }}" placeholder="First Name" disabled>
+						</div>
+						<div class="field">
+							<label for="">Middle name</label>
+							<input type="text" value="{{ profile.m_name|title }}" placeholder="Middle Name" disabled>
+						</div>
+						<div class="field">
+							<label for="">Last name</label>
+							<input type="text" value="{{ profile.l_name|title }}" placeholder="Last Name" disabled>
+						</div>
+						<div class="field">
+							<label for="">Suffix</label>
+							<input type="text" value="{{ profile.suffix|title }}" placeholder="Suffix" disabled>
+						</div>
+					</div>
+				</div> <!-- full name  -->
+
+				<div class="field">
+					<label for="">Age:</label>
+					<input type="text" value="{{ profile.age}}" placeholder="Age" disabled>
+				</div>
+
+				<div class="field">
+					<label for="">Address:</label>
+					<input type="text" value="{{ profile.address|title }}" placeholder="Address" disabled>
+				</div>
+
+				<div class="field">
+					<label for="">Civil status:</label>
+					<input type="text" value="{{ profile.civil_status|title }}" placeholder="Civil Status" disabled>
+				</div>
+
+				<div class="field">
+					<label for="">Date profiled:</label>
+					<input type="text" value="{{ profile.date_profiled }}" placeholder="Date Profiled" disabled>
+				</div>
+
+				{% if profile.p_type == 'personnel' %}
+					<div class="field">
+						<label for="">Rank:</label>
+						<input type="text" value="{{ profile.rank|upper }}" placeholder="Rank" disabled>
+					</div>
+					<div class="field">
+						<label for="">Date assigned:</label>
+						<input type="text" value="{{ profile.date_assigned }}" placeholder="Date Assigned" disabled>
+					</div>
+					<div class="field">
+						<label for="">Date relieved:</label>
+						<input type="text" value="{{ profile.date_relieved }}" placeholder="Date Relieved" disabled>
+					</div>
+					<div class="field">
+						<label for="">Designation:</label>
+						<input type="text" value="{{ profile.designation|title }}" placeholder="Designation" disabled>
+					</div>
 				{% else %}
-					<div>Date Arrested: {{ profile.date_arrested|date:"M d, Y H:i a" }}</div>
-					<div>Date Arrested: {{ profile.date_committed|date:"M d, Y H:i a" }}</div>
-					<div>Date assigned: {{ profile.crime_violated }}</div>
+					<div class="field">
+						<label for="">Date arrested:</label>
+						<input type="text" value="{{ profile.date_arrested }}" placeholder="Date Arrested" disabled>
+					</div>
+					<div class="field">
+						<label for="">Date committed:</label>
+						<input type="text" value="{{ profile.date_committed }}" placeholder="Date Committed" disabled>
+					</div>
+					<div class="field">
+						<label for="">Crime violated:</label>
+						<input type="text" value="{{ profile.crime_violated }}" placeholder="Crime Violated" disabled>
+					</div>
 				{% endif %}
 			</div>
 		</div>

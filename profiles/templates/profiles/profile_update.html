@@ -1,195 +1,233 @@
 {% extends 'home/base.html' %}
 
 {% block content %}
-	<div class="profile">
 
-		<form method="POST" enctype="multipart/form-data">
-			{% csrf_token %}
+	<form class="profile" method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+
 		<div class="header">
-			<div class="title">
-				<h2>Update: {{ profile.f_name }}'s Profile</h2>
-			</div>
-			<div>
-				<div class="actions">
-					<button class="btn" type="submit">
-						<span class="material-symbols-outlined">save</span>
-						<span>Save changes</span>
-					</button>
+			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
+				<span class="material-symbols-outlined">arrow_back_ios</span>
+				<span>Back</span>
+			</a>
 
-					<a class="btn" href="javascript:history.go(-1)">
-						<span class="material-symbols-outlined">cancel</span>
-						<span>Cancel</span>
-					</a>
-				</div>
+			<h2 class="title">Update: {{ profile.f_name }}'s Profile</h2>
+			
+			<div class="buttons">
+				<button class="btn btn-light" type="submit">
+					<span class="material-symbols-outlined">save</span>
+					<span>Save changes</span>
+				</button>
+
+				<a class="btn btn-outline-light" href="javascript:history.go(-1)">
+					<span class="material-symbols-outlined">cancel</span>
+					<span>Cancel</span>
+				</a>
 			</div>
 		</div>
-			<div class="info">
-				<div>
-					<div class="picture">
-						<img src="{{ profile.thumbnail.url }}" alt="">
-					</div>
 
-					<!-- Prints error if any -->
-					{% if form.raw_image.errors %}
-						{% for error in for.raw_image.errors %}
+		<div class="body">
+			<div class="picture">
+				<img src="{{ profile.thumbnail.url }}" alt="">
+
+				{% for error in for.raw_image.errors %}
+					{{ error }}
+				{% endfor %}
+
+				<input type="file" name="raw_image" id="raw_image">
+			</div>
+
+			<hr>
+
+			<div class="field-list">
+				<div class="field full-name">
+					<label for="">Full Name:</label>
+					
+					<div class="field-list">
+						<div class="field">
+							<label for="{{ form.f_name.id_for_label }}">First name</label>
+
+							{% if form.f_name.errors %}
+								{% for error in for.f_name.errors %}
+									{{ error }}
+								{% endfor %}
+							{% endif %}
+	
+							{{ form.f_name }}
+						</div>
+	
+						<div class="field">
+							<label for="{{ form.m_name.id_for_label }}">Middle name</label>
+
+							{% if form.m_name.errors %}
+								{% for error in for.m_name.errors %}
+									{{ error }}
+								{% endfor %}
+							{% endif %}
+							
+							{{ form.m_name }}
+						</div>
+	
+						<div class="field">
+							<label for="{{ form.l_name.id_for_label }}">Last name</label>
+
+							{% if form.l_name.errors %}
+								{% for error in for.l_name.errors %}
+									{{ error }}
+								{% endfor %}
+							{% endif %}
+							
+							{{ form.l_name }}
+						</div>
+	
+						<div class="field">
+							<label for="{{ form.suffix.id_for_label }}">Suffix</label>
+
+							{% if form.suffix.errors %}
+								{% for error in for.suffix.errors %}
+									{{ error }}
+								{% endfor %}
+							{% endif %}
+							
+							{{ form.suffix }}
+						</div>
+					</div>
+				</div> <!-- full name  -->
+
+				<div class="field age">
+					{{ form.age.label_tag }}
+
+					{% if form.age.errors %}
+						{% for error in for.age.errors %}
 							{{ error }}
 						{% endfor %}
 					{% endif %}
-					<input type="file" name="raw_image" id="raw_image">
+
+					{{ form.age }}
+				</div> <!-- age -->
+
+				<div class="field address">
+					{{ form.address.label_tag }}
+
+					{% if form.address.errors %}
+						{% for error in for.address.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.address }}
 				</div>
-			
-				<div class="details">
-					<div class="fields">
 
-						<!-- full name -->
-						<div class="field full-name">
-							<label for="">Full Name:</label>
-						
-							<span>
-								{% if form.l_name.errors %}
-									{% for error in for.l_name.errors %}
-										{{ error }}
-									{% endfor %}
-								{% endif %}
-								{% if form.m_name.errors %}
-									{% for error in for.m_name.errors %}
-										{{ error }}
-									{% endfor %}
-								{% endif %}
-								{% if form.f_name.errors %}
-									{% for error in for.f_name.errors %}
-										{{ error }}
-									{% endfor %}
-								{% endif %}
-								{% if form.suffix.errors %}
-									{% for error in for.suffix.errors %}
-										{{ error }}
-									{% endfor %}
-								{% endif %}
-							</span>
-						
-							<div>
-								<div class="field">
-									{{ form.f_name.label_tag }}
-									{{ form.f_name }}
-								</div>
-								<div class="field">
-									{{ form.m_name.label_tag }}
-									{{ form.m_name }}
-								</div>
-								<div class="field">
-									{{ form.l_name.label_tag }}
-									{{ form.l_name }}
-								</div>
-								<div class="field">
-									{{ form.suffix.label_tag }}
-									{{ form.suffix }}
-								</div>
-							</div>
-						</div>
+				<div class="field civil_status">
+					{{ form.civil_status.label_tag }}
 
-						<div class="field age">
-							{% if form.age.errors %}
-								{% for error in for.age.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.age.label_tag }}
-							{{ form.age }}
-						</div>
+					{% if form.civil_status.errors %}
+						{% for error in for.civil_status.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
 
-						<div class="field address">
-							{% if form.address.errors %}
-								{% for error in for.address.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.address.label_tag }}
-							{{ form.address }}
-						</div>
+					{{ form.civil_status }}
+				</div>
 
-						<div class="field civil_status">
-							{% if form.civil_status.errors %}
-								{% for error in for.civil_status.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.civil_status.label_tag }}
-							{{ form.civil_status }}
-						</div>
+				<div class="field">
+					{{ form.date_profiled.label_tag }}
 
-						<div class="field date_profiled">
-							{% if form.date_profiled.errors %}
-								{% for error in for.date_profiled.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.date_profiled.label_tag }}
-							{{ form.date_profiled }}
-						</div>
+					{% if form.date_profiled.errors %}
+						{% for error in for.date_profiled.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
 
-						<div class="field date_assigned">
-							{% if form.date_assigned.errors %}
-								{% for error in for.date_assigned.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.date_assigned.label_tag }}
-							{{ form.date_assigned }}
-						</div>
+					{{ form.date_profiled }}
+				</div>
 
-						<div class="field date_relieved">
-							{% if form.date_relieved.errors %}
-								{% for error in for.date_relieved.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.date_relieved.label_tag }}
-							{{ form.date_relieved }}
-						</div>
+				{% if profile.p_type == 'personnel' %}
+					<div class="field">
+						{{ form.rank.label_tag }}
 
-						<div class="field designation">
-							{% if form.designation.errors %}
-								{% for error in for.designation.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.designation.label_tag }}
-							{{ form.designation }}
-						</div>
+						{% if form.rank.errors %}
+							{% for error in for.rank.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
 
-						<div class="field date_arrested">
-							{% if form.date_arrested.errors %}
-								{% for error in for.date_arrested.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.date_arrested.label_tag }}
-							{{ form.date_arrested }}
-						</div>
-
-						<div class="field date_committed">
-							{% if form.date_committed.errors %}
-								{% for error in for.date_committed.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.date_committed.label_tag }}
-							{{ form.date_committed }}
-						</div>
-
-						<div class="field crime_violated">
-							{% if form.crime_violated.errors %}
-								{% for error in for.crime_violated.errors %}
-									{{ error }}
-								{% endfor %}
-							{% endif %}
-							{{ form.crime_violated.label_tag }}
-							{{ form.crime_violated }}
-						</div>
+						{{ form.rank }}
 					</div>
-				</div>
+
+					<div class="field">
+						{{ form.date_assigned.label_tag }}
+
+						{% if form.date_assigned.errors %}
+							{% for error in for.date_assigned.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.date_assigned }}
+					</div>
+
+					<div class="field">
+						{{ form.date_relieved.label_tag }}
+
+						{% if form.date_relieved.errors %}
+							{% for error in for.date_relieved.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.date_relieved }}
+					</div>
+
+					<div class="field">
+						{{ form.designation.label_tag }}
+
+						{% if form.designation.errors %}
+							{% for error in for.designation.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.designation }}
+					</div>
+				{% else %}
+
+					<div class="field">
+						{{ form.date_arrested.label_tag }}
+
+						{% if form.date_arrested.errors %}
+							{% for error in for.date_arrested.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.date_arrested }}
+					</div>
+
+					<div class="field">
+						{{ form.date_committed.label_tag }}
+
+						{% if form.date_committed.errors %}
+							{% for error in for.date_committed.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.date_committed }}
+					</div>
+
+					<div class="field">
+						{{ form.crime_violated.label_tag }}
+
+						{% if form.crime_violated.errors %}
+							{% for error in for.crime_violated.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+
+						{{ form.crime_violated }}
+					</div>
+				{% endif %}
 			</div>
-		</form>
-	</div>
+	</form>
 {% endblock content %}

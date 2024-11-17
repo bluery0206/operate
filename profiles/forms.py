@@ -10,35 +10,25 @@ from .models import (
 )
 
 WIDGETS = {
-	'date_profiled': forms.DateInput(
-		attrs = {
-			'type': 'datetime-local',
-		},
-        format = '%Y-%m-%dT%H:%M'
+	'date_profiled'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local'}, 
+		format 	= '%Y-%m-%dT%H:%M'
 	),
-	'date_arrested': forms.DateInput(
-		attrs = {
-			'type': 'datetime-local',
-		},
-        format = '%Y-%m-%dT%H:%M'
+	'date_arrested'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local'}, 
+		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'date_committed': forms.DateInput(
-		attrs = {
-			'type': 'datetime-local',
-		},
-        format = '%Y-%m-%dT%H:%M'
+		attrs	= {'type': 'datetime-local'}, 
+		format 	= '%Y-%m-%dT%H:%M'
 	),
-	'date_assigned': forms.DateInput(
-		attrs = {
-			'type': 'datetime-local',
-		},
-        format = '%Y-%m-%dT%H:%M'
+	'date_assigned'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local'}, 
+		format 	= '%Y-%m-%dT%H:%M'
 	),
-	'date_relieved': forms.DateInput(
-		attrs = {
-			'type': 'datetime-local',
-		},
-        format = '%Y-%m-%dT%H:%M'
+	'date_relieved'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local'}, 
+		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'f_name': forms.TextInput(attrs={
 		'placeholder': 'First Name',
@@ -48,6 +38,40 @@ WIDGETS = {
 	}),
 	'suffix': forms.TextInput(attrs={
 		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)',
+	}),
+}
+DISABLED_WIDGETS = {
+	'date_profiled'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local', 'disabled': True}, 
+		format 	= '%Y-%m-%dT%H:%M'
+	),
+	'date_arrested'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local', 'disabled': True}, 
+		format 	= '%Y-%m-%dT%H:%M'
+	),
+	'date_committed': forms.DateInput(
+		attrs	= {'type': 'datetime-local', 'disabled': True}, 
+		format 	= '%Y-%m-%dT%H:%M'
+	),
+	'date_assigned'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local', 'disabled': True}, 
+		format 	= '%Y-%m-%dT%H:%M'
+	),
+	'date_relieved'	: forms.DateInput(
+		attrs	= {'type': 'datetime-local', 'disabled': True}, 
+		format 	= '%Y-%m-%dT%H:%M'
+	),
+	'f_name': forms.TextInput(attrs={
+		'placeholder': 'First Name', 
+		'disabled': True
+	}),
+	'm_name': forms.TextInput(attrs={
+		'placeholder': 'Middle Name', 
+		'disabled': True
+	}),
+	'suffix': forms.TextInput(attrs={
+		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)', 
+		'disabled': True
 	}),
 }
 
