@@ -28,6 +28,14 @@
 }
 
 :root {
+    --font-bold     : ProductSans-Bold;
+    --font-black    : ProductSans-Black;
+    --font-italic   : ProductSans-Italic;
+    --font-light    : ProductSans-Light;
+    --font-medium   : ProductSans-Medium;
+    --font-regular  : ProductSans-Regular;
+    --font-thin     : ProductSans-Thin;
+
     --shadow        : rgba(0, 0, 0, 0.25);
     --black         : rgb(80, 80, 80);
     --white         : rgb(240, 240, 240);
@@ -38,14 +46,14 @@
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: ProductSans-Bold;
+    font-family: var(--font-bold);
 }
 
 * {
 	padding        : 0;
 	margin         : 0;
 	box-sizing     : border-box;
-	font-family    : ProductSans-Regular;
+	font-family    : var(--font-regular);
 }
 
 header {
@@ -296,6 +304,7 @@ input, select {
         display: grid;
         grid-template-columns   : 200px calc((100% - 200px) - 1em);
         justify-content         : space-between;
+    }
 
     .picture {
         border  : 1px solid red;

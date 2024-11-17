@@ -80,9 +80,9 @@ class Profile(models.Model):
 	l_name			= models.CharField(max_length=20)
 	suffix			= models.CharField(max_length=10, blank=True, default=None)
 	age 			= models.IntegerField()
-	address			= models.TextField()
+	address			= models.CharField(max_length=250, default="inmate")
 	civil_status	= models.CharField(blank=True, max_length=20, choices=CIVIL_STATUS_CHOICES, default='single')
-	date_profiled = models.DateField(default=timezone.now)
+	date_profiled = models.DateTimeField(default=timezone.now)
 
 	class Meta:
 		abstract = True
@@ -90,9 +90,9 @@ class Profile(models.Model):
 class Personnel(Profile):
 	p_type	= models.CharField(max_length=10, default="personnel")
 	rank	= models.CharField(max_length=10, choices=RANKS, default='pat')
-	date_assigned	= models.DateField()
-	date_relieved	= models.DateField(blank=True, null=True)
-	designation		= models.TextField()
+	date_assigned	= models.DateTimeField()
+	date_relieved	= models.DateTimeField(blank=True, null=True)
+	designation		= models.CharField(max_length=250, default="inmate")
 
 	class Meta:
 		# Makes the entire row with specified fields unique.
@@ -109,9 +109,9 @@ class Personnel(Profile):
 class Inmate(Profile):
 	fields = I_FIELDS
 	p_type = models.CharField(max_length=10, default="inmate")
-	date_arrested	= models.DateField()
-	date_committed	= models.DateField(null=True, blank=True)
-	crime_violated	= models.TextField()
+	date_arrested	= models.DateTimeField()
+	date_committed	= models.DateTimeField(null=True, blank=True)
+	crime_violated	= models.CharField(max_length=250, default="inmate")
 
 	class Meta:
 		# Makes the entire row with specified fields unique.

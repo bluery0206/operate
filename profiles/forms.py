@@ -9,6 +9,48 @@ from .models import (
 	Template
 )
 
+WIDGETS = {
+	'date_profiled': forms.DateInput(
+		attrs = {
+			'type': 'datetime-local',
+		},
+        format = '%Y-%m-%dT%H:%M'
+	),
+	'date_arrested': forms.DateInput(
+		attrs = {
+			'type': 'datetime-local',
+		},
+        format = '%Y-%m-%dT%H:%M'
+	),
+	'date_committed': forms.DateInput(
+		attrs = {
+			'type': 'datetime-local',
+		},
+        format = '%Y-%m-%dT%H:%M'
+	),
+	'date_assigned': forms.DateInput(
+		attrs = {
+			'type': 'datetime-local',
+		},
+        format = '%Y-%m-%dT%H:%M'
+	),
+	'date_relieved': forms.DateInput(
+		attrs = {
+			'type': 'datetime-local',
+		},
+        format = '%Y-%m-%dT%H:%M'
+	),
+	'f_name': forms.TextInput(attrs={
+		'placeholder': 'First Name',
+	}),
+	'm_name': forms.TextInput(attrs={
+		'placeholder': 'Middle Name',
+	}),
+	'suffix': forms.TextInput(attrs={
+		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)',
+	}),
+}
+
 class CreatePersonnel(forms.ModelForm):
 	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
 
@@ -29,17 +71,7 @@ class CreatePersonnel(forms.ModelForm):
 			'date_relieved',
 			'designation',
 		]
-		widgets = {
-            'date_profiled': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_assigned': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_relieved': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-        }
+		widgets = WIDGETS
 
 
 class UpdatePersonnel(forms.ModelForm):
@@ -62,17 +94,7 @@ class UpdatePersonnel(forms.ModelForm):
 			'date_relieved',
 			'designation',
 		]
-		widgets = {
-            'date_profiled': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_assigned': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_relieved': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-        }
+		widgets = WIDGETS
 
 
 
@@ -95,19 +117,7 @@ class CreateInmate(forms.ModelForm):
 			'date_committed',
 			'crime_violated',
 		]
-		widgets = {
-            'date_profiled': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_arrested': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_committed': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-        }
-
-
+		widgets = WIDGETS
 
 class UpdateInmate(forms.ModelForm):
 	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
@@ -128,17 +138,7 @@ class UpdateInmate(forms.ModelForm):
 			'date_committed',
 			'crime_violated',
 		]
-		widgets = {
-            'date_profiled': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_arrested': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-            'date_committed': forms.DateInput(attrs={
-                'type': 'date',
-            }),
-        }
+		widgets = WIDGETS
 
 class TemplateUploadForm(forms.ModelForm):
 	template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['docx'])])

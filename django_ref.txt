@@ -1,0 +1,48 @@
+
+for field in form:
+	field
+
+Field Attributes and Methods
+Attr/Method		Description														Example Usage
+label			The label of the field. if no label, generate from field_name	{{ field.label }}
+label_tag		Renders The <label> tag for the field, linked to the input.		{{ field.label_tag }}
+id_for_label	Returns the id of the field's input element						{{ field.id_for_label }}
+name			The name of the field 											{{ field.name }}
+value			The current value of the field 									{{ field.value }}
+errors			A list of errors for the field (empty if no errors).			{{ field.errors }}
+field			The Field object associated with the form field.				{{ field.field.required }}
+help_text		The help text for the field, if specified.						{{ field.help_text }}
+widget			The widget used to render the field.							{{ field.widget.attrs.class }}
+is_hidden		Returns True if the field is rendered as a hidden input 		{{ field.is_hidden }}
+as_widget		Renders the field using its widget without the label or surrounding markup.	{{ field.as_widget }}
+as_text			Renders the field as a text input widget.	{{ field.as_text }}
+as_textarea		Renders the field as a <textarea> widget.	{{ field.as_textarea }}
+as_hidden		Renders the field as a hidden input.	{{ field.as_hidden }}
+css_classes		Returns a string of CSS classes for the field, if set in attrs.	{{ field.css_classes }}
+data			he cleaned data for the field (useful after form validation).	{{ form.cleaned_data.field_name }}
+
+
+placeholder: Text that shows in the field before the user types.
+class: Used to apply CSS styles.
+maxlength: Maximum number of characters the user can type.
+size: Controls the visible width of the input field.
+autocomplete: Controls if the browser should suggest previous inputs.
+readonly: Makes the field read-only (user cannot change the value).
+disabled: Makes the field unclickable.
+autofocus: Automatically focuses the field when the page loads.
+required: Makes the field required (it must be filled in before submitting).
+
+
+				>>> import json 
+				>>> from profiles.models imp`ort Personnel 
+				>>> with open('characters.json') as f:
+
+				# ... are tabs
+				... 	characters_json = json.load(f)
+				>>> for character in characters_json:
+				... 	post = Post(title=post['title'], content=post['content'], author_id=post['author_id'])
+				... 	personnel.save()
+
+
+	personnel = Personnel(date_arrested=post['date_arrested'], crime_violated=post['crime_violated'], f_name=post['f_name'], m_name=post.get('m_name'), l_name=post['l_name'], suffix=post.get('suffix'), age=post['age'], address=post['address'])
+	personnel = Personnel(date_assigned=post['date_assigned'], designation=post['designation'], f_name=post['f_name'], m_name=post.get('m_name'), l_name=post['l_name'], suffix=post.get('suffix'), age=post['age'], address=post['address'])

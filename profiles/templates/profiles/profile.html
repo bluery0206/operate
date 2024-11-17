@@ -62,14 +62,16 @@
 					<div>Name: {{ profile|full_name}}</div>
 					<div>Age: {{ profile.age}}</div>
 					<div>Address: {{ profile.address}} </div>
-					<div>Civil Status: {{ profile.civil_status}}</div>
-				{% if profile.p_type == 'personnel' %}
-					<div>Date Assigned: {{ profile.date_assigned }}</div>
-					<div>Date relieved: {{ profile.date_relieved }}</div>
+					<div>Civil Status: {{ profile.civil_status }}</div>
+					<div>Date Profiled: {{ profile.date_profiled|date:"M d, Y H:i a" }}</div>
+					{% if profile.p_type == 'personnel' %}
+					<div>Rank: {{ profile.rank|upper }}</div>
+					<div>Date Assigned: {{ profile.date_assigned|date:"M d, Y H:i a" }}</div>
+					<div>Date relieved: {{ profile.date_relieved|date:"M d, Y H:i" }}</div>
 					<div>Designation: {{ profile.designation }}</div>
 				{% else %}
-					<div>Date Arrested: {{ profile.date_arrested }}</div>
-					<div>Date Arrested: {{ profile.date_committed }}</div>
+					<div>Date Arrested: {{ profile.date_arrested|date:"M d, Y H:i a" }}</div>
+					<div>Date Arrested: {{ profile.date_committed|date:"M d, Y H:i a" }}</div>
 					<div>Date assigned: {{ profile.crime_violated }}</div>
 				{% endif %}
 			</div>
