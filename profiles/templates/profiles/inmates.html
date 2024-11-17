@@ -105,23 +105,18 @@
 
 					<div class="details">
 						<div class="name">{{ profile|full_name }}</div>
-
 						<div class="muted detail" title="{{ profile|full_name }}'s home address">
-							Address: {{ profile.address }}
+							Address: {{ profile.address|title }}
 						</div>
-						
 						<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
 							<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
 							<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ profile|full_name }}'s committed date">
 							<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
 							<span>Violation: {{ profile.crime_violated }}</span>
 						</div>

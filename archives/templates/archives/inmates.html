@@ -2,7 +2,7 @@
 {% load custom_filters %}
 
 {% block content %}
-	<h2>Inmate archive.Profiles (Archived)</h2>
+	<h2>Archived Inmate Profiles</h2>
 
 	<div class="filter-bar">
 		<!-- textsearch -->
@@ -63,17 +63,9 @@
 			<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}">
-					<span class="material-symbols-outlined">add</span>
-					<span>Add new archive.profile</span>
-				</a>
-				<a class="btn" href="{% url 'archive-add-all' 'inmate' %}?prev={{request.path}}">
-					<span class="material-symbols-outlined">archive</span>
-					<span>Archive all</span>
-				</a>
-				<a class="btn" href="{% url 'profile-delete-all' 'inmate' %}?prev={{request.path}}">
-					<span class="material-symbols-outlined">delete</span>
-					<span>Delete All</span>
+				<a class="btn" href="{% url 'archive-remove-all' 'inmate' %}?prev={{request.path}}">
+					<span class="material-symbols-outlined">unarchive</span>
+					<span>Unarchive all</span>
 				</a>
 			</div>
 		</div>
@@ -105,23 +97,18 @@
 
 					<div class="details">
 						<div class="name">{{ archive.profile|full_name }}</div>
-
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s home address">
 							Address: {{ archive.profile.address }}
 						</div>
-						
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s archive.profiled date">
 							<span>Profiled: {{ archive.profile.date_profiled|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s arrested date">
 							<span>Arrested: {{ archive.profile.date_arrested|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s committed date">
 							<span>Committed: {{ archive.profile.date_committed|date:"M j, Y" }}</span>
 						</div>
-						
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s crime violation(s)">
 							<span>Violation: {{ archive.profile.crime_violated }}</span>
 						</div>
@@ -129,7 +116,7 @@
 				</div>
 			{% endfor %}
 		{% else %}
-			<h2>There are no inmates archive.profiled.</h2>
+			<h2>There are no inmates archived.</h2>
 		{% endif %}
 	</div>
 {% endblock content %}

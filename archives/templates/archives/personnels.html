@@ -2,7 +2,7 @@
 {% load custom_filters %}
 
 {% block content %}
-	<h2>Personnel Profiles (Archived)</h2>
+	<h2>Archived Personnel Profiles</h2>
 
 	<div class="filter-bar">
 		<!-- Search by text -->
@@ -110,20 +110,16 @@
 					<div class="details">
 						<div class="name detail">{{ archive.profile.rank|upper }} {{ archive.profile|full_name }}</div>
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s home address">
-							<span class="material-symbols-outlined">home</span>
-							<span>{{ archive.profile.address }}</span>
+							<span>Address: {{ archive.profile.address|title }}</span>
 						</div>
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s profiled date">
-							<span class="material-symbols-outlined">more_time</span>
-							<span>{{ archive.profile.date_profiled|date:"M j, Y" }}</span>
+							<span>Profiled: {{ archive.profile.date_profiled|date:"M j, Y" }}</span>
 						</div>
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s assigned date">
-							<span class="material-symbols-outlined">assignment_add</span>
-							<span>{{ archive.profile.date_assigned|date:"M j, Y" }}</span>
+							<span>Assigned: {{ archive.profile.date_assigned|date:"M j, Y" }}</span>
 						</div>
 						<div class="muted detail" title="{{ archive.profile|full_name }}'s designation">
-							<span class="material-symbols-outlined">assignment_ind</span>
-							<span>{{ archive.profile.designation }}</span>
+							<span>Designation: {{ archive.profile.designation }}</span>
 						</div>
 					</div>
 				</div>

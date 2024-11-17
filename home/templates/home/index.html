@@ -3,39 +3,47 @@
 
 {% block content %}
 	<div class="new_profiles">
-
 		<!-- Personnel -->
 		{% if personnels %}
-			<div class="personnels">
+			<div class="card-list-new">
 				<h2>Newly added personnels</h2>
 
 				{% for profile in personnels %}
-					<div class="personnel card">
+					<div class="personnel card-new">
 						<div class="header">
-							<div>
+							<h4 class="title">
 								<span class="material-symbols-outlined">schedule</span>
 								<span>{{ profile.date_profiled }}</span>
-							</div>
+							</h4>
 
-							<div class="actions">
-								<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
+							<div class="buttons">
+								<a class="btn btn-outline-light" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
 									<span class="material-symbols-outlined">open_in_new</span>
-									<span>View</span>
+									<span>View profile</span>
 								</a>
 							</div>
 						</div>
 
-						<div class="content">
+						<div class="body">
 							<div class="picture">
-								<img src="{{ profile.thumbnail.url }}" alt="">
+								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
 							</div>
-
+	
+	
 							<div class="details">
-								<div>Name: {{ profile|full_name }}</div>
-								<div>Rank: {{ profile.rank|upper }} </div> 
-								<div>Address: {{ profile.address }}</div>
-								<div>Date assigned: {{ profile.date_assigned }}</div>
-								<div>Designation: {{ profile.designation }}</div>
+								<div class="name detail">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s home address">
+									<span>Address: {{ profile.address|title }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+									<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
+									<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s designation">
+									<span>Designation: {{ profile.designation }}</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -47,38 +55,52 @@
 
 		<!-- Inmates -->
 		{% if inmates %}
-			<div class="inmates">
+			<div class="card-list-new">
 				<h2>Newly added inmates</h2>
 
 				{% for profile in inmates %}
-					<div class="inmate card">
-						<div class="header">
-							<div>
-								<span class="material-symbols-outlined">schedule</span>
-								<span>{{ profile.date_profiled }}</span>
-							</div>
+				<div class="personnel card-new">
+					<div class="header">
+						<h4 class="title">
+							<span class="material-symbols-outlined">schedule</span>
+							<span>{{ profile.date_profiled }}</span>
+						</h4>
 
-							<div class="actions">
-								<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
-									<span class="material-symbols-outlined">open_in_new</span>
-									<span>View</span>
-								</a>
-							</div>
+						<div class="buttons">
+							<a class="btn btn-outline-light" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+								<span class="material-symbols-outlined">open_in_new</span>
+								<span>View profile</span>
+							</a>
+						</div>
+					</div>
+
+					<div class="body">
+						<div class="picture">
+							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
 						</div>
 
-						<div class="content">
-							<div class="picture">
-								<img src="{{ profile.thumbnail.url }}" alt="">
-							</div>
 
-							<div class="details">
-								<div>Name: {{ profile|full_name }}</div>
-								<div>Address: {{ profile.address }}</div>
-								<div>Date arrested: {{ profile.date_arrested }}</div>
-								<div>Crime violated: {{ profile.crime_violated }}</div>
+						<div class="details">
+							<div class="name">{{ profile|full_name }}</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s home address">
+								Address: {{ profile.address|title }}
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+								<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
+								<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s committed date">
+								<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+								<span>Violation: {{ profile.crime_violated }}</span>
 							</div>
 						</div>
 					</div>
+				</div>
+
 				{% endfor %}
 			</div>
 		{% else %}
