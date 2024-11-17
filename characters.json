@@ -1,0 +1,232 @@
+[
+    {
+        "date_assigned": "2023-05-12",
+        "designation": "Lead Guitarist",
+        "f_name": "Bocchi",
+        "m_name": "",
+        "l_name": "Hitori",
+        "suffix": "",
+        "age": 17,
+        "address": "Tokyo, Japan"
+    },
+    {
+        "date_assigned": "2024-03-10",
+        "designation": "Sorcerer",
+        "f_name": "Frieren",
+        "m_name": "",
+        "l_name": "The Slayer",
+        "suffix": "",
+        "age": 400,
+        "address": "Unknown"
+    },
+    {
+        "date_assigned": "2023-07-01",
+        "designation": "Apothecary",
+        "f_name": "Mio",
+        "m_name": "",
+        "l_name": "Jin",
+        "suffix": "",
+        "age": 18,
+        "address": "Tokyo, Japan"
+    },
+    {
+        "date_assigned": "2023-06-15",
+        "designation": "Artist",
+        "f_name": "Aki",
+        "m_name": "",
+        "l_name": "Kurosawa",
+        "suffix": "",
+        "age": 16,
+        "address": "Kyoto, Japan"
+    },
+    {
+        "date_assigned": "2023-09-20",
+        "designation": "Explorer",
+        "f_name": "Yamato",
+        "m_name": "",
+        "l_name": "Takemura",
+        "suffix": "",
+        "age": 19,
+        "address": "Osaka, Japan"
+    },
+    {
+        "date_assigned": "2023-12-30",
+        "designation": "Mage",
+        "f_name": "Lize",
+        "m_name": "",
+        "l_name": "Kobayashi",
+        "suffix": "",
+        "age": 21,
+        "address": "Tokyo, Japan"
+    },
+    {
+        "date_assigned": "2024-01-05",
+        "designation": "Baker",
+        "f_name": "Sora",
+        "m_name": "",
+        "l_name": "Kuno",
+        "suffix": "",
+        "age": 20,
+        "address": "Nagasaki, Japan"
+    },
+    {
+        "date_assigned": "2024-02-10",
+        "designation": "Researcher",
+        "f_name": "Maru",
+        "m_name": "",
+        "l_name": "Nakamura",
+        "suffix": "",
+        "age": 22,
+        "address": "Fukuoka, Japan"
+    },
+    {
+        "date_assigned": "2023-11-25",
+        "designation": "Combat Specialist",
+        "f_name": "Taro",
+        "m_name": "",
+        "l_name": "Nishida",
+        "suffix": "",
+        "age": 30,
+        "address": "Tokyo, Japan"
+    },
+    {
+        "date_assigned": "2024-03-05",
+        "designation": "Navigator",
+        "f_name": "Mako",
+        "m_name": "",
+        "l_name": "Sato",
+        "suffix": "",
+        "age": 26,
+        "address": "Chiba, Japan"
+    },
+    {
+        "date_assigned": "2024-01-12",
+        "designation": "Seer",
+        "f_name": "Karin",
+        "m_name": "",
+        "l_name": "Shino",
+        "suffix": "",
+        "age": 18,
+        "address": "Kyoto, Japan"
+    },
+    {
+        "date_assigned": "2023-08-20",
+        "designation": "Swordsman",
+        "f_name": "Rei",
+        "m_name": "",
+        "l_name": "Suzuki",
+        "suffix": "",
+        "age": 28,
+        "address": "Osaka, Japan"
+    },
+    {
+        "date_assigned": "2023-10-05",
+        "designation": "Swordmaster",
+        "f_name": "Ichigo",
+        "m_name": "",
+        "l_name": "Kurosaki",
+        "suffix": "",
+        "age": 17,
+        "address": "Karakura, Japan"
+    },
+    {
+        "date_assigned": "2024-02-15",
+        "designation": "Thief",
+        "f_name": "Lena",
+        "m_name": "",
+        "l_name": "Ichinose",
+        "suffix": "",
+        "age": 22,
+        "address": "Tokyo, Japan"
+    },
+    {
+        "date_assigned": "2023-11-10",
+        "designation": "Detective",
+        "f_name": "Yuto",
+        "m_name": "",
+        "l_name": "Fujimoto",
+        "suffix": "",
+        "age": 26,
+        "address": "Nagoya, Japan"
+    },
+    {
+        "date_assigned": "2023-07-15",
+        "designation": "Exorcist",
+        "f_name": "Ayumi",
+        "m_name": "",
+        "l_name": "Tanaka",
+        "suffix": "",
+        "age": 25,
+        "address": "Fukuoka, Japan"
+    },
+    {
+        "date_assigned": "2023-04-25",
+        "designation": "Knight",
+        "f_name": "Ryuji",
+        "m_name": "",
+        "l_name": "Hoshino",
+        "suffix": "",
+        "age": 22,
+        "address": "Kobe, Japan"
+    },
+    {
+        "date_assigned": "2023-09-12",
+        "designation": "Vampire",
+        "f_name": "Shiro",
+        "m_name": "",
+        "l_name": "Hasegawa",
+        "suffix": "",
+        "age": 210,
+        "address": "Hokkaido, Japan"
+    },
+    {
+        "date_assigned": "2023-06-18",
+        "designation": "Shaman",
+        "f_name": "Hana",
+        "m_name": "",
+        "l_name": "Okamoto",
+        "suffix": "",
+        "age": 19,
+        "address": "Okinawa, Japan"
+    },
+    {
+        "date_assigned": "2023-12-01",
+        "designation": "Merchant",
+        "f_name": "Yuki",
+        "m_name": "",
+        "l_name": "Matsumoto",
+        "suffix": "",
+        "age": 24,
+        "address": "Sapporo, Japan"
+    },
+    {
+        "date_assigned": "2024-02-20",
+        "designation": "Alchemist",
+        "f_name": "Tsubaki",
+        "m_name": "",
+        "l_name": "Ichihara",
+        "suffix": "",
+        "age": 27,
+        "address": "Kyoto, Japan"
+    },
+    {
+        "date_assigned": "2023-11-30",
+        "designation": "Ranger",
+        "f_name": "Kaito",
+        "m_name": "",
+        "l_name": "Fujii",
+        "suffix": "",
+        "age": 31,
+        "address": "Shizuoka, Japan"
+    },
+    {
+        "date_assigned": "2023-08-10",
+        "designation": "Shinigami",
+        "f_name": "Yori",
+        "m_name": "",
+        "l_name": "Takahashi",
+        "suffix": "",
+        "age": 20,
+        "address": "Tokyo, Japan"
+    }
+]

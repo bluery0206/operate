@@ -64,9 +64,9 @@
 					<div>Address: {{ profile.address}} </div>
 					<div>Civil Status: {{ profile.civil_status}}</div>
 				{% if profile.p_type == 'personnel' %}
-					<div>Date Arrested: {{ profile.date_assigned }}</div>
-					<div>Date Arrested: {{ profile.date_relieved }}</div>
-					<div>Date assigned: {{ profile.designation }}</div>
+					<div>Date Assigned: {{ profile.date_assigned }}</div>
+					<div>Date relieved: {{ profile.date_relieved }}</div>
+					<div>Designation: {{ profile.designation }}</div>
 				{% else %}
 					<div>Date Arrested: {{ profile.date_arrested }}</div>
 					<div>Date Arrested: {{ profile.date_committed }}</div>

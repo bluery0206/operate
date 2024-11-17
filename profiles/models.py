@@ -66,10 +66,12 @@ class Profile(models.Model):
 
 	# Images
 	thumbnail = models.FileField(
-		upload_to	= "thumbnails"
+		upload_to	= "thumbnails",
+		default 	= "default.jpg"
 	)
 	raw_image = models.FileField(
-		upload_to	= "raw_images"
+		upload_to	= "raw_images",
+		default 	= "default.jpg"
 	)
 
 	# Common details
