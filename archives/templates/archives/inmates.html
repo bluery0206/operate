@@ -3,6 +3,7 @@
 
 {% block content %}
 	<h2>Inmate Profiles (Archived)</h2>
+
 	<div class="filter-bar">
 		<!-- textsearch -->
 		<form method="GET" class="search-form">
@@ -22,14 +23,6 @@
 			</div>
 		</form>
 
-		<!-- facesearch -->
-		<a class="btn" href="{% url 'facesearch' %}">
-			<span class="material-symbols-outlined">
-				account_box
-			</span>
-			FaceSearch
-		</a>
-
 		<!-- Filters -->
 		<form method="GET" class="filter-form">
 
@@ -41,8 +34,6 @@
 				{% if sort_choices %}
 					{% for pair in sort_choices %}
 						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
-
-						{{ pair.0 }}
 					{% endfor %}
 				{% endif %}
 			</select>

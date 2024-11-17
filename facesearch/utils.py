@@ -49,7 +49,11 @@ def get_profiles(cand_list, database_path):
 		if profile: cands_prof.append(profile)
 
 	result = list(zip(cands_dist, cands_prof))
-	result = sorted(result, reverse=False)
+		
+	for res in result:
+		print(res)
+		
+	result = sorted(result, key=lambda x: x[0], reverse=False)
 
 	return result
 

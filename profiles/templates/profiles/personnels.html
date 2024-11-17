@@ -7,13 +7,14 @@
 	<div class="filter-bar">
 		<!-- Search by text -->
 		<form method="GET" class="search-form">
-			<input type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}">
-
+			<input class="form-control form-control-secondary" type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}" title="Search">
+			
+			<!-- Keeping filter options because initiating a new search will reset the whole page -->
 			<input type="hidden" name="designation" value="{{ filters.designation }}">
-			<input type="hidden" name="rank" value="{{ filters.rank }}">
-			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
-			<input type="hidden" name="sort_by" value="{{ filters.sort_by }}">
-			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
+			<input type="hidden" name="rank" 		value="{{ filters.rank }}">
+			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+			<input type="hidden" name="sort_by" 	value="{{ filters.sort_by }}">
+			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
 
 			<div class="actions">
 				<button class="btn" type="submit" title="Search">
@@ -25,20 +26,15 @@
 			</div>
 		</form>
 
-		<!-- Facesearch -->
-		<a class="btn" href="{% url 'facesearch' %}">
-			<span class="material-symbols-outlined">
-				account_box
-			</span>
-			FaceSearch
-		</a>
-
 		<!-- Filter -->
 		<form method="GET" class="filter-form">
+
+			<!-- keeping the search value in here to preserve it when resetting filters -->
 			<input type="hidden" name="search" value="{{ filters.search }}">
-			<input type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
+
+			<input class="form-control form-control-secondary" type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
 			
-			<select name="rank" title="Filter by rank">
+			<select class="btn btn-outline-secondary" name="rank" title="Filter by rank">
 				<option class="option_title"  value="">Ranks</option>
 				{% if ranks %}
 					{% for rank in ranks%}
@@ -47,18 +43,16 @@
 				{% endif %}
 			</select>
 			
-			<select name="sort_by" title="Sort by">
+			<select class="btn btn-outline-secondary" name="sort_by" title="Sort by">
 				<option class="option_title" value="">Sort by</option>
 				{% if sort_choices %}
 					{% for pair in sort_choices %}
 						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
-
-						{{ pair.0 }}
 					{% endfor %}
 				{% endif %}
 			</select>
 			
-			<select name="sort_order" id="sort_order" title="Sort order">
+			<select class="btn btn-outline-secondary" name="sort_order" id="sort_order" title="Sort order">
 				{% if order_choices %}
 					{% for pair in order_choices %}
 						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
@@ -66,11 +60,11 @@
 				{% endif %}
 			</select>
 
-			<button class="btn" type="submit" title="Apply filter">
+			<button class="btn btn-outline-secondary" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
 			</button>
 			
-			<button class="btn" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
+			<button class="btn btn-outline-secondary" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
 				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
 		</form>
@@ -82,15 +76,15 @@
 			</button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="{% url 'archive-add-all' 'personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'archive-add-all' 'personnel' %}?prev={{request.path}}" title="Add all profiles to archive">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}">
+				<a class="btn" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}" title="Delete all profiles">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -98,38 +92,46 @@
 		</div>
 	</div>
 
-	<div class="profiles-list">
+	<div class="card-list">
 		{% if personnels %}
 			{% for profile in personnels %}
 				<div class="personnel card">
-					<div class="header">
-						<div></div>
-
-						<div class="actions">
-							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
+					<div class="picture">
+						<div class="button-overlay">
+							<a class="btn btn-transparent-dark" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
 								<span class="material-symbols-outlined">open_in_new</span>
+								<span>View profile</span>
 							</a>
-							<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}">
+							<a class="btn btn-transparent-dark" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
 								<span class="material-symbols-outlined">edit</span>
+								<span>Edit profile</span>
 							</a>
-							<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
+							<a class="btn btn-transparent-dark" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
 								<span class="material-symbols-outlined">archive</span>
+								<span>Add profile to archives</span>
 							</a>
 						</div>
-					</div> 
 
-					<div class="content">
-						<div class="picture">
-							<img src="{{ profile.thumbnail.url }}" alt="">
+						<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+					</div>
+
+					<div class="details">
+						<div class="name">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+						<div class="muted" title="{{ profile|full_name }}'s home address">
+							<span class="material-symbols-outlined">home</span>
+							<span>{{ profile.address }}</span>
 						</div>
-
-						<div class="details">
-							<div>Name: {{ profile|full_name }}</div>
-							<div>Rank: {{ profile.rank|upper }} </div> 
-							<div>Address: {{ profile.address }}</div>
-							<div>Date profiled: {{ profile.date_profiled }}</div>
-							<div>Date assigned: {{ profile.date_assigned }}</div>
-							<div>Designation: {{ profile.designation }}</div>
+						<div class="muted" title="{{ profile|full_name }}'s profiled date">
+							<span class="material-symbols-outlined">more_time</span>
+							<span>{{ profile.date_profiled|date:"M j, Y" }}</span>
+						</div>
+						<div class="muted" title="{{ profile|full_name }}'s assigned date">
+							<span class="material-symbols-outlined">assignment_add</span>
+							<span>{{ profile.date_assigned|date:"M j, Y" }}</span>
+						</div>
+						<div class="muted" title="{{ profile|full_name }}'s designation">
+							<span class="material-symbols-outlined">assignment_ind</span>
+							<span>{{ profile.designation }}</span>
 						</div>
 					</div>
 				</div>

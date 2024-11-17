@@ -46,3 +46,9 @@ required: Makes the field required (it must be filled in before submitting).
 
 	personnel = Personnel(date_arrested=post['date_arrested'], crime_violated=post['crime_violated'], f_name=post['f_name'], m_name=post.get('m_name'), l_name=post['l_name'], suffix=post.get('suffix'), age=post['age'], address=post['address'])
 	personnel = Personnel(date_assigned=post['date_assigned'], designation=post['designation'], f_name=post['f_name'], m_name=post.get('m_name'), l_name=post['l_name'], suffix=post.get('suffix'), age=post['age'], address=post['address'])
+
+
+
+
+
+

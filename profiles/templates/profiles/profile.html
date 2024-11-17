@@ -62,72 +62,72 @@
 					<div class="field-list">
 						<div class="field">
 							<label for="">First name</label>
-							<input type="text" value="{{ profile.f_name|title }}" placeholder="First Name" disabled>
+							<input class="form-control" type="text" value="{{ profile.f_name|title }}" placeholder="N/A" disabled>
 						</div>
 						<div class="field">
 							<label for="">Middle name</label>
-							<input type="text" value="{{ profile.m_name|title }}" placeholder="Middle Name" disabled>
+							<input class="form-control" type="text" value="{{ profile.m_name|title }}" placeholder="N/A" disabled>
 						</div>
 						<div class="field">
 							<label for="">Last name</label>
-							<input type="text" value="{{ profile.l_name|title }}" placeholder="Last Name" disabled>
+							<input class="form-control" type="text" value="{{ profile.l_name|title }}" placeholder="N/A" disabled>
 						</div>
 						<div class="field">
 							<label for="">Suffix</label>
-							<input type="text" value="{{ profile.suffix|title }}" placeholder="Suffix" disabled>
+							<input class="form-control" type="text" value="{{ profile.suffix|title }}" placeholder="N/A" disabled>
 						</div>
 					</div>
 				</div> <!-- full name  -->
 
 				<div class="field">
 					<label for="">Age:</label>
-					<input type="text" value="{{ profile.age}}" placeholder="Age" disabled>
+					<input class="form-control" type="number" value="{{ profile.age}}" placeholder="N/A" disabled>
 				</div>
 
 				<div class="field">
 					<label for="">Address:</label>
-					<input type="text" value="{{ profile.address|title }}" placeholder="Address" disabled>
+					<input class="form-control" type="text" value="{{ profile.address|title }}" placeholder="N/A" disabled>
 				</div>
 
-				<div class="field">
+				<div class="field field-primary">
 					<label for="">Civil status:</label>
-					<input type="text" value="{{ profile.civil_status|title }}" placeholder="Civil Status" disabled>
+					<input class="form-control" type="text" value="{{ profile.civil_status|title }}" placeholder="N/A" disabled>
 				</div>
 
 				<div class="field">
 					<label for="">Date profiled:</label>
-					<input type="text" value="{{ profile.date_profiled }}" placeholder="Date Profiled" disabled>
+					<input class="form-control" type="text" value="{{ profile.date_profiled }}" placeholder="N/A" disabled>
 				</div>
 
 				{% if profile.p_type == 'personnel' %}
 					<div class="field">
 						<label for="">Rank:</label>
-						<input type="text" value="{{ profile.rank|upper }}" placeholder="Rank" disabled>
+						<input class="form-control" type="text" value="{{ profile.rank|upper }}" placeholder="N/A" disabled>
 					</div>
 					<div class="field">
 						<label for="">Date assigned:</label>
-						<input type="text" value="{{ profile.date_assigned }}" placeholder="Date Assigned" disabled>
+						<input class="form-control" type="text" value="{{ profile.date_assigned }}" placeholder="N/A" disabled>
 					</div>
 					<div class="field">
 						<label for="">Date relieved:</label>
-						<input type="text" value="{{ profile.date_relieved }}" placeholder="Date Relieved" disabled>
+						<input class="form-control" type="text" value="{{ profile.date_relieved }}" placeholder="N/A" disabled>
 					</div>
 					<div class="field">
 						<label for="">Designation:</label>
-						<input type="text" value="{{ profile.designation|title }}" placeholder="Designation" disabled>
+						<input class="form-control" type="text" value="{{ profile.designation|title }}" placeholder="N/A" disabled>
 					</div>
 				{% else %}
 					<div class="field">
 						<label for="">Date arrested:</label>
-						<input type="text" value="{{ profile.date_arrested }}" placeholder="Date Arrested" disabled>
+						<input class="form-control" type="text" value="{{ profile.date_arrested }}" placeholder="N/A" disabled>
 					</div>
 					<div class="field">
 						<label for="">Date committed:</label>
-						<input type="text" value="{{ profile.date_committed }}" placeholder="Date Committed" disabled>
+						<input class="form-control" type="text" value="{{ profile.date_committed }}" placeholder="N/A" disabled>
 					</div>
 					<div class="field">
 						<label for="">Crime violated:</label>
-						<input type="text" value="{{ profile.crime_violated }}" placeholder="Crime Violated" disabled>
+						<input class="form-control" type="text" value="{{ profile.crime_violated }}" placeholder="N/A" disabled>
 					</div>
 				{% endif %}
 			</div>
