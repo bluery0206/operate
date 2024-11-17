@@ -76,6 +76,9 @@ WIDGETS = {
 	'designation': forms.TextInput(attrs={
 		'class': 'form-control form-control-primary',
 	}),
+	'crime_violated': forms.TextInput(attrs={
+		'class': 'form-control form-control-primary',
+	}),
 }
 
 DISABLED_WIDGETS = {

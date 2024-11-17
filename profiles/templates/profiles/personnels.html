@@ -116,20 +116,20 @@
 					</div>
 
 					<div class="details">
-						<div class="name">{{ profile.rank|upper }} {{ profile|full_name }}</div>
-						<div class="muted" title="{{ profile|full_name }}'s home address">
+						<div class="name detail">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+						<div class="muted detail" title="{{ profile|full_name }}'s home address">
 							<span class="material-symbols-outlined">home</span>
 							<span>{{ profile.address }}</span>
 						</div>
-						<div class="muted" title="{{ profile|full_name }}'s profiled date">
+						<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
 							<span class="material-symbols-outlined">more_time</span>
 							<span>{{ profile.date_profiled|date:"M j, Y" }}</span>
 						</div>
-						<div class="muted" title="{{ profile|full_name }}'s assigned date">
+						<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
 							<span class="material-symbols-outlined">assignment_add</span>
 							<span>{{ profile.date_assigned|date:"M j, Y" }}</span>
 						</div>
-						<div class="muted" title="{{ profile|full_name }}'s designation">
+						<div class="muted detail" title="{{ profile|full_name }}'s designation">
 							<span class="material-symbols-outlined">assignment_ind</span>
 							<span>{{ profile.designation }}</span>
 						</div>
@@ -139,8 +139,5 @@
 		{% else %}
 			<h2>There are no personnel profiled.</h2>
 		{% endif %}
-
-
-	
 	</div>
 {% endblock content %}

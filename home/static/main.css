@@ -239,6 +239,7 @@ footer {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5em;
+    justify-content: center;
 }
 .card {
     width: calc(var(--img-size-s) * 1.25);
@@ -276,6 +277,12 @@ footer {
             font-family: var(--font-bold);
             font-size: 1em;
         }
+        
+        .detail {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            }
     }
 }
 .card:hover {
@@ -411,6 +418,7 @@ footer {
 
 .dropdown{
     width: fit-content;
+    background: var(--white);
 
     button {
         width: 100%;
@@ -423,18 +431,17 @@ footer {
         display: none;
         position: absolute;
         background: var(--white);
-        color: white;
         width: inherit;
         box-shadow: 2px 2px 5px 2px var(--shadow);
 
         .btn {
             border: none;
+            background: var(--white);
             border-radius: 0;
         }
 
         .btn:hover {
-            background: var(--white-1);
-            outline: 2px solid var(--white-2);
+            filter: brightness(90%);
         }
     }
 } /* drop-down */
