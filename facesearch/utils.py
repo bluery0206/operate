@@ -6,13 +6,8 @@ import cv2
 
 from profiles.models import Personnel, Inmate
 
-cwd_path		= Path().cwd()
-media_path		= cwd_path.joinpath("media")
-database_path 	= media_path.joinpath("raw_images")
-searches_path 	= media_path.joinpath("searches")
-fs_path			= cwd_path.joinpath("facesearch")
-models_path		= fs_path.joinpath("snn_models")
-
+# MODEL_NAME = "emb_gen.onnx"
+MODEL_NAME = "2024.11.16.02.52.onnx"
 
 def crop_image_from_center(image):
     height, width = image.shape
@@ -47,6 +42,8 @@ def get_profiles(cand_list, database_path):
 		profile = personnel if personnel else inmate
 
 		if profile: cands_prof.append(profile)
+
+	print(f"{cands_dist=}")
 
 	result = list(zip(cands_dist, cands_prof))
 		
@@ -89,7 +86,7 @@ def open_gray_image(image_path):
 def search_face(inp_image, val_images, threshold):
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(str(Path().cwd().joinpath("facesearch/snn_models/2024.11.16.02.52.onnx")))
+	session = ort.InferenceSession(str(Path().cwd().joinpath(f"facesearch/snn_models/{MODEL_NAME}")))
 
 	input_name	= session.get_inputs()[0].name
 	output_name = session.get_outputs()[0].name
@@ -115,12 +112,12 @@ def search_face(inp_image, val_images, threshold):
 
 		if dist <= 0: break
 
-	return cand_list if best_cand_idx else None
+	return cand_list if cand_list else None
 
-def take_image():
+def take_image(camera):
 	image_name	= None
-	camera		= 0
-	cap			= cv2.VideoCapture(camera)
+	print(f"{camera=}, {type(camera)=}")
+	cap			= cv2.VideoCapture(int(camera))
 
 	while cap.isOpened(): 
 		_, frame = cap.read()
@@ -132,13 +129,14 @@ def take_image():
 		# Show image back to screen
 		cv2.imshow('Image Collection | press "q" to exit', frame)
 		
-		if cv2.waitKey(10) & 0XFF == ord('q'):
-			break
+		if cv2.waitKey(10) & 0XFF == ord('q'): break
 		
 		if cv2.waitKey(10) & 0XFF == ord(' '):
-			time = timezone.now().strftime("%Y%m%d%H%M%S")
-			image_name = f"media/searches/{time}.jpg"
+			time		= timezone.now().strftime("%Y%m%d%H%M%S")
+			image_name	= f"media/searches/{time}.jpg"
+			
 			cv2.imwrite(image_name, frame)
+			
 			break
 			
 	cap.release()

@@ -2,12 +2,13 @@ from django.shortcuts import render
 from pathlib import Path
 
 from .forms import UploadedImageForm
+from .models import UploadedImage
 from .utils import *
 
 DATABASE_PATH		= Path().cwd().joinpath("media/raw_images")
 SEARCH_IMAGE_PATH 	= Path().cwd().joinpath("media/searches")
 
-THRESHOLD = 10
+THRESHOLD = 1000
 
 def facesearch(request):
 	context = {
@@ -18,11 +19,15 @@ def facesearch(request):
 		is_option_camera = request.POST.get("open_camera", 0)
 
 		if is_option_camera:
-			input_path	= take_image()
+			camera = request.POST.get("camera", 0)
 
-			if not input_path:	return render(request, "facesearch/facesearch.html", context)
+			input_path = take_image(camera)
 
-			input_path = Path(input_path)
+			if input_path:	
+				input_path = Path(input_path)
+			else:
+				return render(request, "facesearch/facesearch.html", context)
+
 		else:
 			context['form'] = UploadedImageForm(request.POST, request.FILES)
 			
@@ -30,15 +35,16 @@ def facesearch(request):
 			time		= timezone.now().strftime("%Y%m%d%H%M%S")
 			input_path	= SEARCH_IMAGE_PATH.joinpath(f"{time}.jpg")
 			request.FILES['image'].name = input_path
-			
-			if context['form'].is_valid():	context['form'].save()
 
-		cand_list = search(input_path, DATABASE_PATH, THRESHOLD)
+			if context['form'].is_valid(): context['form'].save()
 
+		# get profiles from images
+		cand_list			= search(input_path, DATABASE_PATH, THRESHOLD)
 		context["profiles"] = get_profiles(cand_list, DATABASE_PATH) if cand_list else None
 
 		# Delete the image after use
-		input_path.unlink()
+		instance = UploadedImage.objects.filter(image__endswith=str(input_path).split("\\")[-1]).first()
+		instance.delete() if instance else input_path.unlink()
 
 	return render(request, "facesearch/facesearch.html", context)
 

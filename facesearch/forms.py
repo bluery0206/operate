@@ -5,8 +5,14 @@ from django.core.validators import FileExtensionValidator
 from .models import UploadedImage
 
 class UploadedImageForm(forms.ModelForm):
-	image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	image = forms.FileField(
+		widget		= forms.FileInput(attrs={'class': 'form-control form-control-primary'}),
+		validators	= [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
+	)
 
 	class Meta:
-		model = UploadedImage
-		fields = ['image']
+		model	= UploadedImage
+		fields	= ['image']
+		
+
+

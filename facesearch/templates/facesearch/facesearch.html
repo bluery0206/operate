@@ -2,71 +2,130 @@
 {% load custom_filters %}
 
 {% block content %}
+	<div class="facesearch">
+		<div class="forms">
+			<h2>Facesearch</h2>	
 
-	<h2>Facesearch</h2>	
-
-	<form method="POST" enctype="multipart/form-data" style="border: 1px solid red;">
-		<div class="preview">
-			<img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/>
-		</div>
-
-		{% csrf_token %}
-
-		{{ form }}
-
-		<button class="btn" type="submit">
-			<span class="material-symbols-outlined">upload_2</span>
-			<span>Upload</span>
-		</button>
-	</form>
-	<form method="POST">
-		{% csrf_token %}
-
-		<button class="btn" name="open_camera" value="1" type="submit">
-			<span class="material-symbols-outlined">camera</span>
-			<span>Open camera</span>
-		</button>
-	</form>
-
-	<div class="profiles-list">
-		{% if profiles %}
-			{% for dist, profile in profiles %}
-				<div class="profile card">
-					<div class="header">
-						<div>
-							<h2>Top {{ forloop.counter }}</h2>
-							<p><b>Distance: {{ dist|floatformat:2 }}</b></p>
-						</div>
-
-						<div class="actions">
-							<a class="btn" href="{% url 'profile' profile.p_type profile.pk %}">
-								<span class="material-symbols-outlined">open_in_new</span>
-							</a>
-						</div>
-					</div> 
-
-					<div class="content">
-						<div class="picture">
-							<img src="{{ profile.thumbnail.url }}" alt="">
-						</div>
-
-						<div class="details">
-							<div>Name: {{ profile|full_name }}</div>
-							<div>Rank: {{ profile.rank|upper }} </div> 
-							<div>Address: {{ profile.address }}</div>
-							<div>Date profiled: {{ profile.date_profiled }}</div>
-							<div>Date assigned: {{ profile.date_assigned }}</div>
-							<div>Designation: {{ profile.designation }}</div>
-						</div>
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+		
+				<h3>Upload an image</h3>
+		
+				<!-- <img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/> -->
+	
+				<div class="fields">
+					<div class="field">
+						{{ form.image }}
 					</div>
 				</div>
-			{% endfor %}
-		{% else %}
-			<h2>No batig nawng found.</h2>
-		{% endif %}
+		
+				<button class="btn btn-primary" type="submit">
+					<span class="material-symbols-outlined">upload_2</span>
+					<span>Upload</span>
+				</button>
+			</form>
+
+			<div>or</div>
+	
+			<form method="POST">
+				{% csrf_token %}
+	
+				<h3>Capture image</h3>
+	
+				<div class="fields">
+					<div class="field">
+						<label for="camera">Camera: </label>
+						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="1" min="0" max="10" step="1">
+					</div>
+					<small>(Try to change if doesn't work)</small>
+				</div>
+				
+				<button class="btn btn-outline-secondary" name="open_camera" value="1" type="submit">
+					<span class="material-symbols-outlined">camera</span>
+					<span>Open camera</span>
+				</button>
+			</form>
+		</div>
+
+		<div class="card-list">
+			{% if profiles %}
+				{% for dist, profile in profiles %}
+					<div class="card">
+						<div class="{{ profile.p_type }} header">
+							<span class="title">Top {{ forloop.counter }}, Distance: {{ dist|floatformat:2 }}</span>
+						</div>
+
+						<div class="picture">
+							<div class="button-overlay">
+								<a class="btn btn-transparent-dark" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+									<span class="material-symbols-outlined">open_in_new</span>
+									<span>View profile</span>
+								</a>
+								<a class="btn btn-transparent-dark" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+									<span class="material-symbols-outlined">edit</span>
+									<span>Edit profile</span>
+								</a>
+								{% if profile.archivepersonnel %}
+									<a class="btn btn-transparent-dark" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">unarchive</span>
+										<span>Unarchive</span>
+									</a>
+								{% elif profile.archiveinmate %}
+									<a class="btn btn-transparent-dark" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">unarchive</span>
+										<span>Unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn btn-transparent-dark" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">archive</span>
+										<span>Add profile to archives</span>
+									</a>
+								{% endif %}
+							</div>
+
+							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+						</div>
+
+
+						<div class="details">
+							<div class="name">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s home address">
+								Address: {{ profile.address|title }}
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+								<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+							</div>
+							{% if profile.p_type == 'personnel' %}
+								<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
+									<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s relieved date">
+									<span>Relieved: {{ profile.date_relieved|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+									<span>Designation: {{ profile.designation|title }}</span>
+								</div>
+							{% else %}
+								<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
+									<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s committed date">
+									<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+									<span>Violation: {{ profile.crime_violated }}</span>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<h2>No batig nawng found.</h2>
+			{% endif %}
+		</div>
 	</div>
 
-    <script>
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Get the file input element from the form
             const fileInput = document.getElementById("id_image"); // Use the form field's ID
@@ -86,6 +145,6 @@
                 }
             });
         });
-    </script>
+    </script> -->
 
 {% endblock content %}
