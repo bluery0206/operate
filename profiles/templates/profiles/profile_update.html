@@ -5,7 +5,7 @@
 	<form class="profile" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 
-		<div class="header">
+		<div class="{{ profile.p_type }} header">
 			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
 				<span class="material-symbols-outlined">arrow_back_ios</span>
 				<span>Back</span>

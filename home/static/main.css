@@ -53,8 +53,8 @@
     --dark          : rgb(52, 58, 64);
     --muted         : rgb(108, 117, 125);
 
-    --personnel     : var(--primary);
-    --inmate        : rgb(233, 145, 30);
+    --personnel     : rgb(69, 106, 146);
+    --inmate        : rgb(131, 123, 114);
     /* --inmate        : rgb(237, 135, 0); */
 
     --transparent-dark  : rgba(0, 0, 0, 0.75);
@@ -438,6 +438,13 @@ footer {
 
     transition: all ease-in-out 0.2s;
 }
+.btn-a {
+    width: 20%;
+}
+.btn-b {
+    width: 100%;
+}
+
 .btn-primary {
     background: var(--primary);
     color: var(--light);
@@ -464,6 +471,14 @@ footer {
 }
 .btn-success {
     background: var(--success);
+    color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
+}
+.btn-danger {
+    background: var(--danger);
     color: var(--light);
     
     * {
@@ -727,6 +742,45 @@ footer {
 
 
 
+
+.confimation-dialog-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10dvh;
+
+    .confirmation-dialog {
+        background: var(--light);
+        overflow: hidden;
+        box-shadow: 2px 3px 10px 5px var(--shadow);
+        width: 50%;
+        border-radius: var(--radius-medium);
+    
+        .header {
+            padding: 1em 2em;
+            background: var(--dark);
+            display: flex;
+            justify-content: space-between;
+
+            .title {
+                * {
+                    color: var(--light);
+                }
+            }
+        }
+    
+        .body {
+            padding: 1em 2em;
+            display: grid;
+            row-gap: 1em;
+    
+            .actions {
+                display: flex;
+                gap: 1em;
+            }
+        }
+    }
+}
 
 
 
