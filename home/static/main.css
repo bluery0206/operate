@@ -230,6 +230,13 @@ footer {
     font-family: var(--font-bold);
     color: var(--light);
 }
+.vertical {
+    display: grid !important;
+}
+.right {
+    text-align: right !important;
+    justify-content: right !important;
+}
 
 
 
@@ -426,6 +433,7 @@ footer {
     cursor          : pointer;
     display         : flex;
     align-items     : center;
+    justify-content : center;
     gap             : 0.25em;
     border-radius   : var(--radius-small);
     height          : 2.5em;
@@ -740,44 +748,57 @@ footer {
     } /* body */
 } /* profile */
 
-
-
-
-.confimation-dialog-wrapper {
+.dialog-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10dvh;
+    padding: 15dvh;
+}
+.dialog {
+    background: var(--light);
+    overflow: hidden;
+    box-shadow: 2px 3px 10px 5px var(--shadow);
+    width: 400px;
+    border-radius: var(--radius-medium);
 
-    .confirmation-dialog {
-        background: var(--light);
-        overflow: hidden;
-        box-shadow: 2px 3px 10px 5px var(--shadow);
-        width: 50%;
-        border-radius: var(--radius-medium);
-    
-        .header {
-            padding: 1em 2em;
-            background: var(--dark);
-            display: flex;
-            justify-content: space-between;
+    .header {
+        padding: 1em 2em;
+        background: var(--dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-            .title {
-                * {
-                    color: var(--light);
-                }
+        .title {
+            * {
+                color: var(--light);
             }
         }
-    
-        .body {
-            padding: 1em 2em;
+    }
+
+    .body {
+        padding: 1em 2em;
+        display: grid;
+        row-gap: 1em;
+
+        .actions {
+            display: flex;
+            gap: 1em;
+        }
+
+        form {
             display: grid;
             row-gap: 1em;
-    
-            .actions {
-                display: flex;
-                gap: 1em;
+
+            .fields {
+                display: grid;
+                row-gap: 0.75em;
+
+                .field {
+                    display: grid;
+                    row-gap: 0.25em;
+                }
             }
+            
         }
     }
 }
@@ -785,8 +806,14 @@ footer {
 
 
 
-
-
-
-
-
+.alert {
+    padding: 0.5em 1em;
+    outline: none;
+    border: none;
+    background: none;
+    border-radius: var(--radius-small);
+}
+.alert-danger {
+    color: var(--light);
+    background: var(--danger);
+}

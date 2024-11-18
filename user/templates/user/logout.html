@@ -1,19 +1,24 @@
 {% extends 'user/base.html' %}
 
 {% block content %}
-	<div class="raft">
-		<div class="header">
-			<h1>Welcome to OPERATE!</h1>
-		</div>
-
-		<div class="description">
-			<h2>Login</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing </p>
-		</div>
-
-
-		<div class="actions">
-			<a class="btn" href="{% url 'user-login' %}">Login</a>
-		</div>
-	</div>
+	<div class="dialog-wrapper">
+        <div class="dialog">
+            <div class="header">
+				<div class="title">
+                    <h3>Welcome to OPERATE!</h3>
+                </div>
+            </div>
+    
+            <div class="body">
+				<div class="description">
+					<h2>Logout</h2>
+					<p>You have been logged-out.</p>
+				</div>
+    
+				<div class="actions vertical">
+					<a href="{% url 'user-login' %}" class="btn btn-primary">LOGIN</a>
+				</div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

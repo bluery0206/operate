@@ -1,27 +1,63 @@
 {% extends 'user/base.html' %}
+{% load custom_filters %}
 
 {% block content %}
-	<div class="raft">
-		<div class="header">
-			<h1>Welcome to OPERATE!</h1>
-		</div>
+	<div class="dialog-wrapper">
+        <div class="dialog">
+            <div class="header">
+				<div class="title">
+                    <h3>Welcome to OPERATE!</h3>
+                </div>
+            </div>
+    
+            <div class="body">
+				<div class="description">
+					<h2>Login</h2>
+				</div>
+    
+                <form method="POST">
+                    {% csrf_token %}
 
-		<div class="description">
-			<h2>Login</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		</div>
+					{% if form.non_field_errors %}
+						<div class="alert alert-danger">
+							{% for error in form.non_field_errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
+					{% endif %}
 
-		<form method="POST">
-			{% csrf_token %}
-
-			<fieldset>
-				{{ form }}
-			</fieldset>
-
-			<div class="actions">
-				<a class="btn" href="{% url 'password-reset' %}">Forgot password?</a>
-				<button class="btn" type="submit">Login</button>
-			</div>
-		</form>
-	</div>
+					<div class="fields">
+						<div class="field">
+							<label for="id_username">Username:</label>
+							{% if form.username.errors %}
+								<div class="alert alert-danger">
+									{% for error in form.username.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% endif %}
+							<input type="text" class="form-control form-control-primary" name="{{form.username.name}}" value="{% if form.username.value %}{{form.username.value}}{% endif %}" id="{{form.username.id_for_label}}" required>
+						</div>
+						<div class="field">
+							<label for="id_password">Password:</label>
+							{% if form.password.errors %}
+								<div class="alert alert-danger">
+									{% for error in form.password.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% endif %}
+							<input type="password" class="form-control form-control-primary" name="{{form.password.name}}" value="{% if form.password.value %}{{form.password.value}}{% endif %}" id="{{form.password.id_for_label}}" required>
+						</div>
+					</div>
+    
+                    <div class="actions vertical">
+						<a class="btn right" href="{% url 'password-reset' %}">Forgot password?</a>
+						<button class="btn btn-primary" type="submit">LOGIN</button>
+						<a class="btn btn-secondary" href="javascript:history.go(-1)">RETURN</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
