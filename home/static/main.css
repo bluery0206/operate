@@ -384,31 +384,31 @@ footer {
 
 
 .facesearch {
-    display: flex;
-    gap: 2em;
-    margin: 1% 0;
-    min-height: calc(100dvh - 3em);
-
+    display     : flex;
+    gap         : 1.5em;
+    margin      : 1% 0;
+    min-height  : calc(100dvh - 3em);
+    width       : 100%;
+    
     .forms {
-        background: var(--light);
-        position: sticky;
-        top: calc(4em + 1.60%);
-        height: fit-content;
-        box-shadow: 2px 2px 5px 2px var(--shadow);
-        display: grid;
-        outline: 1px solid var(--secondary);
+        box-shadow  : 2px 2px 5px 2px var(--shadow);
+        outline     : 1px solid var(--secondary);
         border-radius: var(--radius-medium);
-        row-gap: 2em;
-        padding: 1em 1em 2em 1em;
+        top         : calc(4em + 1.60%);
+        padding     : 1em 1em 2em 1em;
+        background  : var(--light);
+        height      : fit-content;
+        position    : sticky;
+        display     : grid;
+        row-gap     : 2em;
 
         form {
-            display: grid;
-            row-gap: 0.5em;
+            display : grid;
+            row-gap : 0.5em;
+            width   : 225px;
 
             .fields {
-
                 input {
-                    max-width: 225px;
                     width: 100%;
                 }
             }
