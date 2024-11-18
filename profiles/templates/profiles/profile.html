@@ -4,7 +4,7 @@
 {% block content %}
 
 	<div class="profile">
-		<div class="header">
+		<div class=" {{ profile.p_type }}  header">
 			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
 				<span class="material-symbols-outlined">arrow_back_ios</span>
 				<span>Back</span>
@@ -19,24 +19,25 @@
 				</a>
 			
 				{% if profile.archivepersonnel %}
-					<a class="btn btn-secondary" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}">
+					<a class="btn btn-outline-light" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% elif profile.archiveinmate %}
-					<a class="btn btn-secondary" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}">
+					<a class="btn btn-outline-light" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% else %}
-					<a class="btn btn-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
+					<a class="btn btn-outline-light" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}">
 						<span class="material-symbols-outlined">archive</span>
 						<span>Add to archive</span>
 					</a>
 				{% endif %}
 				
 				<div class="dropdown">
-					<button class="btn"><span class="material-symbols-outlined">more_vert</span></button>
+					<button class="btn btn-outline-light"><span class="material-symbols-outlined">more_vert</span></button>
+
 					<div class="content">
 						<a class="btn" href="{% url 'profile-docx-download' profile.p_type profile.pk %}">
 							<span class="material-symbols-outlined">download</span>

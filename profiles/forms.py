@@ -67,10 +67,10 @@ WIDGETS = {
 	'address': forms.TextInput(attrs={
 		'class': 'form-control form-control-primary',
 	}),
-	'civil_status': forms.TextInput(attrs={
+	'civil_status': forms.Select(attrs={
 		'class': 'form-control form-control-primary',
 	}),
-	'rank': forms.TextInput(attrs={
+	'rank': forms.Select(attrs={
 		'class': 'form-control form-control-primary',
 	}),
 	'designation': forms.TextInput(attrs={
@@ -138,7 +138,6 @@ class CreatePersonnel(forms.ModelForm):
 		]
 		widgets = WIDGETS
 
-
 class UpdatePersonnel(forms.ModelForm):
 	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
 	
@@ -160,8 +159,6 @@ class UpdatePersonnel(forms.ModelForm):
 			'designation',
 		]
 		widgets = WIDGETS
-
-
 
 class CreateInmate(forms.ModelForm):
 	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])

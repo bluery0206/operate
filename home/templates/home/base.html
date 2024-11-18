@@ -11,12 +11,12 @@
 </head>
 <body>
 	<header>
-		<div>
+		<div class="title">
 			OPERATE
 		</div>	
 
 		<!-- facesearch by  -->
-		<a class="btn" href="{% url 'facesearch' %}">
+		<a class="btn btn-primary" href="{% url 'facesearch' %}">
 			<span class="material-symbols-outlined">
 				account_box
 			</span>
@@ -25,7 +25,7 @@
 		
 		<nav>
 			<!-- home -->
-			<a class="btn" href="{% url 'operate-home' %}">
+			<a class="btn btn-primary" href="{% url 'operate-home' %}">
 				<span class="material-symbols-outlined">
 					home
 				</span>
@@ -34,7 +34,7 @@
 
 			<!-- profiles -->
 			<div class="dropdown">
-				<button class="btn">
+				<button class="btn btn-primary">
 					<span class="material-symbols-outlined">
 						Group
 					</span>
@@ -59,7 +59,7 @@
 
 			<!-- archives -->
 			<div class="dropdown">
-				<button class="btn">
+				<button class="btn btn-primary">
 					<span class="material-symbols-outlined">
 						files
 					</span>
@@ -85,19 +85,13 @@
 
 		<!-- ser action -->
 		<div class="dropdown">
-			<button class="btn">
+			<button class="btn btn-primary">
 				<span class="material-symbols-outlined">
 					account_circle
 				</span>
 			</button>
 
 			<div class="content">
-				<a class="btn" href="#">
-					<span class="material-symbols-outlined">
-						person
-					</span>
-					User
-				</a>
 				<a class="btn" href="/admin/">
 					<span class="material-symbols-outlined">
 						admin_panel_settings

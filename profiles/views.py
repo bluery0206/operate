@@ -6,6 +6,7 @@ from django.shortcuts import (
 )	
 
 from datetime import datetime
+from pathlib import Path
 
 from .models import Personnel, Inmate, Template
 from home.utils import save_profile_picture, get_full_name, generate_docx, save_docx
@@ -38,6 +39,9 @@ INMATE_SORT_CHOICES = [
 	['date_arrested',"Date Arrested"],
 	['date_committed',"Date Committed"],
 ]
+
+CWD_PATH = Path().cwd()
+MEDIA_PATH =  CWD_PATH.joinpath("media")
 
 
 def personnels(request):
@@ -190,7 +194,9 @@ def profile_add(request, p_type):
 		form = create_profile_form()
 
 	context = {
-		'form' : form,
+		'form'			: form,
+		'default_img'	: "../../../media/default.jpg",
+		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile_add.html", context)
 

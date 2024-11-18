@@ -42,7 +42,8 @@
 
     --img-size-s    : 200px;
 
-    --primary       : rgb(0, 123, 255);
+    /* --primary       : rgb(0, 123, 255); */
+    --primary       : rgb(17, 83, 155);
     --secondary     : rgb(108, 117, 125);
     --success       : rgb(40, 167, 69);
     --danger        : rgb(220, 53, 69);
@@ -51,6 +52,10 @@
     --light         : rgb(248, 249, 250);
     --dark          : rgb(52, 58, 64);
     --muted         : rgb(108, 117, 125);
+
+    --personnel     : var(--primary);
+    --inmate        : rgb(233, 145, 30);
+    /* --inmate        : rgb(237, 135, 0); */
 
     --transparent-dark  : rgba(0, 0, 0, 0.75);
     --transparent-light  : rgba(248, 249, 250, 0.75);
@@ -91,6 +96,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin         : 0;
 	box-sizing     : border-box;
 	font-family    : var(--font-regular);
+    color: var(--dark);
 }
 
 
@@ -98,7 +104,11 @@ h1, h2, h3, h4, h5, h6 {
 
 
 body {
-    background: var(--disabled);
+    background: url("images/pnp-ranks.jpg"), linear-gradient(rgba(255, 255, 255, 0.90), rgba(255, 255, 255, 0.90));
+    background-blend-mode: overlay;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: contain;
 }
 
 
@@ -106,10 +116,10 @@ body {
 
 
 header {
+    background: var(--primary);
     box-shadow      : 2px 2px 5px 2px var(--shadow);
     justify-content : space-between;
     align-items     : center;
-    background      : var(--light);
     padding         : 0.5em 10dvw;
     display         : flex;
     flex-wrap: wrap;
@@ -122,7 +132,10 @@ header {
         display     : flex;
         align-items : center;
         gap         : 0.5em;
+        background: none;
 
+
+        
         a {
             display: flex;
             align-items: center;
@@ -136,10 +149,8 @@ header {
 
 main {
     min-height  : calc(100dvh - 3em);
-    padding     : 1% 7dvw;
+    padding     : 1% 10dvw;
 }
-
-
 
 
 
@@ -149,7 +160,6 @@ main {
     align-items     : center;
     justify-content : space-between;
     outline         : 1px solid var(--disabled);
-    background      : var(--light);
     border-radius   : var(--radius-small);
     margin          : 1em 0;
     box-shadow      : 1px 1px 5px 1px var(--shadow);
@@ -178,6 +188,7 @@ main {
     outline         : 1px solid var(--secondary);
     padding         : 0 0.5em 0 1em;
     width           : fit-content;
+    background      : var(--light);
 
     input[type="search"] {
         outline: none;
@@ -206,6 +217,19 @@ footer {
 .muted {
     color: var(--text-disabled);
 }
+.text-white {
+    color: var(--light);
+}
+.inmate {
+    background: var(--inmate);
+}
+.personnel {
+    background: var(--personnel);
+}
+.title {
+    font-family: var(--font-bold);
+    color: var(--light);
+}
 
 
 
@@ -215,50 +239,54 @@ footer {
     display                 : grid;
     grid-template-columns   : 48% 48%;
     justify-content         : space-between;
-    
+    margin: 0 0 2em 0;
+
     .card-list-new {
+        display: grid;
+        row-gap: 1em;
+    
         .card-new {
-            margin  : 2% 0;
             border: 1px solid var(--primary);
             box-shadow: 2px 2px 5px 1px var(--shadow);
             background: var(--white);
             border-radius: var(--font-medium);
             overflow: hidden;
-
+    
             .header {
                 display: flex;
                 justify-content: space-between;
-                padding: 0.5em;
-                background: var(--primary);
-
+                padding: 0.5em 1em;
+                height: fit-content;
+    
                 .title {
                     display: flex;
                     align-items: center;
-                    gap: 0.5em;
+                    gap: 0.25em;
                     color: var(--light);
                 }
-
+    
                 .buttons {
                     display: flex;
                     gap: 0.5em;
                     align-items: center;
                 }
             }
-
+    
             .body {
                 display: flex;
                 gap: 1em;
-
+    
                 .picture {
+                    height: var(--img-size-s);
+    
                     img {
                         width: var(--img-size-s);
+                        height: var(--img-size-s);
                     }
                 }
-
+    
                 .details {
-                    padding: 1em 0;
-                    grid-template-columns   : 150px calc((100% - 150px) - 0.5em);
-                    justify-content         : space-between;
+                        padding: 1em 0;
     
                     .name {
                         font-family: var(--font-bold);
@@ -273,6 +301,7 @@ footer {
     flex-wrap: wrap;
     gap: 1.5em;
     justify-content: center;
+    margin: 0 0 2em 0;
         
     .card {
         width: calc(var(--img-size-s) * 1.25);
@@ -281,6 +310,15 @@ footer {
         border-radius: var(--radius-medium);
         background: var(--light);
         overflow: hidden;
+
+        .header {
+            padding: 0.5em 1em;
+
+            .title {
+                font-family: var(--font-bold);
+                color: var(--light);
+            }
+        }
 
         .picture {
             width: inherit;
@@ -333,6 +371,52 @@ footer {
 
 
 
+
+.facesearch {
+    display: flex;
+    gap: 2em;
+    margin: 1% 0;
+    min-height: calc(100dvh - 3em);
+
+    .forms {
+        background: var(--light);
+        position: sticky;
+        top: calc(4em + 1.60%);
+        height: fit-content;
+        box-shadow: 2px 2px 5px 2px var(--shadow);
+        display: grid;
+        outline: 1px solid var(--secondary);
+        border-radius: var(--radius-medium);
+        row-gap: 2em;
+        padding: 1em 1em 2em 1em;
+
+        form {
+            display: grid;
+            row-gap: 0.5em;
+
+            .fields {
+
+                input {
+                    max-width: 225px;
+                    width: 100%;
+                }
+            }
+        }
+
+    }
+
+    .card-list {
+        gap: 1em;
+        .card {
+            height: fit-content;
+        }
+    }
+
+}
+
+
+
+
 .btn {
     border          : none;
     outline         : none;
@@ -357,46 +441,90 @@ footer {
 .btn-primary {
     background: var(--primary);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-secondary {
     background: var(--secondary);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-light {
     background: var(--light);
     color: var(--primary);
+    
+    * {
+        color: var(--primary);
+     }
 }
 .btn-success {
     background: var(--success);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-info {
     background: var(--info);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-dark {
     background: var(--dark);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-warning {
     background: var(--warning);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-outline-primary {
     outline: 1px solid var(--primary);
     color: var(--dark);
+    
+    * {
+        color: var(--dark);
+     }
 }
 .btn-outline-light {
     outline: 1px solid var(--light);
     color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
 }
 .btn-outline-secondary {
     outline: 1px solid var(--secondary);
     color: var(--dark);
+    
+    * {
+        color: var(--dark);
+     }
 }
 .btn-transparent-dark {
     background: var(--transparent-dark );
     color: var(--white);
+    
+    * {
+        color: var(--white);
+     }
 }
 .btn:hover {
     filter: brightness(125%);
@@ -404,10 +532,18 @@ footer {
 [class*="btn-outline"]:hover {
     background: var(--light);
     color: var(--dark);
+    
+    * {
+        color: var(--dark);
+     }
 }
 [class*="btn-transparent"]:hover {
     background: var(--transparent-light);
     color: var(--dark);
+    
+    * {
+        color: var(--dark);
+     }
 }
 
 
@@ -452,6 +588,8 @@ footer {
 .dropdown{
     width: fit-content;
     background: var(--white);
+    background: none;
+    z-index: 80;
 
     button {
         width: 100%;
@@ -493,7 +631,7 @@ footer {
     border-radius: 5px;
 
     .header {
-        background: var(--primary);
+        /* background: var(--primary); */
         color: var(--light);
         padding: 0.5em 1em;
         display: flex;
@@ -501,7 +639,9 @@ footer {
         border-radius: var(--radius-small);
         justify-content: space-between;
 
-        /* .title  */
+        .title {
+            color: var(--light);
+        }
 
         .buttons {
             display: flex;
@@ -524,6 +664,7 @@ footer {
             img {
                 object-fit: cover;
                 width: 250px;
+                background: var(--light);
                 height: 250px;
             }
 
@@ -556,6 +697,7 @@ footer {
                 display: grid;
                 border-radius: var(--radius-small);
                 row-gap: 0.5em;
+                background: var(--light);
 
                 .field-list {
                     display: flex;

@@ -9,11 +9,11 @@
 				<h2>Newly added personnels</h2>
 
 				{% for profile in personnels %}
-					<div class="personnel card-new">
-						<div class="header">
+					<div class="card-new">
+						<div class="personnel header">
 							<h4 class="title">
-								<span class="material-symbols-outlined">schedule</span>
-								<span>{{ profile.date_profiled }}</span>
+								<span class="material-symbols-outlined text-white">schedule</span>
+								<span class="text-white">{{ profile.date_profiled }}</span>
 							</h4>
 
 							<div class="buttons">
@@ -41,6 +41,9 @@
 								<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
 									<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
 								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s relieved date">
+									<span>Relieved: {{ profile.date_relieved|date:"M j, Y" }}</span>
+								</div>
 								<div class="muted detail" title="{{ profile|full_name }}'s designation">
 									<span>Designation: {{ profile.designation }}</span>
 								</div>
@@ -59,11 +62,11 @@
 				<h2>Newly added inmates</h2>
 
 				{% for profile in inmates %}
-				<div class="personnel card-new">
-					<div class="header">
+				<div class="card-new">
+					<div class="inmate header">
 						<h4 class="title">
-							<span class="material-symbols-outlined">schedule</span>
-							<span>{{ profile.date_profiled }}</span>
+							<span class="material-symbols-outlined text-white">schedule</span>
+							<span class="text-white">{{ profile.date_profiled }}</span>
 						</h4>
 
 						<div class="buttons">

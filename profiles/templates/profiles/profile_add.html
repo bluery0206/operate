@@ -1,25 +1,252 @@
 {% extends 'home/base.html' %}
 
 {% block content %}
-	<div class="profile-form">
-		<div class="header">
-			<div class="title">
-				<a class="btn" href="javascript:history.go(-1)">Return</a>
-				<h2>Profile Creation</h2>
-			</div>
+<form class="profile" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+
+	<div class="{{ p_type }} header">
+		<a class="btn btn-outline-light" href="javascript:history.go(-1)">
+			<span class="material-symbols-outlined">arrow_back_ios</span>
+			<span>Back</span>
+		</a>
+
+		<h2 class="title">Add new profile</h2>
+		
+		<div class="buttons">
+			<button class="btn btn-light" type="submit">
+				<span class="material-symbols-outlined">save</span>
+				<span>Save profile</span>
+			</button>
+
+			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
+				<span class="material-symbols-outlined">cancel</span>
+				<span>Cancel</span>
+			</a>
+		</div>
+	</div>
+
+	<div class="body">
+		<div class="picture">
+			<img src="{{ default_img }}" alt="" id="imagePreview">
+
+			{% for error in for.raw_image.errors %}
+				{{ error }}
+			{% endfor %}
+
+			<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image" required>
 		</div>
 
-		<form method="POST" enctype="multipart/form-data">
-			{% csrf_token %}
+		<hr>
 
-			<fieldset>
-				{{ form }}
-			</fieldset>
+		<div class="field-list">
+			<div class="field full-name">
+				<label for="">Full Name:</label>
+				
+				<div class="field-list">
+					<div class="field">
+						<label for="{{ form.f_name.id_for_label }}">First name</label>
 
-			<div class="actions">
-				<button class="btn" type="submit">Create Profile</button>
-				<a class="btn" href="javascript:history.go(-1)">Cancel</a>
+						{% if form.f_name.errors %}
+							{% for error in for.f_name.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+						{{ form.f_name }}
+					</div>
+
+					<div class="field">
+						<label for="{{ form.m_name.id_for_label }}">Middle name</label>
+
+						{% if form.m_name.errors %}
+							{% for error in for.m_name.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+						
+						{{ form.m_name }}
+					</div>
+
+					<div class="field">
+						<label for="{{ form.l_name.id_for_label }}">Last name</label>
+
+						{% if form.l_name.errors %}
+							{% for error in for.l_name.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+						
+						{{ form.l_name }}
+					</div>
+
+					<div class="field">
+						<label for="{{ form.suffix.id_for_label }}">Suffix</label>
+
+						{% if form.suffix.errors %}
+							{% for error in for.suffix.errors %}
+								{{ error }}
+							{% endfor %}
+						{% endif %}
+						
+						{{ form.suffix }}
+					</div>
+				</div>
+			</div> <!-- full name  -->
+
+			<div class="field age">
+				{{ form.age.label_tag }}
+
+				{% if form.age.errors %}
+					{% for error in for.age.errors %}
+						{{ error }}
+					{% endfor %}
+				{% endif %}
+
+				{{ form.age }}
+			</div> <!-- age -->
+
+			<div class="field address">
+				{{ form.address.label_tag }}
+
+				{% if form.address.errors %}
+					{% for error in for.address.errors %}
+						{{ error }}
+					{% endfor %}
+				{% endif %}
+
+				{{ form.address }}
 			</div>
-		</form>
-	</div>
+
+			<div class="field civil_status">
+				{{ form.civil_status.label_tag }}
+
+				{% if form.civil_status.errors %}
+					{% for error in for.civil_status.errors %}
+						{{ error }}
+					{% endfor %}
+				{% endif %}
+
+				{{ form.civil_status }}
+			</div>
+
+			<div class="field">
+				{{ form.date_profiled.label_tag }}
+
+				{% if form.date_profiled.errors %}
+					{% for error in for.date_profiled.errors %}
+						{{ error }}
+					{% endfor %}
+				{% endif %}
+
+				{{ form.date_profiled }}
+			</div>
+
+			{% if p_type == 'personnel' %}
+				<div class="field">
+					{{ form.rank.label_tag }}
+
+					{% if form.rank.errors %}
+						{% for error in for.rank.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.rank }}
+				</div>
+
+				<div class="field">
+					{{ form.date_assigned.label_tag }}
+
+					{% if form.date_assigned.errors %}
+						{% for error in for.date_assigned.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.date_assigned }}
+				</div>
+
+				<div class="field">
+					{{ form.date_relieved.label_tag }}
+
+					{% if form.date_relieved.errors %}
+						{% for error in for.date_relieved.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.date_relieved }}
+				</div>
+
+				<div class="field">
+					{{ form.designation.label_tag }}
+
+					{% if form.designation.errors %}
+						{% for error in for.designation.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.designation }}
+				</div>
+			{% else %}
+				<div class="field">
+					{{ form.date_arrested.label_tag }}
+
+					{% if form.date_arrested.errors %}
+						{% for error in for.date_arrested.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.date_arrested }}
+				</div>
+
+				<div class="field">
+					{{ form.date_committed.label_tag }}
+
+					{% if form.date_committed.errors %}
+						{% for error in for.date_committed.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.date_committed }}
+				</div>
+
+				<div class="field">
+					{{ form.crime_violated.label_tag }}
+
+					{% if form.crime_violated.errors %}
+						{% for error in for.crime_violated.errors %}
+							{{ error }}
+						{% endfor %}
+					{% endif %}
+
+					{{ form.crime_violated }}
+				</div>
+			{% endif %}
+		</div>
+	</form>
+
+	<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const fileInput = document.getElementById("raw_image"); // Use the form field's ID
+            const imagePreview = document.getElementById("imagePreview");
+
+            fileInput.addEventListener("change", function(event) {
+                // Check if a file is selected
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result; // Set preview image source
+                        imagePreview.style.display = 'block'; // Make the image visible
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
+                }
+            });
+        });
+    </script>
 {% endblock content %}
