@@ -29,11 +29,13 @@ COMMON_SORT_CHOICES = [
 	['f_name', "First Name"],
 	['age', "Age"]
 ]
+
 PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_profiled',"Date Profiled"],
 	['date_assigned',"Date Assigned"],
 	['date_relieved',"Date Relieved"],
 ]
+
 INMATE_SORT_CHOICES = [
 	['date_profiled',"Date Profiled"],
 	['date_arrested',"Date Arrested"],
@@ -50,7 +52,8 @@ def personnels(request):
 		'ranks'			: [rank[0] for rank in Personnel.RANKS],
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
-		'filters'		: {}
+		'filters'		: {},
+		'page_title'	: "OPERATE | Personnel Profiles"
 	}
 
 	if request.method == "GET":
@@ -103,7 +106,8 @@ def inmates(request):
 		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False),
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
-		'filters'		: {}
+		'filters'		: {},
+		'page_title'	: "OPERATE | Inmate Profiles"
 	}
 
 	if request.method == "GET":
@@ -159,6 +163,7 @@ def profile_template_upload(request):
 	context = {
 		'prev'		: request.GET.get("prev", ""),
 		'form'		: form,
+		'page_title': "OPERATE | Template Upload"
 	}
 	return render(request, "profiles/profile_update.html", context)
 
@@ -168,9 +173,10 @@ def profile_template_upload(request):
 
 def profile(request, p_type, pk):
 	p_class =  Personnel if p_type == "personnel" else Inmate
-	
+	profile =  get_object_or_404(p_class, pk=pk)
 	context = {
-		'profile': get_object_or_404(p_class, pk=pk),
+		'profile'		: profile,
+		'page_title'	: f"OPERATE | {profile}"
 	}
 	return render(request, "profiles/profile.html", context)
 
@@ -196,7 +202,8 @@ def profile_add(request, p_type):
 	context = {
 		'form'			: form,
 		'default_img'	: "../../../media/default.jpg",
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'page_title'	: f"OPERATE | Add Profile"
 	}
 	return render(request, "profiles/profile_add.html", context)
 
@@ -221,9 +228,10 @@ def profile_update(request, p_type, pk):
 		form = update_form(instance=profile)
 
 	context = {
-		'prev'		: request.GET.get("prev", ""),
-		'profile'	: profile,
-		'form'		: form,
+		'prev'			: request.GET.get("prev", ""),
+		'profile'		: profile,
+		'form'			: form,
+		'page_title'	: f"OPERATE | Update {profile}"
 	}
 	return render(request, "profiles/profile_update.html", context)
 
@@ -243,8 +251,9 @@ def profile_delete(request, p_type, pk):
 		return redirect(prev) if prev else redirect(f"profiles-{p_type}s")
 
 	context = {
-		'title' 	: f"Delete {get_full_name(profile)}'s Profile",
-		'warning' 	: f"You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
+		'title' 		: f"Delete {get_full_name(profile)}'s Profile",
+		'warning' 		: f"You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
+		'page_title'	: f"OPERATE | Delete {profile}"
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -264,8 +273,9 @@ def profile_delete_all(request, p_type):
 		return redirect(prev)
 
 	context = {
-		'title' 	: f"Delete All Profile",
-		'warning' 	: f"You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
+		'title' 		: f"Delete All Profile",
+		'warning' 		: f"You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
+		'page_title'	: f"OPERATE | Delete All"
 	}
 	return render(request, "home/confirmation_page.html", context)
 

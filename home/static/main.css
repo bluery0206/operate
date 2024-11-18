@@ -54,7 +54,7 @@
     --muted         : rgb(108, 117, 125);
 
     --personnel     : rgb(69, 106, 146);
-    --inmate        : rgb(131, 123, 114);
+    --inmate        : rgb(211, 112, 46);
     /* --inmate        : rgb(237, 135, 0); */
 
     --transparent-dark  : rgba(0, 0, 0, 0.75);
@@ -236,6 +236,10 @@ footer {
 .right {
     text-align: right !important;
     justify-content: right !important;
+}
+.center {
+    text-align: center !important;
+    justify-content: center !important;
 }
 
 
@@ -433,7 +437,6 @@ footer {
     cursor          : pointer;
     display         : flex;
     align-items     : center;
-    justify-content : center;
     gap             : 0.25em;
     border-radius   : var(--radius-small);
     height          : 2.5em;
@@ -447,7 +450,7 @@ footer {
     transition: all ease-in-out 0.2s;
 }
 .btn-a {
-    width: 20%;
+    width: 30%;
 }
 .btn-b {
     width: 100%;
@@ -651,7 +654,11 @@ footer {
 
 
 .profile {
-    border-radius: 5px;
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    border: 1px solid var(--disabled);
+    box-shadow: 2px 2px 5px 2px var(--shadow);
+    margin: 0 0 2em 0;
 
     .header {
         /* background: var(--primary); */
@@ -659,7 +666,6 @@ footer {
         padding: 0.5em 1em;
         display: flex;
         align-items: center;
-        border-radius: var(--radius-small);
         justify-content: space-between;
 
         .title {
@@ -673,7 +679,8 @@ footer {
     }
 
     .body {
-        margin: 1em 0;
+        padding: 1em 2em 2em 2em;
+        background: var(--light);
         display: flex;
         gap: 2em;
 

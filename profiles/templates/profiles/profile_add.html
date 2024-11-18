@@ -29,9 +29,13 @@
 		<div class="picture">
 			<img src="{{ default_img }}" alt="" id="imagePreview">
 
-			{% for error in for.raw_image.errors %}
-				{{ error }}
-			{% endfor %}
+			{% if form.raw_image.errors %}
+				<div class="alert alert-danger">
+					{% for error in form.raw_image.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
 
 			<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image" required>
 		</div>
@@ -47,9 +51,11 @@
 						<label for="{{ form.f_name.id_for_label }}">First name</label>
 
 						{% if form.f_name.errors %}
-							{% for error in for.f_name.errors %}
-								{{ error }}
-							{% endfor %}
+							<div class="alert alert-danger">
+								{% for error in form.f_name.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
 						{% endif %}
 						{{ form.f_name }}
 					</div>
@@ -58,9 +64,11 @@
 						<label for="{{ form.m_name.id_for_label }}">Middle name</label>
 
 						{% if form.m_name.errors %}
-							{% for error in for.m_name.errors %}
-								{{ error }}
-							{% endfor %}
+							<div class="alert alert-danger">
+								{% for error in form.m_name.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
 						{% endif %}
 						
 						{{ form.m_name }}
@@ -70,9 +78,11 @@
 						<label for="{{ form.l_name.id_for_label }}">Last name</label>
 
 						{% if form.l_name.errors %}
-							{% for error in for.l_name.errors %}
-								{{ error }}
-							{% endfor %}
+							<div class="alert alert-danger">
+								{% for error in form.l_name.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
 						{% endif %}
 						
 						{{ form.l_name }}
@@ -82,9 +92,11 @@
 						<label for="{{ form.suffix.id_for_label }}">Suffix</label>
 
 						{% if form.suffix.errors %}
-							{% for error in for.suffix.errors %}
-								{{ error }}
-							{% endfor %}
+							<div class="alert alert-danger">
+								{% for error in form.suffix.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
 						{% endif %}
 						
 						{{ form.suffix }}
@@ -96,9 +108,11 @@
 				{{ form.age.label_tag }}
 
 				{% if form.age.errors %}
-					{% for error in for.age.errors %}
-						{{ error }}
-					{% endfor %}
+					<div class="alert alert-danger">
+						{% for error in form.age.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
 				{% endif %}
 
 				{{ form.age }}
@@ -108,9 +122,11 @@
 				{{ form.address.label_tag }}
 
 				{% if form.address.errors %}
-					{% for error in for.address.errors %}
-						{{ error }}
-					{% endfor %}
+					<div class="alert alert-danger">
+						{% for error in form.address.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
 				{% endif %}
 
 				{{ form.address }}
@@ -120,9 +136,11 @@
 				{{ form.civil_status.label_tag }}
 
 				{% if form.civil_status.errors %}
-					{% for error in for.civil_status.errors %}
-						{{ error }}
-					{% endfor %}
+					<div class="alert alert-danger">
+						{% for error in form.civil_status.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
 				{% endif %}
 
 				{{ form.civil_status }}
@@ -132,9 +150,11 @@
 				{{ form.date_profiled.label_tag }}
 
 				{% if form.date_profiled.errors %}
-					{% for error in for.date_profiled.errors %}
-						{{ error }}
-					{% endfor %}
+					<div class="alert alert-danger">
+						{% for error in form.date_profiled.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
 				{% endif %}
 
 				{{ form.date_profiled }}
@@ -145,9 +165,11 @@
 					{{ form.rank.label_tag }}
 
 					{% if form.rank.errors %}
-						{% for error in for.rank.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.rank.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.rank }}
@@ -157,9 +179,11 @@
 					{{ form.date_assigned.label_tag }}
 
 					{% if form.date_assigned.errors %}
-						{% for error in for.date_assigned.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.date_assigned.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.date_assigned }}
@@ -169,9 +193,11 @@
 					{{ form.date_relieved.label_tag }}
 
 					{% if form.date_relieved.errors %}
-						{% for error in for.date_relieved.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.date_relieved.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.date_relieved }}
@@ -181,9 +207,11 @@
 					{{ form.designation.label_tag }}
 
 					{% if form.designation.errors %}
-						{% for error in for.designation.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.designation.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.designation }}
@@ -193,9 +221,11 @@
 					{{ form.date_arrested.label_tag }}
 
 					{% if form.date_arrested.errors %}
-						{% for error in for.date_arrested.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.date_arrested.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.date_arrested }}
@@ -205,9 +235,11 @@
 					{{ form.date_committed.label_tag }}
 
 					{% if form.date_committed.errors %}
-						{% for error in for.date_committed.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.date_committed.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.date_committed }}
@@ -217,9 +249,11 @@
 					{{ form.crime_violated.label_tag }}
 
 					{% if form.crime_violated.errors %}
-						{% for error in for.crime_violated.errors %}
-							{{ error }}
-						{% endfor %}
+						<div class="alert alert-danger">
+							{% for error in form.crime_violated.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
 					{% endif %}
 
 					{{ form.crime_violated }}

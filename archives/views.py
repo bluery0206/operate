@@ -23,11 +23,13 @@ COMMON_SORT_CHOICES = [
 	['f_name', "First Name"],
 	['age', "Age"]
 ]
+
 PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_profiled',"Date Profiled"],
 	['date_assigned',"Date Assigned"],
 	['date_relieved',"Date Relieved"],
 ]
+
 INMATE_SORT_CHOICES = [
 	['date_profiled',"Date Profiled"],
 	['date_arrested',"Date Arrested"],
@@ -44,7 +46,8 @@ def personnels(request):
 		'ranks'			: [rank[0] for rank in Personnel.RANKS],
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
-		'filters'		: {}
+		'filters'		: {},
+		'page_title'	: "OPERATE | Archived Personnel Profiles"
 	}
 
 	if request.method == "GET":
@@ -82,10 +85,10 @@ def personnels(request):
 				context['personnels'] = context['personnels'].order_by(sort)
 
 			context['filters'] = {
-				'designation': designation,
-				'rank': rank,
-				'sort_by': sort_by,
-				'sort_order': sort_order,
+				'designation'	: designation,
+				'rank'			: rank,
+				'sort_by'		: sort_by,
+				'sort_order'	: sort_order,
 			}
 
 		context['filters'].update({"search": search})
@@ -101,13 +104,14 @@ def inmates(request):
 		'inmates'		: ArchiveInmate.objects.all(),
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
-		'filters'		: {}
+		'filters'		: {},
+		'page_title'	: "OPERATE | Archived Inmate Profiles"
 	}
 
 	if request.method == "GET":
 		reset_filter		= request.GET.get("reset_filter", "")
 		reset_search		= request.GET.get("reset_search", "")
-		search		= request.GET.get("search", "").strip()
+		search				= request.GET.get("search", "").strip()
 
 		if not reset_search and search:
 			context['inmates'] = ArchiveInmate.objects.filter(
@@ -136,8 +140,8 @@ def inmates(request):
 
 			context['filters'] = {
 				'crime_violated': crime_violated,
-				'sort_by': sort_by,
-				'sort_order': sort_order,
+				'sort_by'		: sort_by,
+				'sort_order'	: sort_order,
 			}
 
 		context['filters'].update({"search": search})
@@ -162,8 +166,9 @@ def archive_add(request, p_type, pk):
 		return redirect(prev) if prev else redirect('profile', p_type, profile.pk)
 
 	context = {
-		'title' 	: f"Add {get_full_name(profile)}'s profile to archives?",
-		'warning' 	: f"You will not be able to see this profile in the \"Profile\" Page anymore.",
+		'title' 		: f"Add {get_full_name(profile)}'s profile to archives?",
+		'warning' 		: f"You will not be able to see this profile in the \"Profile\" Page anymore.",
+		'page_title'	: f"OPERATE | Archiving {get_full_name(profile)}'s Profile"
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -212,8 +217,9 @@ def archive_add_all(request, p_type):
 		return redirect(prev) if prev else redirect(f'archives-{p_type}s')
 
 	context = {
-		'title' 	: f"Add all profiles to archives",
-		'warning' 	: f"You will not be able to see all profiles in the \"Profile\" Page anymore.",
+		'title' 		: f"Add all profiles to archives",
+		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore.",
+		'page_title'	: f"OPERATE | Archiving All Profiles"
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -231,7 +237,8 @@ def archive_remove_all(request, p_type):
 		return redirect(prev) if prev else redirect(f'profiles-{p_type}s')
 
 	context = {
-		'title' 	: f"Remove all profiles from archives",
+		'title' 		: f"Remove all profiles from archives",
+		'page_title'	: f"OPERATE | Unachiving All Profiles"
 	}
 	return render(request, "home/confirmation_page.html", context)
 

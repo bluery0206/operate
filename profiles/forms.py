@@ -61,7 +61,7 @@ WIDGETS = {
 		'class': 'form-control form-control-primary',
 		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)',
 	}),
-	'age': forms.TextInput(attrs={
+	'age': forms.NumberInput(attrs={
 		'class': 'form-control form-control-primary',
 	}),
 	'address': forms.TextInput(attrs={
@@ -78,41 +78,6 @@ WIDGETS = {
 	}),
 	'crime_violated': forms.TextInput(attrs={
 		'class': 'form-control form-control-primary',
-	}),
-}
-
-DISABLED_WIDGETS = {
-	'date_profiled'	: forms.DateInput(
-		attrs	= {'type': 'datetime-local', 'disabled': True}, 
-		format 	= '%Y-%m-%dT%H:%M'
-	),
-	'date_arrested'	: forms.DateInput(
-		attrs	= {'type': 'datetime-local', 'disabled': True}, 
-		format 	= '%Y-%m-%dT%H:%M'
-	),
-	'date_committed': forms.DateInput(
-		attrs	= {'type': 'datetime-local', 'disabled': True}, 
-		format 	= '%Y-%m-%dT%H:%M'
-	),
-	'date_assigned'	: forms.DateInput(
-		attrs	= {'type': 'datetime-local', 'disabled': True}, 
-		format 	= '%Y-%m-%dT%H:%M'
-	),
-	'date_relieved'	: forms.DateInput(
-		attrs	= {'type': 'datetime-local', 'disabled': True}, 
-		format 	= '%Y-%m-%dT%H:%M'
-	),
-	'f_name': forms.TextInput(attrs={
-		'placeholder': 'First Name', 
-		'disabled': True
-	}),
-	'm_name': forms.TextInput(attrs={
-		'placeholder': 'Middle Name', 
-		'disabled': True
-	}),
-	'suffix': forms.TextInput(attrs={
-		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)', 
-		'disabled': True
 	}),
 }
 

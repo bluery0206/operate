@@ -12,7 +12,8 @@ THRESHOLD = 1000
 
 def facesearch(request):
 	context = {
-		"form": UploadedImageForm()
+		"form": UploadedImageForm(),
+		'page_title'	: "OPERATE | Facesearch"
 	}
 
 	if request.method == "POST":
