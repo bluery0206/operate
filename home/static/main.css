@@ -389,32 +389,6 @@ footer {
     margin      : 1% 0;
     min-height  : calc(100dvh - 3em);
     width       : 100%;
-    
-    .forms {
-        box-shadow  : 2px 2px 5px 2px var(--shadow);
-        outline     : 1px solid var(--secondary);
-        border-radius: var(--radius-medium);
-        top         : calc(4em + 1.60%);
-        padding     : 1em 1em 2em 1em;
-        background  : var(--light);
-        height      : fit-content;
-        position    : sticky;
-        display     : grid;
-        row-gap     : 2em;
-
-        form {
-            display : grid;
-            row-gap : 0.5em;
-            width   : 225px;
-
-            .fields {
-                input {
-                    width: 100%;
-                }
-            }
-        }
-
-    }
 
     .card-list {
         gap: 1em;
@@ -423,6 +397,33 @@ footer {
         }
     }
 
+}
+
+.forms {
+    box-shadow  : 2px 2px 5px 2px var(--shadow);
+    outline     : 1px solid var(--secondary);
+    border-radius: var(--radius-medium);
+    top         : calc(4em + 1.60%);
+    padding     : 1em 1em 2em 1em;
+    background  : var(--light);
+    height      : fit-content;
+    position    : sticky;
+    display     : grid;
+    row-gap     : 1.25em;
+}
+.form {
+    display : grid;
+    row-gap : 0.25em;
+    width   : 225px;
+
+    .fields {
+        display: grid;
+        gap: 0.75em;
+
+        input {
+            width: 100%;
+        }
+    }
 }
 
 

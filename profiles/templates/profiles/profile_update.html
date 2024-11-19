@@ -14,7 +14,7 @@
 			<h2 class="title">Update: {{ profile.f_name }}'s Profile</h2>
 			
 			<div class="buttons">
-				<button class="btn btn-light" type="submit">
+				<button class="btn btn-success" type="submit">
 					<span class="material-symbols-outlined">save</span>
 					<span>Save changes</span>
 				</button>
@@ -30,11 +30,34 @@
 			<div class="picture">
 				<img src="{{ profile.thumbnail.url }}" alt="" id="imagePreview">
 
-				{% for error in for.raw_image.errors %}
-					{{ error }}
-				{% endfor %}
+				<div class="form upload_image">
+					{% if form.raw_image.errors %}
+						<div class="alert alert-danger">
+							{% for error in for.raw_image.errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
+					{% endif %}
 
-				<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image">
+					<h3>Upload image</h3>
+					<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image">
+				</div>
+
+				<div class="form capture_image">
+					<h3>Capture image</h3>
+					<div class="fields">
+						<div class="field">
+							<label for="camera">Camera: </label>
+							<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+							<small>(Try to change if doesn't work)</small>
+						</div>
+					</div>
+					
+					<button class="btn btn-secondary center" name="open_camera" value="1" type="submit">
+						<span class="material-symbols-outlined">camera</span>
+						<span>OPEN CAMERA</span>
+					</button>
+				</div>
 			</div>
 
 			<hr>

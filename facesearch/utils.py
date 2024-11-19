@@ -2,6 +2,7 @@ from django.utils import timezone
 import onnxruntime as ort
 from pathlib import Path 
 import numpy as np
+import logging
 import cv2 
 
 from profiles.models import Personnel, Inmate
@@ -23,11 +24,12 @@ def crop_image_from_center(image):
 def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
 
-def get_profiles(cand_list, database_path):
+
+def get_profiles(cand_list, database_path, reverse=True):
 	database = list(database_path.glob("*"))
 	database = [str(image_path) for image_path in database]
 
-	cands_dist	= [float(dist) for dist, idx in cand_list]
+	cands_dist 	= [float(dist) for dist, idx in cand_list]
 	cands_image	= [str(database[idx]) for dist, idx in cand_list]
 	cands_prof	= []
 	
@@ -43,14 +45,8 @@ def get_profiles(cand_list, database_path):
 
 		if profile: cands_prof.append(profile)
 
-	print(f"{cands_dist=}")
-
 	result = list(zip(cands_dist, cands_prof))
-		
-	for res in result:
-		print(res)
-		
-	result = sorted(result, key=lambda x: x[0], reverse=False)
+	result = sorted(result, key=lambda x: x[0], reverse=reverse)
 
 	return result
 
@@ -83,22 +79,19 @@ def preprocess_image(image, img_size:int=105):
 def open_gray_image(image_path):
 	return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
 
-def search_face(inp_image, val_images, threshold):
-	session_options = ort.SessionOptions()
-	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(str(Path().cwd().joinpath(f"facesearch/snn_models/{MODEL_NAME}")))
+def get_percentage(threshold, best_cand_dist):
+	return (1 - (best_cand_dist/threshold)) * 100
 
-	input_name	= session.get_inputs()[0].name
-	output_name = session.get_outputs()[0].name
+def search_face(inp_image, val_images, threshold):
 
 	best_cand_dist  = threshold
 	best_cand_idx   = None
 	cand_list       = []
 
-	inp_emb = session.run([output_name], {input_name: inp_image})[0]
+	inp_emb	= get_image_embedding(MODEL_NAME, inp_image)
 
 	for idx, val_image in enumerate(val_images):
-		val_emb	= session.run([output_name], {input_name: val_image})[0]
+		val_emb	= get_image_embedding(MODEL_NAME, val_image)
 
 		dist	= np.sum(np.square(inp_emb - val_emb), axis=-1)[0]
 
@@ -108,38 +101,93 @@ def search_face(inp_image, val_images, threshold):
 			
 			print(f"new candiate: index:{best_cand_idx}, dist:{dist}")
 
-			cand_list.append([best_cand_dist, best_cand_idx])
+			cand_list.append([get_percentage(threshold, dist), best_cand_idx])
 
 		if dist <= 0: break
 
 	return cand_list if cand_list else None
 
 def take_image(camera):
-	image_name	= None
-	print(f"{camera=}, {type(camera)=}")
-	cap			= cv2.VideoCapture(int(camera))
+	print(f"Opening opencv camera using cam: {camera}...")
+
+	try:
+		cap	= cv2.VideoCapture(int(camera))
+	except BrokenPipeError:
+		logging.error("Client disconnected before response was fully sent.")
 
 	while cap.isOpened(): 
 		_, frame = cap.read()
 		
-		# Cut down frame to 500x500px
-		frame_size = 750
-		frame = frame[120:120 + frame_size, 200:200 + frame_size, :] # np.ndarray
+		text		= "Hold 'Q' to Quit | Hold 'C' to Capture"
+		font_family	= cv2.FONT_HERSHEY_SIMPLEX
+		font_size	= 0.5
+		font_weight	= 1
+		text_color	= (255, 255, 255) 
+		bg_color	= (0, 0, 0)
+
+		# Get the text size
+		(text_width, text_height), baseline = cv2.getTextSize(
+			text 		= text, 
+			fontFace	= font_family, 
+			fontScale	= font_size, 
+			thickness	= font_weight
+		)
+
+		# Set the position
+		x = 10
+		y = 30
+
+		cv2.rectangle(
+			img 		= frame, 
+			pt1 		= (x, y - text_height - baseline), 
+			pt2 		= (x + text_width, y + baseline), 
+			color 		= bg_color, 
+			thickness	= -1	# -1 fills the rectangle
+		)  
+
+		# Put the text over the background rectangle
+		cv2.putText(
+			img			= frame, 
+			text		= text, 
+			org			= (x, y), 
+			fontFace	= font_family, 
+			fontScale	= font_size, 
+			color		= text_color, 
+			thickness	= font_weight
+		)
 		
 		# Show image back to screen
-		cv2.imshow('Image Collection | press "q" to exit', frame)
+		cv2.imshow('OPERATE | Image Capture', frame)
+
+		# exit
+		if cv2.waitKey(10) & 0XFF == ord('q'):
+			cap.release()
+			cv2.destroyAllWindows()
+			
+			return False
 		
-		if cv2.waitKey(10) & 0XFF == ord('q'): break
-		
-		if cv2.waitKey(10) & 0XFF == ord(' '):
+		# capture
+		if cv2.waitKey(10) & 0XFF == ord('c'):
 			time		= timezone.now().strftime("%Y%m%d%H%M%S")
-			image_name	= f"media/searches/{time}.jpg"
+			image_path	= f"media/searches/{time}.jpg"
 			
-			cv2.imwrite(image_name, frame)
+			cap.release()
+			cv2.destroyAllWindows()
 			
-			break
-			
-	cap.release()
-	cv2.destroyAllWindows()
+			return [image_path, frame]
+
+def save_image(image_path, frame):
+	return cv2.imwrite(image_path, frame)
+
+
+def get_image_embedding(model_name, inp_image):
+	session_options = ort.SessionOptions()
+	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+	session = ort.InferenceSession(str(Path().cwd().joinpath(f"facesearch/snn_models/{model_name}")))
 	
-	return image_name
+	input_name	= session.get_inputs()[0].name
+	output_name = session.get_outputs()[0].name
+
+	return session.run([output_name], {input_name: inp_image})[0]
+
+

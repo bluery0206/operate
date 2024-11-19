@@ -17,6 +17,7 @@ from .forms import (
 	UpdateInmate, 
 	TemplateUploadForm
 )
+from facesearch.utils import take_image, save_image
 
 
 ORDER_CHOICES = [
@@ -218,6 +219,21 @@ def profile_update(request, p_type, pk):
 	if request.method == "POST":
 		form = update_form(request.POST, request.FILES, instance=profile)
 
+		# is_option_camera = request.POST.get("open_camera", 0)
+
+		# if is_option_camera:
+		# 	camera			= int(request.POST.get("camera", 0))
+		# 	is_image_taken	= take_image(camera)
+
+		# 	context["camera"] =	camera
+
+		# 	if is_image_taken:
+		# 		_, frame = is_image_taken
+				
+		# 		save_image(image_path, frame)	
+		# 	else:
+		# 		return render(request, "profiles/profile_update.html", context)
+			
 		if form.is_valid():
 			instance = form.save()
 

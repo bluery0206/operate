@@ -6,13 +6,22 @@
 		<div class="forms">
 			<h2>Facesearch</h2>	
 
-			<form method="POST" enctype="multipart/form-data">
-				{% csrf_token %}
-		
+			<form class="form">
+				<div class="fields">
+					<div class="field">
+						<label for="threshold">Threshold: </label>
+						<input class="form-control form-control-secondary" type="number" id="threshold_input" value="{{ threshold }}" min="0.1" max="100" step="0.1">
+					</div>
+				</div>
+			</form>
+
+			<form class="form" method="POST" enctype="multipart/form-data">
 				<h3>Upload an image</h3>
 		
-				<!-- <img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 300px;"/> -->
-	
+				{% csrf_token %}
+		
+				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				
 				<div class="fields">
 					<div class="field">
 						{{ form.image }}
@@ -24,23 +33,23 @@
 					<span>UPLOAD</span>
 				</button>
 			</form>
-
-			<div>or</div>
 	
-			<form method="POST">
+			<form class="form" method="POST">
+				<h3>Capture image</h3>
+	
 				{% csrf_token %}
 	
-				<h3>Capture image</h3>
+				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
 	
 				<div class="fields">
 					<div class="field">
 						<label for="camera">Camera: </label>
-						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="1" min="0" max="10" step="1">
+						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+						<small>(Try to change if doesn't work)</small>
 					</div>
-					<small>(Try to change if doesn't work)</small>
 				</div>
 				
-				<button class="btn btn-outline-secondary center" name="open_camera" value="1" type="submit">
+				<button class="btn btn-secondary center" name="open_camera" value="1" type="submit">
 					<span class="material-symbols-outlined">camera</span>
 					<span>OPEN CAMERA</span>
 				</button>
@@ -125,26 +134,18 @@
 		</div>
 	</div>
 
-    <!-- <script>
+    <script>
+		// Change the value of hidden threshol on change
         document.addEventListener("DOMContentLoaded", function() {
-            // Get the file input element from the form
-            const fileInput = document.getElementById("id_image"); // Use the form field's ID
-            const imagePreview = document.getElementById("imagePreview");
+            const threshold_input	= document.getElementById("threshold_input");
+            const threshold1		= document.getElementById("threshold1");
+            const threshold2		= document.getElementById("threshold2");
 
-            fileInput.addEventListener("change", function(event) {
-                // Check if a file is selected
-                if (fileInput.files && fileInput.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result; // Set preview image source
-                        imagePreview.style.display = 'block'; // Make the image visible
-                    };
-
-                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
-                }
+            threshold_input.addEventListener("change", function(event) {
+				threshold1.value = threshold_input.value;
+				threshold2.value = threshold_input.value;
             });
         });
-    </script> -->
+    </script>
 
 {% endblock content %}
