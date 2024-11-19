@@ -84,7 +84,7 @@
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}" title="Delete all profiles">
+				<a class="btn btn-danger" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}" title="Delete all profiles">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -92,23 +92,57 @@
 		</div>
 	</div>
 
+	{% if is_paginated %}
+		<div class="pagination left">
+			<span class="page-list">
+				{% if personnels.has_previous %}
+					<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in personnels.paginator.page_range %}
+					{% if personnels.number == num %}
+						<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
+						<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if personnels.has_next %}
+					<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
+
 	<div class="card-list">
 		{% if personnels %}
 			{% for profile in personnels %}
 				<div class="personnel card">
 					<div class="picture">
 						<div class="button-overlay">
-							<a class="btn btn-transparent-dark" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+							<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
 								<span class="material-symbols-outlined">open_in_new</span>
 								<span>View profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Edit profile">
 								<span class="material-symbols-outlined">edit</span>
 								<span>Edit profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+							<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Add profile to archives">
 								<span class="material-symbols-outlined">archive</span>
-								<span>Add profile to archives</span>
+								<span>Archive profile</span>
+							</a>
+							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Add profile to archives">
+								<span class="material-symbols-outlined">delete</span>
+								<span>Delete Profile</span>
 							</a>
 						</div>
 
@@ -126,6 +160,9 @@
 						<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
 							<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
 						</div>
+						<div class="muted detail" title="{{ profile|full_name }}'s relieved date">
+							<span>Relieved: {{ profile.date_relieved|date:"M j, Y" }}</span>
+						</div>
 						<div class="muted detail" title="{{ profile|full_name }}'s designation">
 							<span>Designation: {{ profile.designation }}</span>
 						</div>
@@ -136,4 +173,36 @@
 			<h2>There are no personnel profiled.</h2>
 		{% endif %}
 	</div>
+
+
+	{% if is_paginated %}
+		<div class="pagination right">
+			<span class="page-list">
+				{% if personnels.has_previous %}
+					<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in personnels.paginator.page_range %}
+					{% if personnels.number == num %}
+						<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
+						<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if personnels.has_next %}
+					<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
+	
 {% endblock content %}

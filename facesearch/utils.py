@@ -9,17 +9,6 @@ from profiles.models import Personnel, Inmate
 
 # MODEL_NAME = "emb_gen.onnx"
 MODEL_NAME = "2024.11.16.02.52.onnx"
-
-def crop_image_from_center(image):
-    height, width = image.shape
-    new_dimension = min(height, width)
-
-    left    = int((width   - new_dimension) / 2)
-    top     = int((height  - new_dimension) / 2)
-    right   = int((width   + new_dimension) / 2)
-    bottom  = int((height  + new_dimension) / 2)
-
-    return image[top:bottom, left:right]
  
 def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
@@ -68,7 +57,7 @@ def search(input_path:Path, database_path:Path, threshold:int=1):
 	return result
 	
 def preprocess_image(image, img_size:int=105):
-    cropped_image       = crop_image_from_center(image)
+    cropped_image       = crop_image_from_center(image, True)
     resize_image        = cv2.resize(cropped_image, dsize=(img_size, img_size))
     normalized_image    = resize_image / 255.0
     reshaped_image      = np.reshape(normalized_image, (1, 105, 105 ,1))
@@ -78,6 +67,9 @@ def preprocess_image(image, img_size:int=105):
 
 def open_gray_image(image_path):
 	return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+
+def open_image(image_path):
+	return cv2.imread(str(image_path))
 
 def get_percentage(threshold, best_cand_dist):
 	return (1 - (best_cand_dist/threshold)) * 100
@@ -110,6 +102,9 @@ def search_face(inp_image, val_images, threshold):
 def take_image(camera):
 	print(f"Opening opencv camera using cam: {camera}...")
 
+	is_image_taken	= False
+	image 			= None
+
 	try:
 		cap	= cv2.VideoCapture(int(camera))
 	except BrokenPipeError:
@@ -118,67 +113,26 @@ def take_image(camera):
 	while cap.isOpened(): 
 		_, frame = cap.read()
 		
-		text		= "Hold 'Q' to Quit | Hold 'C' to Capture"
-		font_family	= cv2.FONT_HERSHEY_SIMPLEX
-		font_size	= 0.5
-		font_weight	= 1
-		text_color	= (255, 255, 255) 
-		bg_color	= (0, 0, 0)
+		# Show frame back to screen
+		cv2.imshow('OPERATE | Image Capture | "c" to capture | "q" to exit', frame)
 
-		# Get the text size
-		(text_width, text_height), baseline = cv2.getTextSize(
-			text 		= text, 
-			fontFace	= font_family, 
-			fontScale	= font_size, 
-			thickness	= font_weight
-		)
-
-		# Set the position
-		x = 10
-		y = 30
-
-		cv2.rectangle(
-			img 		= frame, 
-			pt1 		= (x, y - text_height - baseline), 
-			pt2 		= (x + text_width, y + baseline), 
-			color 		= bg_color, 
-			thickness	= -1	# -1 fills the rectangle
-		)  
-
-		# Put the text over the background rectangle
-		cv2.putText(
-			img			= frame, 
-			text		= text, 
-			org			= (x, y), 
-			fontFace	= font_family, 
-			fontScale	= font_size, 
-			color		= text_color, 
-			thickness	= font_weight
-		)
+		# Quit
+		if (cv2.waitKey(1) & 0XFF == ord('q')):
+			break
 		
-		# Show image back to screen
-		cv2.imshow('OPERATE | Image Capture', frame)
+		# Capture
+		if (cv2.waitKey(1) & 0XFF == ord('c')):
+			is_image_taken = True
+			image 		= frame
+			break
 
-		# exit
-		if cv2.waitKey(10) & 0XFF == ord('q'):
-			cap.release()
-			cv2.destroyAllWindows()
-			
-			return False
-		
-		# capture
-		if cv2.waitKey(10) & 0XFF == ord('c'):
-			time		= timezone.now().strftime("%Y%m%d%H%M%S")
-			image_path	= f"media/searches/{time}.jpg"
-			
-			cap.release()
-			cv2.destroyAllWindows()
-			
-			return [image_path, frame]
+	cap.release()
+	cv2.destroyAllWindows()
 
-def save_image(image_path, frame):
-	return cv2.imwrite(image_path, frame)
+	return [is_image_taken, image]
 
+def save_image(image_path, image):
+	return cv2.imwrite(image_path, image)
 
 def get_image_embedding(model_name, inp_image):
 	session_options = ort.SessionOptions()
@@ -190,4 +144,35 @@ def get_image_embedding(model_name, inp_image):
 
 	return session.run([output_name], {input_name: inp_image})[0]
 
+def create_thumbnail(raw_image_path, new_size):
+	raw_image_name	= str(raw_image_path).split("\\")[-1]
+	raw_image		= cv2.imread(raw_image_path)
 
+	print(f"{raw_image is not None = }")
+	print(f"{raw_image_name = }")
+
+	cropped_image = crop_image_from_center(raw_image)
+	resized_image = resize_image(cropped_image, new_size)
+
+	print(f"{cropped_image is not None = }")
+	print(f"{resized_image is not None = }")
+
+	return resized_image
+
+def resize_image(image_array, new_size) :
+        return cv2.resize(image_array, dsize=(new_size, new_size))
+
+def crop_image_from_center(image, is_gray=False):
+	if is_gray:
+		height, width = image.shape
+	else:
+		height, width, _ = image.shape
+
+	new_dimension = min(height, width)
+
+	left    = int((width   - new_dimension) / 2)
+	top     = int((height  - new_dimension) / 2)
+	right   = int((width   + new_dimension) / 2)
+	bottom  = int((height  + new_dimension) / 2)
+
+	return image[top:bottom, left:right]

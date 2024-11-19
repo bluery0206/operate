@@ -57,8 +57,11 @@
     --inmate        : rgb(211, 112, 46);
     /* --inmate        : rgb(237, 135, 0); */
 
-    --transparent-dark  : rgba(0, 0, 0, 0.75);
-    --transparent-light  : rgba(248, 249, 250, 0.75);
+    --transparent-dark      : rgba(0, 0, 0, 0.75);
+    --transparent-light     : rgba(248, 249, 250, 0.75);
+    --transparent-danger    : rgba(220, 53, 69, 0.75);
+    --transparent-primary    : rgba(17, 83, 155, 0.75);
+    --transparent-secondary    : rgba(108, 117, 125, 0.75);
 
     --disabled      : rgb(233, 236, 239);
     --text-disabled : rgb(108, 117, 125);
@@ -104,11 +107,13 @@ h1, h2, h3, h4, h5, h6 {
 
 
 body {
-    background: url("images/pnp-ranks.jpg"), linear-gradient(rgba(255, 255, 255, 0.90), rgba(255, 255, 255, 0.90));
+    /* background: url("images/pnp-ranks.jpg"), linear-gradient(rgba(255, 255, 255, 0.90), rgba(255, 255, 255, 0.90));
     background-blend-mode: overlay;
     background-position: center center;
     background-attachment: fixed;
-    background-size: contain;
+    background-size: contain; */
+
+    background: var(--light);
 }
 
 
@@ -241,8 +246,21 @@ footer {
     text-align: center !important;
     justify-content: center !important;
 }
-
-
+.border-danger {
+    outline: 1px solid var(--danger);
+    border-radius: var(--radius-small);
+}
+.alert {
+    padding: 0.5em 1em;
+    outline: none;
+    border: none;
+    background: none;
+    border-radius: var(--radius-medium) var(--radius-medium) 0 0; 
+}
+.alert-danger {
+    color: var(--light);
+    background: var(--danger);
+}
 
 
 
@@ -253,11 +271,11 @@ footer {
     margin: 0 0 2em 0;
 
     .card-list-new {
-        display: grid;
-        row-gap: 1em;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
     
         .card-new {
-            border: 1px solid var(--primary);
             box-shadow: 2px 2px 5px 1px var(--shadow);
             background: var(--white);
             border-radius: var(--font-medium);
@@ -490,7 +508,7 @@ footer {
      }
 }
 .btn-danger {
-    background: var(--danger);
+    background: var(--danger) !important;
     color: var(--light);
     
     * {
@@ -523,10 +541,10 @@ footer {
 }
 .btn-outline-primary {
     outline: 1px solid var(--primary);
-    color: var(--dark);
+    color: var(--primary);
     
     * {
-        color: var(--dark);
+        color: var(--primary);
      }
 }
 .btn-outline-light {
@@ -553,6 +571,30 @@ footer {
         color: var(--white);
      }
 }
+.btn-transparent-danger {
+    background: var(--transparent-danger );
+    color: var(--white);
+    
+    * {
+        color: var(--white);
+     }
+}
+.btn-transparent-primary {
+    background: var(--transparent-primary );
+    color: var(--white);
+    
+    * {
+        color: var(--white);
+     }
+}
+.btn-transparent-secondary {
+    background: var(--transparent-secondary );
+    color: var(--white);
+    
+    * {
+        color: var(--white);
+     }
+}
 .btn:hover {
     filter: brightness(125%);
 }
@@ -565,13 +607,18 @@ footer {
      }
 }
 [class*="btn-transparent"]:hover {
-    background: var(--transparent-light);
-    color: var(--dark);
-    
-    * {
-        color: var(--dark);
-     }
+    filter: brightness(125%) saturate(200%);
 }
+.btn:disabled {
+    filter: saturate(75%) brightness(75%);
+    cursor: not-allowed;
+    transition: none;
+    border: none;
+    outline: none;
+    background: var(--transparent-light);
+    color: var(--text-placeholder-disabled);
+}
+
 
 
 
@@ -683,13 +730,14 @@ footer {
         padding: 1em 2em 2em 2em;
         background: var(--light);
         display: flex;
+        overflow-x: auto;
         gap: 2em;
 
         .picture {
             display: flex;
             flex-direction: column;
             gap: 0.5em;
-            width: 250px;
+            width: calc( --img-size-s + (0.25em*2));
             padding: 0 0.25em;
 
             img {
@@ -714,11 +762,11 @@ footer {
                 align-items: center;
 
                 label {
-                    width: 15%;
+                    width: 150px;
                 }
 
                 input, select {
-                    width: 50%;
+                    width: 300px;
                 }
             }
             
@@ -732,7 +780,7 @@ footer {
 
                 .field-list {
                     display: flex;
-                    align-items: center;
+                    align-items: end;
                     gap: 0.5em;
 
                     .field {
@@ -812,16 +860,19 @@ footer {
 }
 
 
+.pagination {
+    display: flex;
+    margin: 1em 0;
 
-
-.alert {
-    padding: 0.5em 1em;
-    outline: none;
-    border: none;
-    background: none;
-    border-radius: var(--radius-small);
+    .page-list {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
 }
-.alert-danger {
-    color: var(--light);
-    background: var(--danger);
+.pagination.left {
+    justify-content: start;
+}
+.pagination.right {
+    justify-content: end;
 }

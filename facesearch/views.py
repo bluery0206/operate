@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from pathlib import Path
-import logging
 
 from .forms import UploadedImageForm
 from .models import UploadedImage
@@ -18,44 +17,49 @@ def facesearch(request):
 		"form"			: UploadedImageForm(),
 		"page_title"	: "OPERATE | Facesearch",
 		"threshold"		: THRESHOLD,
-		"camera"		: 0
+		"camera"		: 0,
+		"profiles"		: []
 	}
 
 	if request.method == "POST":
-		threshold = float(request.POST.get("threshold", THRESHOLD))
-		
-		is_option_camera = request.POST.get("open_camera", 0)
+		context['threshold'] = float(request.POST.get("threshold", THRESHOLD))
+
+		is_option_camera = request.POST.get("option_camera", 0)
+		is_option_upload = request.POST.get("option_upload", 0)
+
+		image_name	= f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
+		input_path	= f"media/searches/{image_name}"
 
 		if is_option_camera:
-			camera			= int(request.POST.get("camera", 0))
-			is_image_taken	= take_image(camera)
+			context['camera'] = int(request.POST.get("camera", 0))
 
-			context["camera"] =	camera
+			is_image_taken, input_image = take_image(context['camera'])
 
-			if is_image_taken:
-				image_path, frame = is_image_taken
-				save_image(image_path, frame)	
-				input_path = Path(image_path)
-			else:
+			if not is_image_taken:
 				return render(request, "facesearch/facesearch.html", context)
+			
+			save_image(input_path, input_image)
 
-		else:
+		elif is_option_upload and 'image' in request.FILES: 
 			context['form'] = UploadedImageForm(request.POST, request.FILES)
 			
-			# change to-save image's name
-			time		= timezone.now().strftime("%Y%m%d%H%M%S")
-			input_path	= SEARCH_IMAGE_PATH.joinpath(f"{time}.jpg")
-			request.FILES['image'].name = input_path
+			if context['form'].is_valid():
+				instance		= context['form'].save()
+				input_path	= instance.image.path	
 
-			if context['form'].is_valid(): context['form'].save()
+				print(f"{instance=}")
+				print(f"{input_path=}")
 
+		print(f"Outisoide{input_path=}")
+		
 		# get profiles from images
-		cand_list			= search(input_path, DATABASE_PATH, threshold)
-		context["profiles"] = get_profiles(cand_list, DATABASE_PATH) if cand_list else None
+		cand_list	= search(input_path, DATABASE_PATH, context['threshold'])
+		context['profiles']	= get_profiles(cand_list, DATABASE_PATH) if cand_list else None
 
 		# Delete the image after use
-		instance = UploadedImage.objects.filter(image__endswith=str(input_path).split("\\")[-1]).first()
-		instance.delete() if instance else input_path.unlink()
+		instance = UploadedImage.objects.filter(image__endswith=str(image_name).split("\\")[-1]).first()
+		instance.delete() if instance else Path(input_path).unlink()
+			
 
 	return render(request, "facesearch/facesearch.html", context)
 

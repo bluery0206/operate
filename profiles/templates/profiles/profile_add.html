@@ -13,7 +13,7 @@
 		<h2 class="title">Add new profile</h2>
 		
 		<div class="buttons">
-			<button class="btn btn-light" type="submit">
+			<button class="btn btn-light" name="option_upload" value="1" type="submit">
 				<span class="material-symbols-outlined">save</span>
 				<span>Save profile</span>
 			</button>
@@ -27,29 +27,59 @@
 
 	<div class="body">
 		<div class="picture">
-			<img src="{{ default_img }}" alt="" id="imagePreview">
-
-			{% if form.raw_image.errors %}
+			{% if missing_image %}
 				<div class="alert alert-danger">
-					{% for error in form.raw_image.errors %}
-						{{ error }}
-					{% endfor %}
+					Please provide a profile image.
 				</div>
 			{% endif %}
+			<img src="{{ default_img }}" alt="" id="imagePreview">
 
-			<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image" required>
+			<div class="form upload_image">
+				{% if form.raw_image.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.raw_image.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
+
+				<h3>Upload image</h3>
+				<input class="form-control form-control-primary" type="file" name="raw_image" id="raw_image" >
+			</div>
+
+			<div class="form capture_image">
+				<h3>Capture image</h3>
+				<div class="fields">
+					<div class="field">
+						<label for="camera">Camera: </label>
+						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+						<small>(Try to change if doesn't work)</small>
+					</div>
+				</div>
+				
+				<button class="btn btn-secondary center" name="option_camera" value="1" type="submit" formaction="">
+					<span class="material-symbols-outlined">camera</span>
+					<span>OPEN CAMERA</span>
+				</button>
+			</div>
 		</div>
 
 		<hr>
 
 		<div class="field-list">
+			{% if form.non_field_errors %}
+				<div class="alert alert-danger">
+					{% for error in form.non_field_errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
+			
 			<div class="field full-name">
 				<label for="">Full Name:</label>
 				
 				<div class="field-list">
 					<div class="field">
-						<label for="{{ form.f_name.id_for_label }}">First name</label>
-
 						{% if form.f_name.errors %}
 							<div class="alert alert-danger">
 								{% for error in form.f_name.errors %}
@@ -57,12 +87,13 @@
 								{% endfor %}
 							</div>
 						{% endif %}
+						
+						{{ form.f_name.label_tag }}
+						
 						{{ form.f_name }}
 					</div>
 
 					<div class="field">
-						<label for="{{ form.m_name.id_for_label }}">Middle name</label>
-
 						{% if form.m_name.errors %}
 							<div class="alert alert-danger">
 								{% for error in form.m_name.errors %}
@@ -71,12 +102,12 @@
 							</div>
 						{% endif %}
 						
+						{{ form.m_name.label_tag }}
+						
 						{{ form.m_name }}
 					</div>
 
 					<div class="field">
-						<label for="{{ form.l_name.id_for_label }}">Last name</label>
-
 						{% if form.l_name.errors %}
 							<div class="alert alert-danger">
 								{% for error in form.l_name.errors %}
@@ -85,12 +116,12 @@
 							</div>
 						{% endif %}
 						
+						{{ form.l_name.label_tag }}
+						
 						{{ form.l_name }}
 					</div>
 
 					<div class="field">
-						<label for="{{ form.suffix.id_for_label }}">Suffix</label>
-
 						{% if form.suffix.errors %}
 							<div class="alert alert-danger">
 								{% for error in form.suffix.errors %}
@@ -99,162 +130,154 @@
 							</div>
 						{% endif %}
 						
+						{{ form.suffix.label_tag }}
+						
 						{{ form.suffix }}
 					</div>
 				</div>
 			</div> <!-- full name  -->
 
+			{% if form.age.errors %}
+				<div class="alert alert-danger">
+					{% for error in form.age.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
 			<div class="field age">
 				{{ form.age.label_tag }}
 
-				{% if form.age.errors %}
-					<div class="alert alert-danger">
-						{% for error in form.age.errors %}
-							{{ error }}
-						{% endfor %}
-					</div>
-				{% endif %}
-
 				{{ form.age }}
-			</div> <!-- age -->
+			</div> 
 
+			{% if form.address.errors %}
+				<div class="alert alert-danger">
+					{% for error in form.address.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
 			<div class="field address">
 				{{ form.address.label_tag }}
-
-				{% if form.address.errors %}
-					<div class="alert alert-danger">
-						{% for error in form.address.errors %}
-							{{ error }}
-						{% endfor %}
-					</div>
-				{% endif %}
 
 				{{ form.address }}
 			</div>
 
+			{% if form.civil_status.errors %}
+				<div class="alert alert-danger">
+					{% for error in form.civil_status.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
 			<div class="field civil_status">
-				{{ form.civil_status.label_tag }}
 
-				{% if form.civil_status.errors %}
-					<div class="alert alert-danger">
-						{% for error in form.civil_status.errors %}
-							{{ error }}
-						{% endfor %}
-					</div>
-				{% endif %}
+				{{ form.civil_status.label_tag }}
 
 				{{ form.civil_status }}
 			</div>
 
+			{% if form.date_profiled.errors %}
+				<div class="alert alert-danger">
+					{% for error in form.date_profiled.errors %}
+						{{ error }}
+					{% endfor %}
+				</div>
+			{% endif %}
 			<div class="field">
 				{{ form.date_profiled.label_tag }}
-
-				{% if form.date_profiled.errors %}
-					<div class="alert alert-danger">
-						{% for error in form.date_profiled.errors %}
-							{{ error }}
-						{% endfor %}
-					</div>
-				{% endif %}
 
 				{{ form.date_profiled }}
 			</div>
 
 			{% if p_type == 'personnel' %}
+				{% if form.rank.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.rank.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.rank.label_tag }}
-
-					{% if form.rank.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.rank.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.rank }}
 				</div>
 
+				{% if form.date_assigned.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.date_assigned.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.date_assigned.label_tag }}
-
-					{% if form.date_assigned.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.date_assigned.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.date_assigned }}
 				</div>
 
+				{% if form.date_relieved.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.date_relieved.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.date_relieved.label_tag }}
-
-					{% if form.date_relieved.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.date_relieved.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.date_relieved }}
 				</div>
 
+				{% if form.designation.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.designation.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.designation.label_tag }}
-
-					{% if form.designation.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.designation.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.designation }}
 				</div>
 			{% else %}
+				{% if form.date_arrested.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.date_arrested.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.date_arrested.label_tag }}
-
-					{% if form.date_arrested.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.date_arrested.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.date_arrested }}
 				</div>
 
+				{% if form.date_committed.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.date_committed.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.date_committed.label_tag }}
-
-					{% if form.date_committed.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.date_committed.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.date_committed }}
 				</div>
 
+				{% if form.crime_violated.errors %}
+					<div class="alert alert-danger">
+						{% for error in form.crime_violated.errors %}
+							{{ error }}
+						{% endfor %}
+					</div>
+				{% endif %}
 				<div class="field">
 					{{ form.crime_violated.label_tag }}
-
-					{% if form.crime_violated.errors %}
-						<div class="alert alert-danger">
-							{% for error in form.crime_violated.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
 
 					{{ form.crime_violated }}
 				</div>

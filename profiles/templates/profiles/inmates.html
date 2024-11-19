@@ -71,7 +71,7 @@
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn" href="{% url 'profile-delete-all' 'inmate' %}?prev={{request.path}}">
+				<a class="btn btn-danger" href="{% url 'profile-delete-all' 'inmate' %}?prev={{request.path}}">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -85,17 +85,21 @@
 				<div class="inmate card">
 					<div class="picture">
 						<div class="button-overlay">
-							<a class="btn btn-transparent-dark" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+							<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
 								<span class="material-symbols-outlined">open_in_new</span>
 								<span>View profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
 								<span class="material-symbols-outlined">edit</span>
 								<span>Edit profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+							<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
 								<span class="material-symbols-outlined">archive</span>
-								<span>Add profile to archives</span>
+								<span>Archive profile</span>
+							</a>
+							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+								<span class="material-symbols-outlined">delete</span>
+								<span>Delete profile</span>
 							</a>
 						</div>
 

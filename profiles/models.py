@@ -37,14 +37,14 @@ P_FIELDS = [
 	'l_name',
 	'm_name',
 	'suffix',
-	'age',
-	'address',
-	'civil_status',
-	'date_profiled',
-	'rank',
-	'date_assigned',
-	'date_relieved',
-	'designation'
+	# 'age',
+	# 'address',
+	# 'civil_status',
+	# 'date_profiled',
+	# 'rank',
+	# 'date_assigned',
+	# 'date_relieved',
+	# 'designation'
 ]
 
 I_FIELDS = [
@@ -53,12 +53,12 @@ I_FIELDS = [
 	'm_name',
 	'suffix',
 	'age',
-	'address',
-	'civil_status',
-	'date_profiled',
-	'date_arrested',
-	'date_committed',
-	'crime_violated'
+	# 'address',
+	# 'civil_status',
+	# 'date_profiled',
+	# 'date_arrested',
+	# 'date_committed',
+	# 'crime_violated'
 ]
 
 class Profile(models.Model):
@@ -67,11 +67,11 @@ class Profile(models.Model):
 	# Images
 	thumbnail = models.FileField(
 		upload_to	= "thumbnails",
-		default 	= "default.jpg"
+		default 	= "default.png",
 	)
 	raw_image = models.FileField(
 		upload_to	= "raw_images",
-		default 	= "default.jpg"
+		default 	= "default.png",
 	)
 
 	# Common details
@@ -82,14 +82,14 @@ class Profile(models.Model):
 	age 			= models.IntegerField()
 	address			= models.CharField(max_length=250)
 	civil_status	= models.CharField(blank=True, max_length=20, choices=CIVIL_STATUS_CHOICES, default='single')
-	date_profiled = models.DateTimeField(default=timezone.now)
+	date_profiled	= models.DateTimeField(default=timezone.now)
 
 	class Meta:
 		abstract = True
 
 class Personnel(Profile):
-	p_type	= models.CharField(max_length=10, default="personnel")
-	rank	= models.CharField(max_length=10, choices=RANKS, default='pat')
+	p_type			= models.CharField(max_length=10, default="personnel")
+	rank			= models.CharField(max_length=10, choices=RANKS, default='pat')
 	date_assigned	= models.DateTimeField()
 	date_relieved	= models.DateTimeField(blank=True, null=True)
 	designation		= models.CharField(max_length=250)
@@ -107,8 +107,8 @@ class Personnel(Profile):
 		return get_full_name(self) + "'s Profile"
 
 class Inmate(Profile):
-	fields = I_FIELDS
-	p_type = models.CharField(max_length=10, default="inmate")
+	fields 			= I_FIELDS
+	p_type 			= models.CharField(max_length=10, default="inmate")
 	date_arrested	= models.DateTimeField()
 	date_committed	= models.DateTimeField(null=True, blank=True)
 	crime_violated	= models.CharField(max_length=250)

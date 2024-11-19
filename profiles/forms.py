@@ -81,8 +81,14 @@ WIDGETS = {
 	}),
 }
 
+VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
+
 class CreatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	raw_image = forms.FileField(
+		validators			= VALIDATOR,
+		allow_empty_file	= True,
+		required=False
+	)
 
 	class Meta:
 		model = Personnel
@@ -126,8 +132,12 @@ class UpdatePersonnel(forms.ModelForm):
 		widgets = WIDGETS
 
 class CreateInmate(forms.ModelForm):
-	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
-	
+	raw_image = forms.FileField(
+		validators			= VALIDATOR,
+		allow_empty_file	= True,
+		required=False
+	)
+
 	class Meta:
 		model = Inmate
 		fields = [

@@ -5,6 +5,9 @@ from django.shortcuts import (
 	get_object_or_404
 )	
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from django.utils import timezone
 from datetime import datetime
 from pathlib import Path
 
@@ -17,7 +20,7 @@ from .forms import (
 	UpdateInmate, 
 	TemplateUploadForm
 )
-from facesearch.utils import take_image, save_image
+from facesearch.utils import *
 
 
 ORDER_CHOICES = [
@@ -37,7 +40,7 @@ PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_relieved',"Date Relieved"],
 ]
 
-INMATE_SORT_CHOICES = [
+INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_profiled',"Date Profiled"],
 	['date_arrested',"Date Arrested"],
 	['date_committed',"Date Committed"],
@@ -46,16 +49,18 @@ INMATE_SORT_CHOICES = [
 CWD_PATH = Path().cwd()
 MEDIA_PATH =  CWD_PATH.joinpath("media")
 
+THUMBNAIL_SIZE = int(105*2)
 
 def personnels(request):
 	context = {
-		'personnels'	: Personnel.objects.exclude(archivepersonnel__isnull=False),
+		'personnels'	: Personnel.objects.exclude(archivepersonnel__isnull=False).order_by("-date_profiled"),
 		'ranks'			: [rank[0] for rank in Personnel.RANKS],
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
 		'page_title'	: "OPERATE | Personnel Profiles"
 	}
+
 
 	if request.method == "GET":
 		reset_filter		= request.GET.get("reset_filter", None)
@@ -95,6 +100,18 @@ def personnels(request):
 			}
 
 		context['filters'].update({"search": search})
+	
+	page		= request.GET.get('page', 1)  # Get the current page number
+	paginator	= Paginator(context['personnels'], 20)
+
+	try:
+		context['personnels'] = paginator.page(page)
+	except PageNotAnInteger:
+		context['personnels'] = paginator.page(1)  # If page is not an integer, show the first page
+	except EmptyPage:
+		context['personnels'] = paginator.page(paginator.num_pages)  # If page is out of range, show the last page
+
+	context["is_paginated"] = paginator.num_pages > 1
 
 	return render(request, "profiles/personnels.html", context)
 
@@ -188,24 +205,70 @@ def profile(request, p_type, pk):
 def profile_add(request, p_type):
 	create_profile_form = CreatePersonnel if p_type == "personnel" else CreateInmate
 
+	context = {
+		'form'			: create_profile_form(),
+		'default_img'	: "../../../media/default.png",
+		'p_type'		: p_type,
+		'page_title'	: f"OPERATE | Add Profile",
+		'camera'		: 0
+	}
+
 	if request.method == "POST":
-		form = create_profile_form(request.POST, request.FILES)
+		context["form"] = create_profile_form(request.POST, request.FILES)
 
-		if form.is_valid():
-			instance = form.save()
+		if context["form"].is_valid():
+			is_option_camera = request.POST.get("option_camera", 0)
+			is_option_upload = request.POST.get("option_upload", 0)
 
-			if 'raw_image' in request.FILES: save_profile_picture(instance)
+			if not is_option_camera and not 'raw_image' in request.FILES:
+				context['missing_image'] = True
+				return render(request, "profiles/profile_add.html", context)
+			
+			instance = context["form"].save()
+
+			image_name = f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
+
+			raw_image_save_path = f"media/raw_images/{image_name}"
+			thumbnail_save_path	= f"media/thumbnails/{image_name}"
+
+			if is_option_camera:
+				# Get camera
+				context["camera"] = int(request.POST.get("camera", 0))
+
+				# Take picture
+				is_image_taken, raw_image = take_image(context["camera"])
+
+				# If not then, return
+				if not is_image_taken:
+					return render(request, "profiles/profile_add.html", context)
+				
+			elif is_option_upload and 'raw_image' in request.FILES: 
+				instance_raw_image_path = instance.raw_image.path
+
+				raw_image = open_image(instance_raw_image_path)
+			
+			# Save raw image taken
+			is_image_saved  = save_image(raw_image_save_path, raw_image)	
+
+			# Create thumbnail
+			resized_image	= create_thumbnail(
+				raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
+				new_size		= THUMBNAIL_SIZE
+			)
+
+			# Save thumbnail
+			is_image_saved	= save_image(thumbnail_save_path, resized_image)	
+
+			if not is_image_saved:
+				instance.delete()
+				return render(request, "profiles/profile_add.html", context)
+			
+			instance.raw_image = f"raw_images/{image_name}"
+			instance.thumbnail = f"thumbnails/{image_name}"
+
+			instance.save()
 
 			return redirect('profile', p_type, instance.pk)
-	else:
-		form = create_profile_form()
-
-	context = {
-		'form'			: form,
-		'default_img'	: "../../../media/default.jpg",
-		'p_type'		: p_type,
-		'page_title'	: f"OPERATE | Add Profile"
-	}
 	return render(request, "profiles/profile_add.html", context)
 
 
@@ -216,38 +279,71 @@ def profile_update(request, p_type, pk):
 	p_class, update_form = [Personnel, UpdatePersonnel] if p_type == "personnel" else [Inmate, UpdateInmate]
 	profile = get_object_or_404(p_class, pk=pk)
 
+	form =  update_form(instance=profile)
+
 	if request.method == "POST":
 		form = update_form(request.POST, request.FILES, instance=profile)
 
-		# is_option_camera = request.POST.get("open_camera", 0)
-
-		# if is_option_camera:
-		# 	camera			= int(request.POST.get("camera", 0))
-		# 	is_image_taken	= take_image(camera)
-
-		# 	context["camera"] =	camera
-
-		# 	if is_image_taken:
-		# 		_, frame = is_image_taken
-				
-		# 		save_image(image_path, frame)	
-		# 	else:
-		# 		return render(request, "profiles/profile_update.html", context)
-			
 		if form.is_valid():
 			instance = form.save()
 
-			if 'raw_image' in request.FILES: save_profile_picture(instance)
+			is_option_camera = request.POST.get("option_camera", 0)
+			is_option_upload = request.POST.get("option_upload", 0)
 
-			return redirect('profile', p_type, pk)
-	else:
-		form = update_form(instance=profile)
+			if is_option_camera or 'raw_image' in request.FILES:
+				image_name = f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
+
+				raw_image_save_path = f"media/raw_images/{image_name}"
+				thumbnail_save_path	= f"media/thumbnails/{image_name}"
+
+				raw_image = None
+
+				if is_option_camera:
+					# Get camera
+					camera = int(request.POST.get("camera", 0))
+
+					# Take picture
+					is_image_taken, raw_image = take_image(camera)
+
+					# If not then, return
+					if not is_image_taken:
+						return render(request, "profiles/profile_update.html", context)
+					
+				elif is_option_upload and 'raw_image' in request.FILES: 
+					instance_raw_image_path = instance.raw_image.path
+
+					raw_image = open_image(instance_raw_image_path)
+				
+				# Save raw image taken
+				is_image_saved  = save_image(raw_image_save_path, raw_image)	
+
+				# Create thumbnail
+				resized_image	= create_thumbnail(
+					raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
+					new_size		= THUMBNAIL_SIZE
+				)
+
+				# Save thumbnail
+				is_image_saved	= save_image(thumbnail_save_path, resized_image)	
+
+				if not is_image_saved:
+					instance.delete()
+					return render(request, "profiles/profile_update.html", context)
+				
+				instance.raw_image = f"raw_images/{image_name}"
+				instance.thumbnail = f"thumbnails/{image_name}"
+
+			instance.save()
+
+			return redirect('profile', p_type, instance.pk)
 
 	context = {
-		'prev'			: request.GET.get("prev", ""),
-		'profile'		: profile,
 		'form'			: form,
-		'page_title'	: f"OPERATE | Update {profile}"
+		'default_img'	: "../../../media/default.png",
+		'p_type'		: p_type,
+		'page_title'	: f"OPERATE | Update {profile}",
+		'camera'		: 0,
+		'profile'		: profile
 	}
 	return render(request, "profiles/profile_update.html", context)
 
@@ -269,7 +365,8 @@ def profile_delete(request, p_type, pk):
 	context = {
 		'title' 		: f"Delete {get_full_name(profile)}'s Profile",
 		'warning' 		: f"You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
-		'page_title'	: f"OPERATE | Delete {profile}"
+		'page_title'	: f"OPERATE | Delete {profile}",
+		'prev'	: prev,
 	}
 	return render(request, "home/confirmation_page.html", context)
 

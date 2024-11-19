@@ -20,7 +20,7 @@
 		
 				{% csrf_token %}
 		
-				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				<input type="text" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
 				
 				<div class="fields">
 					<div class="field">
@@ -28,7 +28,7 @@
 					</div>
 				</div>
 		
-				<button class="btn btn-primary center" type="submit">
+				<button class="btn btn-primary center" type="submit" name="option_upload" value="1">
 					<span class="material-symbols-outlined">upload_2</span>
 					<span>UPLOAD</span>
 				</button>
@@ -39,7 +39,7 @@
 	
 				{% csrf_token %}
 	
-				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
+				<input type="text" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
 	
 				<div class="fields">
 					<div class="field">
@@ -49,7 +49,7 @@
 					</div>
 				</div>
 				
-				<button class="btn btn-secondary center" name="open_camera" value="1" type="submit">
+				<button class="btn btn-secondary center" name="option_camera" value="1" type="submit">
 					<span class="material-symbols-outlined">camera</span>
 					<span>OPEN CAMERA</span>
 				</button>
@@ -66,30 +66,34 @@
 
 						<div class="picture">
 							<div class="button-overlay">
-								<a class="btn btn-transparent-dark" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+								<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
 									<span class="material-symbols-outlined">open_in_new</span>
 									<span>View profile</span>
 								</a>
-								<a class="btn btn-transparent-dark" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+								<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
 									<span class="material-symbols-outlined">edit</span>
 									<span>Edit profile</span>
 								</a>
 								{% if profile.archivepersonnel %}
-									<a class="btn btn-transparent-dark" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}" title="Add profile to archives">
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}" title="Add profile to archives">
 										<span class="material-symbols-outlined">unarchive</span>
 										<span>Unarchive</span>
 									</a>
 								{% elif profile.archiveinmate %}
-									<a class="btn btn-transparent-dark" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}" title="Add profile to archives">
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}" title="Add profile to archives">
 										<span class="material-symbols-outlined">unarchive</span>
 										<span>Unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn btn-transparent-dark" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
-										<span class="material-symbols-outlined">archive</span>
-										<span>Add profile to archives</span>
+									<a class="btn btn-transparent-secondary" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">delete</span>
+										<span>Delete profile</span>
 									</a>
 								{% endif %}
+								<a class="btn btn-transparent-danger" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+									<span class="material-symbols-outlined">edit</span>
+									<span>Edit profile</span>
+								</a>
 							</div>
 
 							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
@@ -129,7 +133,7 @@
 					</div>
 				{% endfor %}
 			{% else %}
-				<h2>No batig nawng found.</h2>
+				<h2>No similar faces found.</h2>
 			{% endif %}
 		</div>
 	</div>

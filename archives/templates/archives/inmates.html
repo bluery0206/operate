@@ -77,17 +77,21 @@
 				<div class="inmate card">
 					<div class="picture">
 						<div class="button-overlay">
-							<a class="btn btn-transparent-dark" href="{% url 'profile' archive.profile.p_type archive.profile.pk %}" title="Open archive.profile in detail">
+							<a class="btn btn-transparent-primary" href="{% url 'profile' archive.profile.p_type archive.profile.pk %}" title="Open archive.profile in detail">
 								<span class="material-symbols-outlined">open_in_new</span>
-								<span>View archive.profile</span>
+								<span>View profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'profile-update' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Edit archive.profile">
+							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Edit archive.profile">
 								<span class="material-symbols-outlined">edit</span>
-								<span>Edit archive.profile</span>
+								<span>Edit profile</span>
 							</a>
-							<a class="btn btn-transparent-dark" href="{% url 'archive-add' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Add archive.profile to archives">
+							<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' archive.profile.p_type archive.pk %}?prev={{request.path}}" title="Add archive.profile to archives">
 								<span class="material-symbols-outlined">archive</span>
-								<span>Remove profile from archives</span>
+								<span>Unarchive profile</span>
+							</a>
+							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Add archive.profile to archives">
+								<span class="material-symbols-outlined">delete</span>
+								<span>Delete profile</span>
 							</a>
 						</div>
 
