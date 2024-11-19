@@ -1,10 +1,12 @@
 {% extends 'home/base.html' %}
+{% load static %}
 
 {% block content %}
 	<div class="dialog-wrapper">
         <div class="dialog">
             <div class="header">
                 <div class="title">
+                    <img src="{% static 'images/operate.png' %}" alt="">
                     <h3>{{ title }}</h3>
                 </div>
             </div>

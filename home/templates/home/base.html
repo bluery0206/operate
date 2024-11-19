@@ -18,7 +18,10 @@
 </head>
 <body>
 	<header>
-		<div class="title">OPERATE</div>	
+		<div class="title">
+			<img src="{% static 'images/operate.png' %}" alt="operate.png">
+			OPERATE
+		</div>	
 
 		<!-- facesearch by  -->
 		<a class="btn btn-primary" href="{% url 'facesearch' %}">
@@ -122,7 +125,105 @@
 	</main>
 
 	<footer>
-		<h2>OPERATE</h2>
+		<div class="footer-wrapper">
+			<div class="header">
+				<img src="{% static 'images/operate.png' %}" alt="operate.png">
+				<div class="title">
+					<h2>OPeraTE</h2>
+					<p><em>(Optimized Personnnel and Inmate Tracking Efficiency)</em></p>
+					<h3>for PNP-Clarin Through Facial Recognition</h3>
+				</div>
+			</div>
+			<div class="body">
+				<div class="section-1">
+					<h4>Hilario, Mark Ryan I.</h4>
+					<div class="contact-list">
+						<address class="contact">
+							Poblacion Sur, Clarin, Bohol
+						</address>
+						<div class="contact">
+							@hilariomarkryan3@gmail.com
+						</div>
+						<div class="contact">
+							markryan.hilario@bisu.edu.ph
+						</div>
+						<div class="contact">
+							09291231620
+						</div>
+						<div class="contact">
+							FB: Ryan Hilario
+						</div>
+					</div>
+				</div>
+				<div class="section-2">
+					<h4>Inferido, Eliezer C.</h4>
+					<div class="contact-list">
+						<div class="contact">
+							<address class="contact">
+								Poblacion Sur, Clarin, Bohol
+							</address>
+							<div class="contact">
+								eliezer.inferido@bisu.edu.ph
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-3">
+					<h4>Melecio, Jhonlie C.</h4>
+					<div class="contact-list">
+						<div class="contact">
+							<address class="contact">
+								Villaflor, Clarin, Bohol
+							</address>
+							<div class="contact">
+								jhonlie.melecio@bisu.edu.ph
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-4">
+					<h4>PNP-Clarin</h4>
+					<div class="contact-list">
+						<div class="contact">
+							<address class="contact">
+								Poblacion Norte, Clarin, Bohol
+							</address>
+							<div class="contact">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="section-4">
+					<h4>BISU-Clarin</h4>
+					<div class="contact-list">
+						<div class="contact">
+							<address class="contact">
+								Poblacion Norte, Clarin, Bohol
+							</address>
+							<div class="contact">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<!-- &copy; 2024, All right reserved. -->
+				<div class="title">
+					Optimized Personnel and Inmate Tracking Efficiency (OPeraTE)
+				</div>
+
+				<div class="link-list">
+					<a href="{% url 'operate-home' %}" class="link">Home</a>
+					<a href="{% url 'facesearch' %}" class="link">FaceSearch</a>
+					<a href="{% url 'profiles-personnels' %}" class="link">Personnels</a>
+					<a href="{% url 'profiles-inmates' %}" class="link">Inmates</a>
+					<a href="{% url 'archives-personnels' %}" class="link">Archived Personnels</a>
+					<a href="{% url 'archives-inmates' %}" class="link">Archived Inmates</a>
+					<a href="/admin/" class="link">Admin</a>
+					<a href="/logout/" class="link">Logout</a>
+				</div>
+			</div>
+		</div>
 	</footer>
 </body>
 </html>
