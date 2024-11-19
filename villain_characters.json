@@ -1,252 +1,202 @@
 [
     {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Attempted world domination",
-        "f_name": "Freiberg",
+        "date_arrested": "2024-11-18",
+        "crime_violated": "Arson",
+        "f_name": "Jace",
+        "m_name": "Alexander",
+        "l_name": "Blackwell",
+        "suffix": "",
+        "age": 35,
+        "address": "Cinder Alley, Darkhaven"
+    },
+    {
+        "date_arrested": "2024-11-15",
+        "crime_violated": "Smuggling",
+        "f_name": "Eliza",
+        "m_name": "Marie",
+        "l_name": "Cross",
+        "suffix": "",
+        "age": 24,
+        "address": "Shadowport, Rivermist"
+    },
+    {
+        "date_arrested": "2024-10-30",
+        "crime_violated": "Forgery",
+        "f_name": "Victor",
         "m_name": "",
-        "l_name": "Freiberg",
+        "l_name": "Harrison",
+        "suffix": "Jr.",
+        "age": 42,
+        "address": "West End, New Albion"
+    },
+    {
+        "date_arrested": "2024-11-10",
+        "crime_violated": "Cybercrime",
+        "f_name": "Mina",
+        "m_name": "Claire",
+        "l_name": "Sterling",
+        "suffix": "",
+        "age": 28,
+        "address": "Tech District, Neon City"
+    },
+    {
+        "date_arrested": "2024-09-25",
+        "crime_violated": "Theft",
+        "f_name": "Eli",
+        "m_name": "",
+        "l_name": "Grant",
+        "suffix": "",
+        "age": 31,
+        "address": "Raven Hollow, Shadowmere"
+    },
+    {
+        "date_arrested": "2024-08-15",
+        "crime_violated": "Espionage",
+        "f_name": "Samantha",
+        "m_name": "Rose",
+        "l_name": "Fletcher",
+        "suffix": "",
+        "age": 38,
+        "address": "Emerald Heights, Skyforge"
+    },
+    {
+        "date_arrested": "2024-07-05",
+        "crime_violated": "Fraud",
+        "f_name": "Daniel",
+        "m_name": "",
+        "l_name": "Richards",
         "suffix": "",
         "age": 45,
-        "address": "Ruling tower, Eastern Kingdom"
+        "address": "Merchant's Row, Goldspire"
+    },
+    {
+        "date_arrested": "2024-11-01",
+        "crime_violated": "Assault",
+        "f_name": "Lila",
+        "m_name": "Jane",
+        "l_name": "Morrison",
+        "suffix": "",
+        "age": 33,
+        "address": "Stoneheart, Ironclad Keep"
+    },
+    {
+        "date_arrested": "2024-10-20",
+        "crime_violated": "Blackmail",
+        "f_name": "Oscar",
+        "m_name": "Nathaniel",
+        "l_name": "Cooper",
+        "suffix": "",
+        "age": 39,
+        "address": "Crystal Spires, Brightshore"
+    },
+    {
+        "date_arrested": "2024-09-15",
+        "crime_violated": "Kidnapping",
+        "f_name": "Clara",
+        "m_name": "",
+        "l_name": "Hawthorne",
+        "suffix": "",
+        "age": 27,
+        "address": "Silverwoods, Frostpeak"
+    },
+    {
+        "date_arrested": "2024-08-30",
+        "crime_violated": "Murder",
+        "f_name": "Damien",
+        "m_name": "",
+        "l_name": "Thorne",
+        "suffix": "",
+        "age": 41,
+        "address": "Gallows Hill, Duskfall"
+    },
+    {
+        "date_arrested": "2024-11-12",
+        "crime_violated": "Extortion",
+        "f_name": "Isla",
+        "m_name": "",
+        "l_name": "Vance",
+        "suffix": "",
+        "age": 36,
+        "address": "King’s Wharf, Seafrost"
+    },
+    {
+        "date_arrested": "2024-10-05",
+        "crime_violated": "Vandalism",
+        "f_name": "Julian",
+        "m_name": "Edward",
+        "l_name": "Drake",
+        "suffix": "",
+        "age": 29,
+        "address": "Mossy Vale, Greenglen"
     },
     {
         "date_arrested": "2024-11-17",
         "crime_violated": "Treason",
-        "f_name": "Erwin",
-        "m_name": "Smith",
-        "l_name": "Smith",
-        "suffix": "",
-        "age": 35,
-        "address": "Underground prison, Wall Maria"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Poisoning royal family",
-        "f_name": "Alistair",
-        "m_name": "",
-        "l_name": "Alistair",
-        "suffix": "",
-        "age": 40,
-        "address": "Royal estate, Eastern Kingdom"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Betrayal of her people",
-        "f_name": "Ymir",
-        "m_name": "",
-        "l_name": "Ymir",
-        "suffix": "",
-        "age": 100,
-        "address": "Walled city, Marley"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Mass destruction",
-        "f_name": "Zeke",
-        "m_name": "Yeager",
-        "l_name": "Yeager",
-        "suffix": "",
-        "age": 30,
-        "address": "Marley government headquarters"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Assassination of key officials",
-        "f_name": "Greyrat",
-        "m_name": "",
-        "l_name": "Greyrat",
-        "suffix": "",
-        "age": 50,
-        "address": "West Kingdom prison"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Spying on kingdom",
-        "f_name": "Vincent",
-        "m_name": "",
-        "l_name": "Vincent",
-        "suffix": "",
-        "age": 28,
-        "address": "City slums, Western District"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Black market dealings",
-        "f_name": "Klaus",
-        "m_name": "",
-        "l_name": "Klaus",
-        "suffix": "",
-        "age": 42,
-        "address": "Mountain stronghold, Old Kingdom"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Loyalty to corrupt regime",
-        "f_name": "Mikasa",
-        "m_name": "Ackerman",
-        "l_name": "Ackerman",
-        "suffix": "",
-        "age": 28,
-        "address": "Forest hideout, Northern District"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Kidnapping for ransom",
-        "f_name": "Marquis",
-        "m_name": "",
-        "l_name": "Marquis",
-        "suffix": "",
-        "age": 50,
-        "address": "Luxury mansion, Western District"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Unlawful experimentation",
-        "f_name": "Nina",
-        "m_name": "",
-        "l_name": "Nina",
-        "suffix": "",
-        "age": 31,
-        "address": "State headquarters, Central City"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Serial killing",
-        "f_name": "Ladd",
-        "m_name": "Russo",
-        "l_name": "Russo",
-        "suffix": "",
-        "age": 36,
-        "address": "Train station, Central City"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Human experimentation",
-        "f_name": "Shou",
-        "m_name": "Tucker",
-        "l_name": "Tucker",
-        "suffix": "",
-        "age": 45,
-        "address": "Central military base"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Espionage",
-        "f_name": "Skeeter",
-        "m_name": "",
-        "l_name": "Skeeter",
-        "suffix": "",
-        "age": 30,
-        "address": "Hidden Leaf Village"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Manipulation of souls",
-        "f_name": "Ciel",
-        "m_name": "Phantomhive",
-        "l_name": "Phantomhive",
-        "suffix": "",
-        "age": 25,
-        "address": "Phantomhive manor"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Illegal resource trade",
-        "f_name": "Boris",
-        "m_name": "",
-        "l_name": "Boris",
-        "suffix": "",
-        "age": 40,
-        "address": "Walled city, Eastern District"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Corruption of military power",
-        "f_name": "Olivier",
-        "m_name": "Mira",
-        "l_name": "Armstrong",
-        "suffix": "",
-        "age": 38,
-        "address": "East headquarters"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Manipulation of student council",
-        "f_name": "Kirari",
-        "m_name": "Momobami",
-        "l_name": "Momobami",
-        "suffix": "",
-        "age": 30,
-        "address": "Student council office"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "War crimes",
-        "f_name": "Nina",
-        "m_name": "Einstein",
-        "l_name": "Einstein",
-        "suffix": "",
-        "age": 26,
-        "address": "Lelouch's headquarters"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Murder for hire",
         "f_name": "Fiona",
-        "m_name": "Frost",
-        "l_name": "Frost",
-        "suffix": "",
-        "age": 33,
-        "address": "City outskirts"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Human trafficking",
-        "f_name": "Doflamingo",
         "m_name": "",
-        "l_name": "Doflamingo",
-        "suffix": "",
-        "age": 47,
-        "address": "Dressrosa island"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Murder, theft",
-        "f_name": "Chrollo",
-        "m_name": "Lucilfer",
-        "l_name": "Lucilfer",
-        "suffix": "",
-        "age": 40,
-        "address": "Underground hideout"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Assassinations",
-        "f_name": "Dazai",
-        "m_name": "Osamu",
-        "l_name": "Osamu",
+        "l_name": "Montague",
         "suffix": "",
         "age": 34,
-        "address": "Port Mafia headquarters"
+        "address": "Eaglecrest, Stormwatch"
     },
     {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Assassinations",
-        "f_name": "Grell",
-        "m_name": "Sutcliff",
-        "l_name": "Sutcliff",
-        "suffix": "",
-        "age": 29,
-        "address": "Grim Reaper headquarters"
-    },
-    {
-        "date_arrested": "2024-11-17",
-        "crime_violated": "Destruction of cities",
-        "f_name": "Saber",
+        "date_arrested": "2024-09-20",
+        "crime_violated": "Burglary",
+        "f_name": "Kai",
         "m_name": "",
-        "l_name": "Saber",
+        "l_name": "Takahashi",
         "suffix": "",
-        "age": 100,
-        "address": "Ruined castle, Avalon"
+        "age": 26,
+        "address": "Harbor District, Bluelight"
+    },
+    {
+        "date_arrested": "2024-07-12",
+        "crime_violated": "Poaching",
+        "f_name": "Rowan",
+        "m_name": "",
+        "l_name": "Sable",
+        "suffix": "",
+        "age": 40,
+        "address": "Forest's Edge, Thistlebrook"
+    },
+    {
+        "date_arrested": "2024-08-22",
+        "crime_violated": "Illegal Arms Trade",
+        "f_name": "Hana",
+        "m_name": "",
+        "l_name": "Mikami",
+        "suffix": "",
+        "age": 30,
+        "address": "Red Crescent, Emberfall"
+    },
+    {
+        "date_arrested": "2024-10-18",
+        "crime_violated": "Drug Trafficking",
+        "f_name": "Xander",
+        "m_name": "",
+        "l_name": "Vale",
+        "suffix": "",
+        "age": 37,
+        "address": "Shadow Lane, Obsidian Bay"
+    },
+    {
+        "date_arrested": "2024-09-02",
+        "crime_violated": "Hacking",
+        "f_name": "Liora",
+        "m_name": "",
+        "l_name": "Ashcroft",
+        "suffix": "",
+        "age": 25,
+        "address": "Byte City, Cyberspire"
+    },
+    {
+        "date_arrested": "2024-11-19",
+        "crime_violated": "Piracy",
+        "f_name": "Ryder",
+        "m_name": "",
+        "l_name": "North",
+        "suffix": "",
+        "age": 38,
+        "address": "Port Blackwater, Saltreach"
     }
 ]

@@ -6,6 +6,7 @@ from django.shortcuts import (
 	get_object_or_404
 )	
 from datetime import datetime
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import ArchivePersonnel, ArchiveInmate
 from profiles.models import Personnel, Inmate
@@ -37,7 +38,7 @@ INMATE_SORT_CHOICES = [
 ]
 
 
-
+PAGE_NUM = 20
 
 
 def personnels(request):
@@ -93,6 +94,18 @@ def personnels(request):
 
 		context['filters'].update({"search": search})
 
+	page		= request.GET.get('page', 1)  # Get the current page number
+	paginator	= Paginator(context['personnels'], PAGE_NUM)
+
+	try:
+		context['personnels'] = paginator.page(page)
+	except PageNotAnInteger:
+		context['personnels'] = paginator.page(1)  # If page is not an integer, show the first page
+	except EmptyPage:
+		context['personnels'] = paginator.page(paginator.num_pages)  # If page is out of range, show the last page
+
+	context["is_paginated"] = paginator.num_pages > 1
+
 	return render(request, "archives/personnels.html", context)
 
 
@@ -145,6 +158,19 @@ def inmates(request):
 			}
 
 		context['filters'].update({"search": search})
+
+	page		= request.GET.get('page', 1)  # Get the current page number
+	paginator	= Paginator(context['inmates'], PAGE_NUM)
+
+	try:
+		context['inmates'] = paginator.page(page)
+	except PageNotAnInteger:
+		context['inmates'] = paginator.page(1)  # If page is not an integer, show the first page
+	except EmptyPage:
+		context['inmates'] = paginator.page(paginator.num_pages)  # If page is out of range, show the last page
+
+	context["is_paginated"] = paginator.num_pages > 1
+
 	return render(request, "archives/inmates.html", context)
 
 

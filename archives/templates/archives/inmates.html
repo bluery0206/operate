@@ -71,6 +71,36 @@
 		</div>
 	</div>
 
+	{% if is_paginated %}
+		<div class="pagination left">
+			<span class="page-list">
+				{% if inmates.has_previous %}
+					<a class="btn btn-outline-inmate" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in inmates.paginator.page_range %}
+					{% if inmates.number == num %}
+						<a class="btn btn-inmate" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > inmates.number|add:"-3" and num < inmates.number|add:"3" %}
+						<a class="btn btn-outline-inmate" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if inmates.has_next %}
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.next_page_number }}">Next</a>
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
+
 	<div class="card-list">
 		{% if inmates %}
 			{% for archive in inmates %}
@@ -123,4 +153,34 @@
 			<h2>There are no inmates archived.</h2>
 		{% endif %}
 	</div>
+
+	{% if is_paginated %}
+		<div class="pagination right">
+			<span class="page-list">
+				{% if inmates.has_previous %}
+					<a class="btn btn-outline-inmate" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in inmates.paginator.page_range %}
+					{% if inmates.number == num %}
+						<a class="btn btn-inmate" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > inmates.number|add:"-3" and num < inmates.number|add:"3" %}
+						<a class="btn btn-outline-inmate" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if inmates.has_next %}
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.next_page_number }}">Next</a>
+					<a class="btn btn-outline-inmate" href="?page={{ inmates.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
 {% endblock content %}
