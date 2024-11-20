@@ -12,54 +12,62 @@
 		OPeraTE{% if page_title %} | {{ page_title }}{% endif %}
 	</title>
 </head>
+			
 <body>
 	<header class="{{ p_type }}">
 		<div class="title">
 			<img src="{% static 'images/operate.png' %}" alt="operate.png">
 			OPeraTE
 		</div>	
+			
+			
 
 		<!-- facesearch by  -->
 		<a class="btn btn-{{ p_type }}" href="{% url 'facesearch' %}">
-			<span class="material-symbols-outlined">
-				account_box
-			</span>
-			FaceSearch
+			<span class="material-symbols-outlined">account_box</span>
+			<span>FaceSearch</span>
 		</a>
+			
+			
 		
 		<nav>
 			<!-- home -->
 			<a class="btn btn-{{ p_type }}" href="{% url 'operate-home' %}">
-				<span class="material-symbols-outlined">
-					home
-				</span>
-				Home
+				<span class="material-symbols-outlined">home</span>
+				<span>Home</span>
 			</a>
+			
+			
+			
 
 			<!-- profiles -->
 			<div class="dropdown">
 				<button class="btn btn-{{ p_type }}">
-					<span class="material-symbols-outlined">
-						Group
-					</span>
-					Profiles
+					<span class="material-symbols-outlined">Group</span>
+					<span>Profiles</span>
 				</button>
 
 				<div class="content">
 					<a class="btn" href="{% url 'profiles-personnels' %}">
-						<span class="material-symbols-outlined">
-							local_police
-						</span>
-						Personnel
+						<span class="material-symbols-outlined">local_police</span>
+						<span>Personnel</span>
 					</a>
 					<a class="btn" href="{% url 'profiles-inmates' %}">
-						<span class="material-symbols-outlined">
-							person_alert
-						</span>
-						Inmates
+						<span class="material-symbols-outlined">person_alert</span>
+						<span>Inmates</span>
+					</a>
+					<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
+						<span class="material-symbols-outlined">encrypted_add_circle</span>
+						<span>Add Personnel</span>
+					</a>
+					<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}" title="Add new profile">
+						<span class="material-symbols-outlined">person_add</span>
+						<span>Add Inmate</span>
 					</a>
 				</div>
 			</div>
+
+
 
 			<!-- archives -->
 			<div class="dropdown">
@@ -86,6 +94,8 @@
 				</div>
 			</div>
 		</nav>
+			
+			
 
 		<!-- ser action -->
 		<div class="dropdown">
@@ -114,11 +124,15 @@
 			</div>
 		</div>
 	</header>
+			
+			
 
 	<main>
 		{% block content %}
 		{% endblock content %}
 	</main>
+			
+			
 
 	<footer>
 		<div class="footer-wrapper">
@@ -202,6 +216,8 @@
 					</div>
 				</div>
 			</div>
+			
+			
 			<div class="footer">
 				<!-- &copy; 2024, All right reserved. -->
 				<div class="title">

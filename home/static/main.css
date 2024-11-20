@@ -238,9 +238,8 @@ footer {
                 display: grid;
                 row-gap: 0.5em;
                 align-content: center;
-                h2 {
 
-                }
+                /* h2 { } */
 
                 h3 { 
                     color: var(--text-placeholder-disabled);
@@ -257,9 +256,8 @@ footer {
 
 
             [class*="section-"] {
-                h4 {
 
-                }
+                /* h4 { } */
 
                 .contact-list {
                     margin: 0.5em 0;
@@ -278,17 +276,18 @@ footer {
         .footer {
             display: flex;
             justify-content: space-between;
-            .title {
 
-            }
+            /* .title { } */
 
             .link-list {
                 display: flex;
                 gap: 0.5em;
+
                .link {
                     color: var(--light);
                     filter: brightness(75%);
                 } 
+
                .link:hover {
                 filter: brightness(100%);
                }
@@ -584,10 +583,10 @@ footer {
 }
 .btn-light {
     background: var(--light);
-    color: var(--primary);
+    color: var(--dark);
     
     * {
-        color: var(--primary);
+        color: var(--dark);
      }
 }
 .btn-success {
@@ -744,10 +743,14 @@ footer {
         color: var(--white);
      }
 }
-.btn:hover {
+.btn:hover, .btn:active {
     filter: brightness(125%);
 }
-[class*="btn-outline"]:hover {
+.btn:focus{
+    filter: brightness(90%);
+}
+[class*="btn-outline"]:hover,
+[class*="btn-outline"]:active {
     background: var(--light);
     color: var(--dark);
     
@@ -755,8 +758,15 @@ footer {
         color: var(--dark);
      }
 }
-[class*="btn-transparent"]:hover {
+[class*="btn-outline"]:focus {
+    filter: brightness(90%);
+}
+[class*="btn-transparent"]:hover,
+[class*="btn-transparent"]:active {
     filter: brightness(125%) saturate(200%);
+}
+[class*="btn-transparent"]:focus {
+    filter: brightness(90%);
 }
 .btn:disabled {
     filter: saturate(75%) brightness(75%);

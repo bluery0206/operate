@@ -15,7 +15,7 @@ THRESHOLD = 1.0
 def facesearch(request):
 	context = {
 		"form"			: UploadedImageForm(),
-		"page_title"	: "OPERATE | Facesearch",
+		"page_title"	: "Facesearch",
 		"threshold"		: THRESHOLD,
 		"camera"		: 0,
 		"search_method" : 0,
