@@ -44,7 +44,6 @@
 			</select>
 			
 			<select class="form-control form-control-secondary" name="sort_by" title="Sort by">
-				<option class="option_title" value="">Sort by</option>
 				{% if sort_choices %}
 					{% for pair in sort_choices %}
 						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>

@@ -29,19 +29,18 @@ ORDER_CHOICES = [
 ]
 
 COMMON_SORT_CHOICES = [
+	['date_profiled',"Date Profiled"],
 	['l_name', "Last Name"],
 	['f_name', "First Name"],
-	['age', "Age"]
+	['age', "Age"],
 ]
 
 PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
-	['date_profiled',"Date Profiled"],
 	['date_assigned',"Date Assigned"],
 	['date_relieved',"Date Relieved"],
 ]
 
 INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
-	['date_profiled',"Date Profiled"],
 	['date_arrested',"Date Arrested"],
 	['date_committed',"Date Committed"],
 ]
@@ -131,7 +130,7 @@ def personnels(request):
 
 def inmates(request):
 	context = {
-		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False),
+		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False).order_by("-date_profiled"),
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
@@ -193,25 +192,6 @@ def inmates(request):
 
 
 
-def profile_template_upload(request):
-	if request.method == "POST":
-		form = TemplateUploadForm(request.POST, request.FILES)
-
-		if form.is_valid():
-			form.save()
-	else:
-		form= TemplateUploadForm()
-
-	context = {
-		'prev'		: request.GET.get("prev", ""),
-		'form'		: form,
-		'page_title': "Template Upload"
-	}
-	return render(request, "profiles/profile_update.html", context)
-
-
-
-
 
 def profile(request, p_type, pk):
 	p_class =  Personnel if p_type == "personnel" else Inmate
@@ -246,7 +226,7 @@ def profile_add(request, p_type):
 			is_option_camera = request.POST.get("option_camera", 0)
 			is_option_upload = request.POST.get("option_upload", 0)
 
-			if not is_option_camera and not 'raw_image' in request.FILES:
+			if not is_option_camera and 'raw_image' not in request.FILES:
 				context['missing_image'] = True
 				return render(request, "profiles/profile_add.html", context)
 			
@@ -267,34 +247,30 @@ def profile_add(request, p_type):
 
 				# If not then, return
 				if not is_image_taken:
+					instance.delete()
 					return render(request, "profiles/profile_add.html", context)
 				
 			elif is_option_upload and 'raw_image' in request.FILES: 
 				instance_raw_image_path = instance.raw_image.path
 
 				raw_image = open_image(instance_raw_image_path)
-			
-			# Save raw image taken
-			is_image_saved  = save_image(raw_image_save_path, raw_image)	
-			
 
+			# Save raw image first so that we can use it to create the thumbnail
+			is_image_saved = save_image(raw_image_save_path, raw_image)	
+			
 			# Create thumbnail
 			resized_image	= create_thumbnail(
 				raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
 				new_size		= THUMBNAIL_SIZE
 			)
 
-			# Save thumbnail
-			is_image_saved	= save_image(thumbnail_save_path, resized_image)	
+			is_image_saved = save_image(thumbnail_save_path, resized_image)	
 
-			
 			is_image_saved, emb_name, inp_emb = save_embedding(raw_image_save_path)
 
 			if not is_image_saved:
 				instance.delete()
 				return render(request, "profiles/profile_add.html", context)
-			
-			# generate and save embedding of the raw_image
 			
 			instance.embedding = f"embeddings/{emb_name}"
 			instance.raw_image = f"raw_images/{image_name}"
@@ -303,6 +279,7 @@ def profile_add(request, p_type):
 			instance.save()
 
 			return redirect('profile', p_type, instance.pk)
+
 	return render(request, "profiles/profile_add.html", context)
 
 
@@ -313,13 +290,19 @@ def profile_update(request, p_type, pk):
 	p_class, update_form = [Personnel, UpdatePersonnel] if p_type == "personnel" else [Inmate, UpdateInmate]
 	profile = get_object_or_404(p_class, pk=pk)
 
-	form =  update_form(instance=profile)
+	context = {
+		'form'			: update_form(instance=profile),
+		'p_type'		: p_type,
+		'page_title'	: f"Update {profile}",
+		'camera'		: 0,
+		'profile'		: profile,
+	}
 
 	if request.method == "POST":
-		form = update_form(request.POST, request.FILES, instance=profile)
+		context['form'] = update_form(request.POST, request.FILES, instance=context['profile'])
 
-		if form.is_valid():
-			instance = form.save()
+		if context['form'].is_valid():
+			instance = context['form'].save()
 
 			is_option_camera = request.POST.get("option_camera", 0)
 			is_option_upload = request.POST.get("option_upload", 0)
@@ -373,15 +356,7 @@ def profile_update(request, p_type, pk):
 			instance.save()
 
 			return redirect('profile', p_type, instance.pk)
-
-	context = {
-		'form'			: form,
-		'p_type'		: p_type,
-		'page_title'	: f"Update {profile}",
-		'camera'		: 0,
-		'profile'		: profile,
-		'p_type'		: p_type
-	}
+		
 	return render(request, "profiles/profile_update.html", context)
 
 

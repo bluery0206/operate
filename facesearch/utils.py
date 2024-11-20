@@ -155,7 +155,7 @@ def take_image(camera, crop_frame:bool=False, new_size:int|None=None):
 	while cap.isOpened(): 
 		_, frame = cap.read()
 		
-		frame = crop_frame_from_center(frame, new_size) if crop_frame else frame
+		frame = crop_frame_from_center(frame, new_size) if crop_frame and new_size else frame
 
 		# Show frame back to screen
 		cv2.imshow('OPERATE | Image Capture | "c" to capture | "q" to exit', frame)
@@ -166,8 +166,8 @@ def take_image(camera, crop_frame:bool=False, new_size:int|None=None):
 		
 		# Capture
 		if (cv2.waitKey(1) & 0XFF == ord('c')):
-			is_image_taken = True
-			image 		= frame
+			is_image_taken 	= True
+			image 			= frame
 			break
 
 	cap.release()

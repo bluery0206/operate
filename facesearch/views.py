@@ -18,7 +18,7 @@ def facesearch(request):
 		"page_title"	: "Facesearch",
 		"threshold"		: THRESHOLD,
 		"camera"		: 0,
-		"search_method" : 0,
+		"search_method" : 1,
 		"profiles"		: [],
 		"p_type"		: "personnel"
 	}

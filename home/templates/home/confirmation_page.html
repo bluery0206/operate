@@ -21,6 +21,12 @@
                 <form method="POST">
                     {% csrf_token %}
 
+                    {% if form %}
+                        <div class="fields">
+                            {{ form }}
+                        </div>
+                    {% endif %}
+
                     <input type="hidden" name="prev" value="{{ prev }}">
                     
                     <div class="actions">
