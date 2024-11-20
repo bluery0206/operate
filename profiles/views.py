@@ -13,12 +13,12 @@ from pathlib import Path
 
 from .models import Personnel, Inmate, Template
 from home.utils import save_profile_picture, get_full_name, generate_docx, save_docx
+from settings.views import OPERATE_SETTINGS
 from .forms import (
 	CreatePersonnel, 
 	CreateInmate, 
 	UpdatePersonnel, 
-	UpdateInmate, 
-	TemplateUploadForm
+	UpdateInmate
 )
 from facesearch.utils import *
 
@@ -56,8 +56,7 @@ EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 RAW_PATH	= MED_PATH.joinpath(f"raw_images")
 EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 
-THUMBNAIL_SIZE = int(105*2)
-PAGE_NUM = 20
+
 
 def personnels(request):
 	context = {
@@ -74,7 +73,7 @@ def personnels(request):
 	if request.method == "GET":
 		reset_filter		= request.GET.get("reset_filter", None)
 		reset_search		= request.GET.get("reset_search", None)
-		search		= request.GET.get("search", "").strip()
+		search				= request.GET.get("search", "").strip()
 
 		if not reset_search and search:
 			context['personnels'] = Personnel.objects.filter(
@@ -96,7 +95,7 @@ def personnels(request):
 			designation = designation.strip()
 
 			if designation: context['personnels'] = context['personnels'].filter(designation__icontains=designation)
-			if rank: context['personnels'] = context['personnels'].filter(rank=rank)
+			if rank: 		context['personnels'] = context['personnels'].filter(rank=rank)
 			if sort_by:
 				sort = "-" + sort_by if sort_order == "descending" else sort_by
 				context['personnels'] = context['personnels'].order_by(sort)
@@ -111,7 +110,7 @@ def personnels(request):
 		context['filters'].update({"search": search})
 	
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], PAGE_NUM)
+	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.default_profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -174,8 +173,8 @@ def inmates(request):
 
 		context['filters'].update({"search": search})
 
-		page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], PAGE_NUM)
+	page		= request.GET.get('page', 1)  # Get the current page number
+	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.default_profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)
@@ -198,7 +197,7 @@ def profile(request, p_type, pk):
 	profile =  get_object_or_404(p_class, pk=pk)
 	context = {
 		'profile'		: profile,
-		'page_title'	: f"{profile}",
+		'page_title'	: profile,
 		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile.html", context)
@@ -214,8 +213,8 @@ def profile_add(request, p_type):
 		'form'			: create_profile_form(),
 		'default_img'	: "../../../media/default.png",
 		'p_type'		: p_type,
-		'page_title'	: f"Add Profile",
-		'camera'		: 0,
+		'page_title'	: "Add Profile",
+		'camera'		: OPERATE_SETTINGS.default_camera,
 		'p_type'		: p_type
 	}
 
@@ -243,7 +242,7 @@ def profile_add(request, p_type):
 				context["camera"] = int(request.POST.get("camera", 0))
 
 				# Take picture
-				is_image_taken, raw_image = take_image(context["camera"], False, 200)
+				is_image_taken, raw_image = take_image(context["camera"], OPERATE_SETTINGS.crop_camera, OPERATE_SETTINGS.default_crop_size)
 
 				# If not then, return
 				if not is_image_taken:
@@ -261,7 +260,7 @@ def profile_add(request, p_type):
 			# Create thumbnail
 			resized_image	= create_thumbnail(
 				raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
-				new_size		= THUMBNAIL_SIZE
+				new_size		= OPERATE_SETTINGS.default_thumbnail_size
 			)
 
 			is_image_saved = save_image(thumbnail_save_path, resized_image)	
@@ -294,7 +293,7 @@ def profile_update(request, p_type, pk):
 		'form'			: update_form(instance=profile),
 		'p_type'		: p_type,
 		'page_title'	: f"Update {profile}",
-		'camera'		: 0,
+		'camera'		: OPERATE_SETTINGS.default_camera,
 		'profile'		: profile,
 	}
 
@@ -317,10 +316,10 @@ def profile_update(request, p_type, pk):
 
 				if is_option_camera:
 					# Get camera
-					camera = int(request.POST.get("camera", 0))
+					camera = int(request.POST.get("camera", OPERATE_SETTINGS.default_camera))
 
 					# Take picture
-					is_image_taken, raw_image = take_image(camera, True, 200)
+					is_image_taken, raw_image = take_image(camera, OPERATE_SETTINGS.crop_camera, OPERATE_SETTINGS.default_crop_size)
 
 					# If not then, return
 					if not is_image_taken:
@@ -337,7 +336,7 @@ def profile_update(request, p_type, pk):
 				# Create thumbnail
 				resized_image	= create_thumbnail(
 					raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
-					new_size		= THUMBNAIL_SIZE
+					new_size		= OPERATE_SETTINGS.default_thumbnail_size
 				)
 
 				# Save thumbnail
@@ -413,9 +412,8 @@ def profile_delete_all(request, p_type):
 
 
 def profile_docx_download(_, p_type, pk):
-	p_class = Personnel if p_type == "personnel" else Inmate
+	p_class, template = [Personnel, OPERATE_SETTINGS.personnel_template] if p_type == "personnel" else [Inmate, OPERATE_SETTINGS.inmate_template]
 
-	template	= Template.objects.get(template_name__icontains=p_type)
 	profile		= p_class.objects.get(pk=pk)
 
 	fields = [field.name for field in profile._meta.get_fields()]
@@ -437,7 +435,7 @@ def profile_docx_download(_, p_type, pk):
 	print(f"{data=}")
 
 	file_name, save_path = generate_docx(
-		template_path	= template.template_file.path, 
+		template_path	= template.path, 
 		image_path		= profile.raw_image.path, 
 		fields 			= fields, 
 		data 			= data

@@ -7,9 +7,7 @@ import logging
 import cv2 
 
 from profiles.models import Personnel, Inmate
-
-# MODEL_NAME = "emb_gen.onnx"
-MODEL_NAME = "2024.11.16.02.52.onnx"
+from settings.views import OPERATE_SETTINGS
 
 CWD_PATH	= Path().cwd()
 
@@ -27,21 +25,28 @@ def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
 
 
-def get_profiles(cand_list, reverse=True, by_array:int=0):
-	database = list(EMB_PATH.glob("*")) if by_array==1 else list(RAW_PATH.glob("*"))
+def get_profiles(cand_list, reverse=True, by_array:bool=False):
+
+	# Get dataset from path
+	database = list(EMB_PATH.glob("*")) if by_array else list(RAW_PATH.glob("*"))
 	database = [str(image_path) for image_path in database]
 	print(f"get_profiles(): {len(database) = }")
 
+	# Getting profiles
 	cands_dist 	= [float(dist) for dist, idx in cand_list]
 	cands_image	= [str(database[idx]) for dist, idx in cand_list]
+
+	# Candidates profiles
 	cands_prof	= []
 	
 	for image in cands_image:
-		# getting image name from full path
+
+		# extracting imagename.ext from full path
 		image_name = image.split("\\")[-1]
 		print(f"get_profiles(): {image_name = }")
 
-		if by_array == 1:
+
+		if by_array:
 			personnel 	= Personnel.objects.filter(embedding__endswith=image_name).first()
 			inmate		= Inmate.objects.filter(embedding__endswith=image_name).first()
 		else:
@@ -58,7 +63,7 @@ def get_profiles(cand_list, reverse=True, by_array:int=0):
 
 	return result
 
-def search(input_path:Path,  threshold:int=1, by_array:int=0):
+def search(input_path:Path,  threshold:int=1, by_array:bool=False):
 	input = open_gray_image(str(input_path))
 	print(f"facesearch(): {input.shape = }")
 
@@ -94,7 +99,7 @@ def search(input_path:Path,  threshold:int=1, by_array:int=0):
 
 	return result
 
-def search_face(inp_image, val_images, threshold, by_array:bool=False):
+def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_zero:bool=True):
 	best_cand_dist  = threshold
 	best_cand_idx	= None
 	cand_list       = []
@@ -103,20 +108,21 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False):
 
 	for idx, val in enumerate(val_images):
 
-		if not by_array:
-			val	= get_image_embedding(val)
+		# if not array meaning the search method was image and
+		# so the image needs to be processed and get its embedding
+		if not by_array: 
+			val = get_image_embedding(val)
 
-		dist	= np.sum(np.square(inp_emb - val), axis=-1)[0]
+		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
 
 		if dist <= best_cand_dist:
 			best_cand_dist	= dist
 			best_cand_idx	= idx
-			
 			print(f"search_face(): New candidate found: dist:{dist}, database_idx:{idx}")
 
 			cand_list.append([get_percentage(threshold, dist), best_cand_idx])
 
-		if dist <= 0: break
+		if break_in_zero and dist <= 0: break
 
 	return cand_list if cand_list else None
 	
@@ -141,7 +147,7 @@ def get_percentage(threshold, best_cand_dist):
 def crop_frame_from_center(frame, new_size):
 	return frame[120:120 + new_size, 200:200 + new_size, :]
 
-def take_image(camera, crop_frame:bool=False, new_size:int|None=None):
+def take_image(camera, crop_frame:int|None=None, new_size:int|None=None):
 	print(f"\nOpening opencv camera using cam: {camera}...")
 
 	is_image_taken	= False
@@ -179,9 +185,12 @@ def save_image(image_path, image):
 	return cv2.imwrite(image_path, image)
 
 def get_image_embedding(inp_image):
+	if not OPERATE_SETTINGS.model:
+		raise FileNotFoundError("There is no model found.")
+
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(str(SNN_PATH.joinpath(MODEL_NAME)))
+	session = ort.InferenceSession(OPERATE_SETTINGS.model.path)
 	
 	input_name	= session.get_inputs()[0].name
 	output_name = session.get_outputs()[0].name

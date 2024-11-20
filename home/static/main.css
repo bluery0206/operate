@@ -325,6 +325,10 @@ footer {
         height: 2em;
     }
 }
+.link {
+    color: var(--primary);
+    font-size: 1em;
+}
 .vertical {
     display: grid !important;
 }
@@ -962,6 +966,88 @@ footer {
 
     } /* body */
 } /* profile */
+
+
+
+
+
+
+.body.settings {
+    display: grid;
+    gap: 0.25em;
+    padding: 0em 1em 2em 1em;
+    .settings-section {
+        border-bottom: 1px solid var(--secondary);
+        
+        .settings-header {
+            padding: 0.5em 0.25em 0 0.25em;
+
+            p {
+                display: block;
+                padding: 0.5em 1em;
+            }
+        }
+        
+        .settings-block {
+            padding: 0 2em;
+            display: grid;
+    
+            .settings-item {
+                padding: 0.5em 0;
+                display: flex;
+                align-content: center;
+                gap: 1em;
+                
+                span {
+                    width: 100%;
+                }
+
+                * {
+                    align-self: center;
+                }
+        
+                .form-control {
+                    height: 2em;
+                    margin: 0;
+                    max-width: 200px;
+                    min-width: 200px;
+                }
+            
+                label {
+                    font-size: 1em;
+                    min-width: 175px;
+                    text-wrap: nowrap;
+                }
+            
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .dialog-wrapper {
     display: flex;
