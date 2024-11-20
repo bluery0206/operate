@@ -43,7 +43,7 @@ def facesearch(request):
 		if is_option_camera:
 			context['camera'] = int(request.POST.get("camera", 0))
 
-			is_image_taken, input_image = take_image(context['camera'], True, 200)
+			is_image_taken, input_image = take_image(context['camera'], False, 200)
 
 			if not is_image_taken:
 				return render(request, "facesearch/facesearch.html", context)

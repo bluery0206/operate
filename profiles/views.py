@@ -243,7 +243,7 @@ def profile_add(request, p_type):
 				context["camera"] = int(request.POST.get("camera", 0))
 
 				# Take picture
-				is_image_taken, raw_image = take_image(context["camera"], True, 200)
+				is_image_taken, raw_image = take_image(context["camera"], False, 200)
 
 				# If not then, return
 				if not is_image_taken:
