@@ -11,6 +11,7 @@ def home(request):
 	context = {
 		"personnels"	: personnels,
 		"inmates"		: inmates,
-		'page_title'	: "OPERATE | Home"
+		'page_title'	: "OPERATE | Home",
+		'p_type'		: 'personnel'
 	}
 	return render(request, "home/index.html", context)

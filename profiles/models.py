@@ -74,6 +74,13 @@ class Profile(models.Model):
 		default 	= "default.png",
 	)
 
+	embedding = models.FileField(
+		upload_to="embeddings",
+		blank=True,
+		null=True,
+	)
+
+
 	# Common details
 	f_name			= models.CharField(max_length=30)
 	m_name			= models.CharField(max_length=20, blank=True, default=None)

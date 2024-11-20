@@ -110,7 +110,7 @@ class CreatePersonnel(forms.ModelForm):
 		widgets = WIDGETS
 
 class UpdatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	raw_image = forms.FileField(validators=VALIDATOR)
 	
 	class Meta:
 		model = Personnel
@@ -157,7 +157,7 @@ class CreateInmate(forms.ModelForm):
 		widgets = WIDGETS
 
 class UpdateInmate(forms.ModelForm):
-	raw_image = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])])
+	raw_image = forms.FileField(validators=VALIDATOR)
 	
 	class Meta:
 		model = Inmate

@@ -92,6 +92,8 @@
 		</div>
 	</div>
 
+
+
 	{% if is_paginated %}
 		<div class="pagination left">
 			<span class="page-list">
@@ -122,10 +124,12 @@
 		</div>
 	{% endif %}
 
+
+
 	<div class="card-list">
 		{% if personnels %}
 			{% for profile in personnels %}
-				<div class="personnel card">
+				<div class="card">
 					<div class="picture">
 						<div class="button-overlay">
 							<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
@@ -173,6 +177,7 @@
 			<h2>There are no personnel profiled.</h2>
 		{% endif %}
 	</div>
+
 
 
 	{% if is_paginated %}

@@ -308,10 +308,13 @@ footer {
     color: var(--light);
 }
 .inmate {
-    background: var(--inmate);
+    background: var(--inmate) !important;
 }
 .personnel {
-    background: var(--personnel);
+    background: var(--personnel) !important;
+}
+.danger {
+    background: var(--danger) !important;
 }
 .title {
     font-family: var(--font-bold);
@@ -635,6 +638,14 @@ footer {
         color: var(--light);
      }
 }
+.btn-personnel {
+    background: var(--personnel);
+    color: var(--light);
+    
+    * {
+        color: var(--light);
+     }
+}
 .btn-outline-primary {
     outline: 1px solid var(--primary);
     color: var(--primary);
@@ -657,6 +668,32 @@ footer {
     
     * {
         color: var(--inmate);
+     }
+}
+.btn-light-outline-inmate {
+    background: var(--light);
+    outline: 1px solid var(--inmate);
+    color: var(--inmate);
+    
+    * {
+        color: var(--inmate);
+     }
+}
+.btn-outline-personnel {
+    outline: 1px solid var(--personnel);
+    color: var(--personnel);
+    
+    * {
+        color: var(--personnel);
+     }
+}
+.btn-light-outline-personnel {
+    background: var(--light);
+    outline: 1px solid var(--personnel);
+    color: var(--personnel);
+    
+    * {
+        color: var(--personnel);
      }
 }
 .btn-outline-secondary {

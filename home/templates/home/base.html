@@ -9,22 +9,18 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,-25" />
 	<link rel="shortcut icon" href="{% static 'images/operate.ico' %}" type="image/x-icon">
 	<title>
-		{% if page_title %}
-			{{ page_title }}
-		{% else %}
-			OPERATE
-		{% endif %}
+		OPeraTE{% if page_title %} | {{ page_title }}{% endif %}
 	</title>
 </head>
 <body>
-	<header>
+	<header class="{{ p_type }}">
 		<div class="title">
 			<img src="{% static 'images/operate.png' %}" alt="operate.png">
-			OPERATE
+			OPeraTE
 		</div>	
 
 		<!-- facesearch by  -->
-		<a class="btn btn-primary" href="{% url 'facesearch' %}">
+		<a class="btn btn-{{ p_type }}" href="{% url 'facesearch' %}">
 			<span class="material-symbols-outlined">
 				account_box
 			</span>
@@ -33,7 +29,7 @@
 		
 		<nav>
 			<!-- home -->
-			<a class="btn btn-primary" href="{% url 'operate-home' %}">
+			<a class="btn btn-{{ p_type }}" href="{% url 'operate-home' %}">
 				<span class="material-symbols-outlined">
 					home
 				</span>
@@ -42,7 +38,7 @@
 
 			<!-- profiles -->
 			<div class="dropdown">
-				<button class="btn btn-primary">
+				<button class="btn btn-{{ p_type }}">
 					<span class="material-symbols-outlined">
 						Group
 					</span>
@@ -67,7 +63,7 @@
 
 			<!-- archives -->
 			<div class="dropdown">
-				<button class="btn btn-primary">
+				<button class="btn btn-{{ p_type }}">
 					<span class="material-symbols-outlined">
 						files
 					</span>
@@ -93,7 +89,7 @@
 
 		<!-- ser action -->
 		<div class="dropdown">
-			<button class="btn btn-primary">
+			<button class="btn btn-{{ p_type }}">
 				<span class="material-symbols-outlined">
 					account_circle
 				</span>

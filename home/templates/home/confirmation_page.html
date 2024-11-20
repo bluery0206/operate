@@ -4,7 +4,7 @@
 {% block content %}
 	<div class="dialog-wrapper">
         <div class="dialog">
-            <div class="header">
+            <div class="header {% if danger %}danger{% else %}{{ p_type }}{% endif %}">
                 <div class="title">
                     <img src="{% static 'images/operate.png' %}" alt="">
                     <h3>{{ title }}</h3>

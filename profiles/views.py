@@ -47,7 +47,15 @@ INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 ]
 
 CWD_PATH = Path().cwd()
-MEDIA_PATH =  CWD_PATH.joinpath("media")
+
+FS_PATH		= CWD_PATH.joinpath("facesearch")
+MED_PATH 	= CWD_PATH.joinpath("media")
+
+SNN_PATH	= FS_PATH.joinpath(f"snn_models")
+
+EMB_PATH	= MED_PATH.joinpath(f"embeddings")
+RAW_PATH	= MED_PATH.joinpath(f"raw_images")
+EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 
 THUMBNAIL_SIZE = int(105*2)
 PAGE_NUM = 20
@@ -59,7 +67,8 @@ def personnels(request):
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "OPERATE | Personnel Profiles"
+		'page_title'	: "Personnel Profiles",
+		'p_type'		: 'personnel'
 	}
 
 
@@ -126,7 +135,8 @@ def inmates(request):
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "OPERATE | Inmate Profiles"
+		'page_title'	: "Inmate Profiles",
+		'p_type'		: 'inmate'
 	}
 
 	if request.method == "GET":
@@ -195,7 +205,7 @@ def profile_template_upload(request):
 	context = {
 		'prev'		: request.GET.get("prev", ""),
 		'form'		: form,
-		'page_title': "OPERATE | Template Upload"
+		'page_title': "Template Upload"
 	}
 	return render(request, "profiles/profile_update.html", context)
 
@@ -208,7 +218,8 @@ def profile(request, p_type, pk):
 	profile =  get_object_or_404(p_class, pk=pk)
 	context = {
 		'profile'		: profile,
-		'page_title'	: f"OPERATE | {profile}"
+		'page_title'	: f"{profile}",
+		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile.html", context)
 
@@ -223,8 +234,9 @@ def profile_add(request, p_type):
 		'form'			: create_profile_form(),
 		'default_img'	: "../../../media/default.png",
 		'p_type'		: p_type,
-		'page_title'	: f"OPERATE | Add Profile",
-		'camera'		: 0
+		'page_title'	: f"Add Profile",
+		'camera'		: 0,
+		'p_type'		: p_type
 	}
 
 	if request.method == "POST":
@@ -240,7 +252,8 @@ def profile_add(request, p_type):
 			
 			instance = context["form"].save()
 
-			image_name = f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
+			curr_time 	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
+			image_name = f"{curr_time}.png"
 
 			raw_image_save_path = f"media/raw_images/{image_name}"
 			thumbnail_save_path	= f"media/thumbnails/{image_name}"
@@ -250,7 +263,7 @@ def profile_add(request, p_type):
 				context["camera"] = int(request.POST.get("camera", 0))
 
 				# Take picture
-				is_image_taken, raw_image = take_image(context["camera"])
+				is_image_taken, raw_image = take_image(context["camera"], True, 200)
 
 				# If not then, return
 				if not is_image_taken:
@@ -263,6 +276,7 @@ def profile_add(request, p_type):
 			
 			# Save raw image taken
 			is_image_saved  = save_image(raw_image_save_path, raw_image)	
+			
 
 			# Create thumbnail
 			resized_image	= create_thumbnail(
@@ -273,10 +287,16 @@ def profile_add(request, p_type):
 			# Save thumbnail
 			is_image_saved	= save_image(thumbnail_save_path, resized_image)	
 
+			
+			is_image_saved, emb_name, inp_emb = save_embedding(raw_image_save_path)
+
 			if not is_image_saved:
 				instance.delete()
 				return render(request, "profiles/profile_add.html", context)
 			
+			# generate and save embedding of the raw_image
+			
+			instance.embedding = f"embeddings/{emb_name}"
 			instance.raw_image = f"raw_images/{image_name}"
 			instance.thumbnail = f"thumbnails/{image_name}"
 
@@ -317,7 +337,7 @@ def profile_update(request, p_type, pk):
 					camera = int(request.POST.get("camera", 0))
 
 					# Take picture
-					is_image_taken, raw_image = take_image(camera)
+					is_image_taken, raw_image = take_image(camera, True, 200)
 
 					# If not then, return
 					if not is_image_taken:
@@ -340,10 +360,13 @@ def profile_update(request, p_type, pk):
 				# Save thumbnail
 				is_image_saved	= save_image(thumbnail_save_path, resized_image)	
 
+				is_image_saved, emb_name, inp_emb = save_embedding(raw_image_save_path)
+
 				if not is_image_saved:
 					instance.delete()
 					return render(request, "profiles/profile_update.html", context)
 				
+				instance.embedding = f"embeddings/{emb_name}"
 				instance.raw_image = f"raw_images/{image_name}"
 				instance.thumbnail = f"thumbnails/{image_name}"
 
@@ -353,11 +376,11 @@ def profile_update(request, p_type, pk):
 
 	context = {
 		'form'			: form,
-		'default_img'	: "../../../media/default.png",
 		'p_type'		: p_type,
-		'page_title'	: f"OPERATE | Update {profile}",
+		'page_title'	: f"Update {profile}",
 		'camera'		: 0,
-		'profile'		: profile
+		'profile'		: profile,
+		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile_update.html", context)
 
@@ -379,8 +402,10 @@ def profile_delete(request, p_type, pk):
 	context = {
 		'title' 		: f"Delete {get_full_name(profile)}'s Profile",
 		'warning' 		: f"You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
-		'page_title'	: f"OPERATE | Delete {profile}",
-		'prev'	: prev,
+		'page_title'	: f"Delete {profile}",
+		'prev'			: prev,
+		'p_type'		: p_type,
+		'danger'		: True
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -402,7 +427,9 @@ def profile_delete_all(request, p_type):
 	context = {
 		'title' 		: f"Delete All Profile",
 		'warning' 		: f"You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
-		'page_title'	: f"OPERATE | Delete All"
+		'page_title'	: f"Delete All",
+		'p_type'		: p_type,
+		'danger'		: True
 	}
 	return render(request, "home/confirmation_page.html", context)
 

@@ -6,21 +6,30 @@
 		<div class="forms">
 			<h2>Facesearch</h2>	
 
-			<form class="form">
+			<div class="form">
 				<div class="fields">
 					<div class="field">
 						<label for="threshold">Threshold: </label>
 						<input class="form-control form-control-secondary" type="number" id="threshold_input" value="{{ threshold }}" min="0.1" max="100" step="0.1">
+						<small class="muted"><em>The Confidence Level (CL) is relative to the threshold.</em></small>
+					</div>
+					<div class="field">
+						<label for="embedding">Search method: </label>
+						<select name="search_method_input" id="search_method_input" class="form-control form-control-secondary">
+							<option value="0" {% if search_method == 0 %}selected{% endif %}>Images</option>
+							<option value="1" {% if search_method == 1 %}selected{% endif %}>Embedding (Faster)</option>
+						</select>
 					</div>
 				</div>
-			</form>
+			</div>
 
 			<form class="form" method="POST" enctype="multipart/form-data">
 				<h3>Upload an image</h3>
 		
 				{% csrf_token %}
 		
-				<input type="text" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				<input type="hidden" name="search_method" id="search_method1" value="{{ search_method }}">
 				
 				<div class="fields">
 					<div class="field">
@@ -30,7 +39,7 @@
 		
 				<button class="btn btn-primary center" type="submit" name="option_upload" value="1">
 					<span class="material-symbols-outlined">upload_2</span>
-					<span>UPLOAD</span>
+					<span>Upload and search</span>
 				</button>
 			</form>
 	
@@ -39,20 +48,21 @@
 	
 				{% csrf_token %}
 	
-				<input type="text" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
+				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
+				<input type="hidden" name="search_method" id="search_method2" value="{{ search_method }}">
 	
+				<button class="btn btn-secondary center" name="option_camera" value="1" type="submit">
+					<span class="material-symbols-outlined">camera</span>
+					<span>Take a picture and search</span>
+				</button>
+				
 				<div class="fields">
 					<div class="field">
 						<label for="camera">Camera: </label>
 						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
-						<small>(Try to change if doesn't work)</small>
+						<small class="muted"><em>Change camera number if webcam doesn't show up</em></small>
 					</div>
 				</div>
-				
-				<button class="btn btn-secondary center" name="option_camera" value="1" type="submit">
-					<span class="material-symbols-outlined">camera</span>
-					<span>OPEN CAMERA</span>
-				</button>
 			</form>
 		</div>
 
@@ -61,7 +71,7 @@
 				{% for dist, profile in profiles %}
 					<div class="card">
 						<div class="{{ profile.p_type }} header">
-							<span class="title">Top {{ forloop.counter }}, Distance: {{ dist|floatformat:2 }}</span>
+							<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
 						</div>
 
 						<div class="picture">
@@ -85,14 +95,14 @@
 										<span>Unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn btn-transparent-secondary" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
-										<span class="material-symbols-outlined">delete</span>
-										<span>Delete profile</span>
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">archive</span>
+										<span>Archive profile</span>
 									</a>
 								{% endif %}
-								<a class="btn btn-transparent-danger" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
-									<span class="material-symbols-outlined">edit</span>
-									<span>Edit profile</span>
+								<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+									<span class="material-symbols-outlined">delete</span>
+									<span>Delete profile</span>
 								</a>
 							</div>
 
@@ -145,9 +155,18 @@
             const threshold1		= document.getElementById("threshold1");
             const threshold2		= document.getElementById("threshold2");
 
+            const search_method_input	= document.getElementById("search_method_input");
+            const search_method1		= document.getElementById("search_method1");
+            const search_method2		= document.getElementById("search_method2");
+
             threshold_input.addEventListener("change", function(event) {
 				threshold1.value = threshold_input.value;
 				threshold2.value = threshold_input.value;
+            });
+
+            search_method_input.addEventListener("change", function(event) {
+				search_method1.value = search_method_input.value;
+				search_method2.value = search_method_input.value;
             });
         });
     </script>

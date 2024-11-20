@@ -71,6 +71,8 @@
 		</div>
 	</div>
 
+
+
 	{% if is_paginated %}
 		<div class="pagination left">
 			<span class="page-list">
@@ -101,10 +103,12 @@
 		</div>
 	{% endif %}
 
+
+
 	<div class="card-list">
 		{% if inmates %}
 			{% for archive in inmates %}
-				<div class="inmate card">
+				<div class="card">
 					<div class="picture">
 						<div class="button-overlay">
 							<a class="btn btn-transparent-primary" href="{% url 'profile' archive.profile.p_type archive.profile.pk %}" title="Open archive.profile in detail">
@@ -153,6 +157,8 @@
 			<h2>There are no inmates archived.</h2>
 		{% endif %}
 	</div>
+
+
 
 	{% if is_paginated %}
 		<div class="pagination right">

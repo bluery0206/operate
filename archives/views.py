@@ -48,7 +48,8 @@ def personnels(request):
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "OPERATE | Archived Personnel Profiles"
+		'page_title'	: "Archived Personnel Profiles",
+		'p_type'		: 'personnel'
 	}
 
 	if request.method == "GET":
@@ -118,7 +119,8 @@ def inmates(request):
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "OPERATE | Archived Inmate Profiles"
+		'page_title'	: "Archived Inmate Profiles",
+		'p_type'		: 'inmate'
 	}
 
 	if request.method == "GET":
@@ -194,7 +196,8 @@ def archive_add(request, p_type, pk):
 	context = {
 		'title' 		: f"Add {get_full_name(profile)}'s profile to archives?",
 		'warning' 		: f"You will not be able to see this profile in the \"Profile\" Page anymore.",
-		'page_title'	: f"OPERATE | Archiving {get_full_name(profile)}'s Profile"
+		'page_title'	: f"Archiving {get_full_name(profile)}'s Profile",
+		'p_type'		: p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -215,7 +218,8 @@ def archive_remove(request, p_type, pk):
 		return redirect(prev) if prev else redirect('profile', p_type, archive.profile.pk)
 
 	context = {
-		'title' : f"Remove {get_full_name(archive.profile)}'s profile from archives",
+		'title' 	: f"Remove {get_full_name(archive.profile)}'s profile from archives",
+		'p_type'	: p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -243,9 +247,10 @@ def archive_add_all(request, p_type):
 		return redirect(prev) if prev else redirect(f'archives-{p_type}s')
 
 	context = {
-		'title' 		: f"Add all profiles to archives",
-		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore.",
-		'page_title'	: f"OPERATE | Archiving All Profiles"
+		'title' 		: f"Add all {p_type} profiles to archives",
+		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore. You can still view them in the \"Archives section\"",
+		'page_title'	: f"Archiving All Profiles",
+		'p_type'		: p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -263,8 +268,9 @@ def archive_remove_all(request, p_type):
 		return redirect(prev) if prev else redirect(f'profiles-{p_type}s')
 
 	context = {
-		'title' 		: f"Remove all profiles from archives",
-		'page_title'	: f"OPERATE | Unachiving All Profiles"
+		'title' 		: f"Remove all {p_type} profiles from archives",
+		'page_title'	: f"Unachiving All Profiles",
+		'p_type'		: p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
