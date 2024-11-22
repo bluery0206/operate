@@ -1,31 +1,38 @@
 from django.shortcuts import render, redirect
-from .models import OperateSetting
-from .forms import OperateSettingsForm
 
-OPERATE_SETTINGS = OperateSetting.objects.first()
-OPERATE_SETTINGS.crop_camera = int(OPERATE_SETTINGS.crop_camera)
-# OPERATE_SETTINGS = None
+from facesearch.utils import update_image_embeddings
+from settings.models import OperateSetting
+from .forms import OperateSettingsForm
 
 # Create your views here.
 def settings(request):
-    context = {
-        'default_settings': OPERATE_SETTINGS,
-        'p_type' : 'personnel',
-        'page_title': 'Settings',
-        'form': OperateSettingsForm(instance=OPERATE_SETTINGS)
-    }
+    defset  = OperateSetting.objects.first()
+    form    = OperateSettingsForm(instance=defset)
 
     if request.method == "POST":
-        context['form'] = OperateSettingsForm(request.POST, request.FILES, instance=OPERATE_SETTINGS)
+        form = OperateSettingsForm(request.POST, request.FILES, instance=defset)
 
-        if context['form'].is_valid():
+        if form.is_valid():
             if not request.FILES.get('inmate_template'):
-                context['form'].instance.inmate_template = OPERATE_SETTINGS.inmate_template
+                form.instance.inmate_template = defset.inmate_template
 
             if not request.FILES.get('personnel_template'):
-                context['form'].instance.personnel_template = OPERATE_SETTINGS.personnel_template
+                form.instance.personnel_template = defset.personnel_template
 
-            context['form'].save()
+            if not request.FILES.get('model'):
+                form.instance.model = defset.model
+
+            if request.FILES.get('model'):
+                update_image_embeddings()
+
+            form.save()
+
             return redirect('operate-settings')
 
+    context = {
+        'p_type'            : 'personnel',
+        'page_title'        : 'Settings',
+        'default_settings'  : defset,
+        'form'              : form
+    }
     return render(request, "settings/settings.html", context)

@@ -4,7 +4,9 @@ from pathlib import Path
 from .forms import UploadedImageForm
 from .models import UploadedImage
 from .utils import *
-from settings.views import OPERATE_SETTINGS
+
+
+from settings.models import OperateSetting
 
 logger = logging.getLogger(__name__)
 
@@ -12,24 +14,26 @@ DATABASE_PATH		= Path().cwd().joinpath("media/raw_images")
 SEARCH_IMAGE_PATH 	= Path().cwd().joinpath("media/searches")
 
 def facesearch(request):
+	defset = OperateSetting.objects.first()
+
 	context = {
 		"form"			: UploadedImageForm(),
 		"page_title"	: "Facesearch",
-		"threshold"		: OPERATE_SETTINGS.default_threshold,
-		"camera"		: OPERATE_SETTINGS.default_camera,
-		"search_method" : OPERATE_SETTINGS.default_search_method,
+		"threshold"		: defset.default_threshold,
+		"camera"		: int(defset.default_camera),
+		"search_method" : int(defset.default_search_method),
 		"profiles"		: [],
 		"p_type"		: "personnel"
 	}
 
-	context['camera'] = int(request.GET.get("camera", OPERATE_SETTINGS.default_camera))
+	context['camera'] = int(request.GET.get("camera", defset.default_camera))
 
 	if request.method == "POST":
-		context['threshold'] = float(request.POST.get("threshold", OPERATE_SETTINGS.default_threshold))
+		context['threshold'] = float(request.POST.get("threshold", defset.default_threshold))
 
 		is_option_camera	= int(request.POST.get("option_camera", 0))
 		is_option_upload	= int(request.POST.get("option_upload", 0))
-		context['search_method'] = int(request.POST.get("search_method", OPERATE_SETTINGS.default_search_method))
+		context['search_method'] = int(request.POST.get("search_method", int(defset.default_search_method)))
 		print(f"facesearch(): {is_option_camera = }")
 		print(f"facesearch(): {is_option_upload = }")
 		print(f"facesearch(): {context['search_method'] = }")
@@ -40,9 +44,9 @@ def facesearch(request):
 		print(f"facesearch(): {input_path = }")
 
 		if is_option_camera:
-			context['camera'] = int(request.POST.get("camera", OPERATE_SETTINGS.default_camera))
+			context['camera'] = int(request.POST.get("camera", int(defset.default_camera)))
 
-			is_image_taken, input_image = take_image(context['camera'], OPERATE_SETTINGS.crop_camera, OPERATE_SETTINGS.default_crop_size)
+			is_image_taken, input_image = take_image(context['camera'], int(defset.crop_camera), defset.default_crop_size)
 
 			if not is_image_taken:
 				return render(request, "facesearch/facesearch.html", context)

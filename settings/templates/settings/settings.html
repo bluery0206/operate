@@ -28,6 +28,14 @@
                 </div>
 
                 <div class="settings-block">
+                    {% if form.default_threshold.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_threshold.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_threshold.label_tag }}
                     
@@ -35,6 +43,15 @@
                     
                         <small>The threshold is used to compare input images with stored ones. The smaller the threshold will see less profile as not match.</small>
                     </div>
+
+                    {% if form.default_profiles_per_page.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_profiles_per_page.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_profiles_per_page.label_tag }}
     
@@ -42,6 +59,15 @@
     
                         <small>The number of profiles to be shown per page. The larger the amount will decrease the performance of the website.</small>
                     </div>
+
+                    {% if form.default_thumbnail_size.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_thumbnail_size.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_thumbnail_size.label_tag }}
     
@@ -49,6 +75,15 @@
     
                         <small>Determines how small or big the thumbnail resolution will be. The smaller the thumbnail size will increase the performance of the website however makes the profile images look very pixelated.</small>
                     </div>
+
+                    {% if form.default_camera.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_camera.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_camera.label_tag }}
     
@@ -56,6 +91,15 @@
 
                         <small>The default camera is determined by your device's camera setup, usually starting with the primary camera (0).</small>
                     </div>
+
+                    {% if form.crop_camera.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.crop_camera.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.crop_camera.label_tag }}
     
@@ -63,6 +107,15 @@
 
                         <small>Whether to crop the camera or not. Used with the default_crop_size for saving.</small>
                     </div>
+
+                    {% if form.default_crop_size.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_crop_size.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_crop_size.label_tag }}
     
@@ -70,6 +123,15 @@
 
                         <small>The size of the the camera. May not work if values are too large or small and may depend on the webcam's resolution.</small>
                     </div>
+
+                    {% if form.default_search_method.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.default_search_method.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.default_search_method.label_tag }}
     
@@ -85,7 +147,17 @@
                     <h3>Templates</h3>
                     <p>The [[placeholder]] must stay accurate so the system places data correctly. Users can fix content (like typos) but can’t alter the layout (mainly the table), ensuring the template structure remains intact. You can download the template by clicking the link beside the input field.</p>
                 </div>
+
                 <div class="settings-block">
+                    
+                    {% if form.personnel_template.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.personnel_template.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.personnel_template.label_tag }}
                         
@@ -95,6 +167,15 @@
                             <span>Current: <a class="link" href="{{ default_settings.personnel_template.url }}" target="_blank">{{ default_settings.personnel_template.url }}</a></span>
                         {% endif %}
                     </div>
+                    
+                    {% if form.inmate_template.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.inmate_template.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.inmate_template.label_tag }}
 
@@ -113,11 +194,21 @@
                     <p>The AI Model used to recognize individuals.</p>
                 </div>
                 <div class="settings-block">
+
+                    {% if form.model.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.model.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="settings-item">
                         {{ form.model.label_tag }}
 
                         {{ form.model }}
 
+                        
                         {% if default_settings.model %}
                             <span>Current: <a class="link" href="{{ default_settings.model.url }}" target="_blank">{{ default_settings.model.url }}</a> </span>
                         {% endif %}

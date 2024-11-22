@@ -7,7 +7,8 @@ import logging
 import cv2 
 
 from profiles.models import Personnel, Inmate
-from settings.views import OPERATE_SETTINGS
+from settings.models import OperateSetting
+
 
 CWD_PATH	= Path().cwd()
 
@@ -18,7 +19,6 @@ SNN_PATH	= FS_PATH.joinpath(f"snn_models")
 
 EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 RAW_PATH	= MED_PATH.joinpath(f"raw_images")
-EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 
 
 def format_image_name(image_name):
@@ -99,6 +99,29 @@ def search(input_path:Path,  threshold:int=1, by_array:bool=False):
 
 	return result
 
+def update_image_embeddings():
+	personnels 	= Personnel.objects.all()
+	inmates 	= Inmate.objects.all()
+
+	data = list(personnels) + list(inmates)
+
+	if not data:
+		return False
+
+	for profile in data:
+
+		is_image_saved, emb_name, inp_emb = save_embedding(profile.raw_image.url)
+
+		if not is_image_saved:
+			print(f"Personnel: {profile} embedding was not generated.")
+			continue
+		
+		profile.embedding = f"embeddings/{emb_name}"
+
+		profile.save()
+
+	return True
+
 def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_zero:bool=True):
 	best_cand_dist  = threshold
 	best_cand_idx	= None
@@ -115,6 +138,7 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_
 
 		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
 
+		print(f"search_face(): dist:{dist}, database_idx:{idx}")
 		if dist <= best_cand_dist:
 			best_cand_dist	= dist
 			best_cand_idx	= idx
@@ -185,12 +209,16 @@ def save_image(image_path, image):
 	return cv2.imwrite(image_path, image)
 
 def get_image_embedding(inp_image):
-	if not OPERATE_SETTINGS.model:
+	model = OperateSetting.objects.first().model
+	
+	if not model:
 		raise FileNotFoundError("There is no model found.")
+	
+	print(f"Creating embedding from image using model: {model.name}")
 
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(OPERATE_SETTINGS.model.path)
+	session = ort.InferenceSession(model.path)
 	
 	input_name	= session.get_inputs()[0].name
 	output_name = session.get_outputs()[0].name

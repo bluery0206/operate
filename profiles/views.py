@@ -11,9 +11,9 @@ from django.utils import timezone
 from datetime import datetime
 from pathlib import Path
 
-from .models import Personnel, Inmate, Template
-from home.utils import save_profile_picture, get_full_name, generate_docx, save_docx
-from settings.views import OPERATE_SETTINGS
+from .models import Personnel, Inmate
+from home.utils import get_full_name, generate_docx, save_docx
+
 from .forms import (
 	CreatePersonnel, 
 	CreateInmate, 
@@ -22,6 +22,9 @@ from .forms import (
 )
 from facesearch.utils import *
 
+
+
+from settings.views import OperateSetting
 
 ORDER_CHOICES = [
 	['descending',"Descending"],
@@ -110,7 +113,7 @@ def personnels(request):
 		context['filters'].update({"search": search})
 	
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.default_profiles_per_page)
+	paginator	= Paginator(context['personnels'], OperateSetting.objects.first().default_profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -174,7 +177,7 @@ def inmates(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.default_profiles_per_page)
+	paginator	= Paginator(context['inmates'], OperateSetting.objects.first().default_profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)
@@ -208,13 +211,14 @@ def profile(request, p_type, pk):
  
 def profile_add(request, p_type):
 	create_profile_form = CreatePersonnel if p_type == "personnel" else CreateInmate
+	defset				= OperateSetting.objects.first()
 
 	context = {
 		'form'			: create_profile_form(),
 		'default_img'	: "../../../media/default.png",
 		'p_type'		: p_type,
 		'page_title'	: "Add Profile",
-		'camera'		: OPERATE_SETTINGS.default_camera,
+		'camera'		: defset.default_camera,
 		'p_type'		: p_type
 	}
 
@@ -242,7 +246,7 @@ def profile_add(request, p_type):
 				context["camera"] = int(request.POST.get("camera", 0))
 
 				# Take picture
-				is_image_taken, raw_image = take_image(context["camera"], OPERATE_SETTINGS.crop_camera, OPERATE_SETTINGS.default_crop_size)
+				is_image_taken, raw_image = take_image(context["camera"], defset.crop_camera, defset.default_crop_size)
 
 				# If not then, return
 				if not is_image_taken:
@@ -260,7 +264,7 @@ def profile_add(request, p_type):
 			# Create thumbnail
 			resized_image	= create_thumbnail(
 				raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
-				new_size		= OPERATE_SETTINGS.default_thumbnail_size
+				new_size		= defset.default_thumbnail_size
 			)
 
 			is_image_saved = save_image(thumbnail_save_path, resized_image)	
@@ -287,13 +291,14 @@ def profile_add(request, p_type):
 
 def profile_update(request, p_type, pk):
 	p_class, update_form = [Personnel, UpdatePersonnel] if p_type == "personnel" else [Inmate, UpdateInmate]
+	defset				= OperateSetting.objects.first()
 	profile = get_object_or_404(p_class, pk=pk)
 
 	context = {
 		'form'			: update_form(instance=profile),
 		'p_type'		: p_type,
 		'page_title'	: f"Update {profile}",
-		'camera'		: OPERATE_SETTINGS.default_camera,
+		'camera'		: defset.default_camera,
 		'profile'		: profile,
 	}
 
@@ -316,10 +321,10 @@ def profile_update(request, p_type, pk):
 
 				if is_option_camera:
 					# Get camera
-					camera = int(request.POST.get("camera", OPERATE_SETTINGS.default_camera))
+					camera = int(request.POST.get("camera", defset.default_camera))
 
 					# Take picture
-					is_image_taken, raw_image = take_image(camera, OPERATE_SETTINGS.crop_camera, OPERATE_SETTINGS.default_crop_size)
+					is_image_taken, raw_image = take_image(camera, defset.crop_camera, defset.default_crop_size)
 
 					# If not then, return
 					if not is_image_taken:
@@ -336,7 +341,7 @@ def profile_update(request, p_type, pk):
 				# Create thumbnail
 				resized_image	= create_thumbnail(
 					raw_image_path	= CWD_PATH.joinpath(raw_image_save_path),
-					new_size		= OPERATE_SETTINGS.default_thumbnail_size
+					new_size		= defset.default_thumbnail_size
 				)
 
 				# Save thumbnail
@@ -412,7 +417,7 @@ def profile_delete_all(request, p_type):
 
 
 def profile_docx_download(_, p_type, pk):
-	p_class, template = [Personnel, OPERATE_SETTINGS.personnel_template] if p_type == "personnel" else [Inmate, OPERATE_SETTINGS.inmate_template]
+	p_class, template = [Personnel, OperateSetting.objects.first().personnel_template] if p_type == "personnel" else [Inmate, OperateSetting.objects.first().inmate_template]
 
 	profile		= p_class.objects.get(pk=pk)
 

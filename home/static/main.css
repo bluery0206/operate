@@ -797,23 +797,42 @@ footer {
     border-radius   : var(--radius-small);
     font-size       : var(--font-small);
 }
+
+
+
 .form-control-secondary {
     outline         : 1px solid var(--secondary);
     color           : var(--secondary);
 }
-.form-control-secondary:focus, .field-secondary:hover {
+.form-control-secondary:focus, 
+.form-control-secondary:active, 
+.field-secondary:hover {
     outline         : 2px solid var(--secondary);
 }
+
+
+
 .form-control-primary {
     outline         : 1px solid var(--primary);
     color           : var(--primary);
 }
+.form-control-primary:focus,
+.form-control-primary:active, 
+.field-primary:hover {
+    outline         : 2px solid var(--primary);
+}
+
+
+
 .form-control:disabled {
     background  : var(--disabled);
     outline     : 1px solid var(--text-disabled);
     cursor      : not-allowed;
     color       : var(--text-disabled);
 }
+
+
+
 .form-control::placeholder {
     color       : var(--text-placeholder-disabled);
 }

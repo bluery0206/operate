@@ -30,8 +30,8 @@ class OperateSetting(models.Model):
     crop_camera = models.CharField(
         default='0',
         choices=[
-            (0, 'Do not crop'),
-            (1, 'Crop'),
+            ('0', 'Do not crop'),
+            ('1', 'Crop'),
         ],
         max_length=1,
     )
@@ -45,8 +45,8 @@ class OperateSetting(models.Model):
     default_search_method = models.CharField(
         default='1',
         choices=[
-            (1, 'Embedding (Faster)'),
-            (0, 'Image'),
+            ('1', 'Embedding (Faster)'),
+            ('0', 'Image'),
         ],
         max_length=1,
     )
@@ -66,7 +66,7 @@ class OperateSetting(models.Model):
     model = models.FileField(
         blank       = True,
         null        = True,
-        upload_to   = "model"
+        upload_to   = "models"
     )
 
 

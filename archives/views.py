@@ -5,14 +5,12 @@ from django.shortcuts import (
 	redirect, 
 	get_object_or_404
 )	
-from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import ArchivePersonnel, ArchiveInmate
-from settings.views import OPERATE_SETTINGS
 from profiles.models import Personnel, Inmate
-from home.utils import save_profile_picture, get_full_name, generate_docx, save_docx
-from profiles.models import Personnel, Inmate, Template
+from settings.models import OperateSetting
+from home.utils import get_full_name
 
 
 ORDER_CHOICES = [
@@ -95,7 +93,7 @@ def personnels(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.default_profiles_per_page)
+	paginator	= Paginator(context['personnels'], OperateSetting.objects.first().default_profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -161,7 +159,7 @@ def inmates(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.default_profiles_per_page)
+	paginator	= Paginator(context['inmates'], OperateSetting.objects.first().default_profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)
