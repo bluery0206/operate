@@ -26,10 +26,10 @@ def facesearch(request):
 		"p_type"		: "personnel"
 	}
 
-	context['camera'] = int(request.GET.get("camera", defset.default_camera))
+	context['camera'] = int(request.GET.get("camera", int(defset.default_camera)))
 
 	if request.method == "POST":
-		context['threshold'] = float(request.POST.get("threshold", defset.default_threshold))
+		context['threshold'] = float(request.POST.get("threshold", float(defset.default_threshold)))
 
 		is_option_camera	= int(request.POST.get("option_camera", 0))
 		is_option_upload	= int(request.POST.get("option_upload", 0))
@@ -46,7 +46,7 @@ def facesearch(request):
 		if is_option_camera:
 			context['camera'] = int(request.POST.get("camera", int(defset.default_camera)))
 
-			is_image_taken, input_image = take_image(context['camera'], int(defset.crop_camera), defset.default_crop_size)
+			is_image_taken, input_image = take_image(context['camera'], int(defset.crop_camera), int(defset.default_crop_size))
 
 			if not is_image_taken:
 				return render(request, "facesearch/facesearch.html", context)

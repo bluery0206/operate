@@ -110,7 +110,8 @@ def update_image_embeddings():
 
 	for profile in data:
 
-		is_image_saved, emb_name, inp_emb = save_embedding(profile.raw_image.url)
+		print(f"Personnel: {profile}, raw_image_path: {profile.raw_image.path}")
+		is_image_saved, emb_name, inp_emb = save_embedding(profile.raw_image.path)
 
 		if not is_image_saved:
 			print(f"Personnel: {profile} embedding was not generated.")
@@ -138,7 +139,8 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_
 
 		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
 
-		print(f"search_face(): dist:{dist}, database_idx:{idx}")
+		# print(f"search_face(): dist:{dist}, database_idx:{idx}")
+
 		if dist <= best_cand_dist:
 			best_cand_dist	= dist
 			best_cand_idx	= idx
@@ -259,20 +261,18 @@ def crop_image_from_center(image, is_gray=False):
 	return image[top:bottom, left:right]
 
 def save_embedding(inp_path:str|Path):
-	inp_path = str(inp_path) if type(inp_path) == Path else inp_path
-
-	print(f"save_embedding(): {inp_path = }")
+	# print(f"save_embedding(): {str(inp_path) = }")
 
 	inp_image	= open_gray_image(inp_path)
-	print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
+	# print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
 
 	inp_image	= preprocess_image(inp_image)
-	print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
+	# print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
 
 	inp_emb = get_image_embedding(inp_image)
-	print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
+	# print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
 
-	inp_name = inp_path.split("/")[-1].split(".")[0]
+	inp_name = inp_path.split("\\")[-1].split(".")[0]
 	print(f"save_embedding(): {inp_name = }")
 
 	emb_name = f'{inp_name}.npy'
