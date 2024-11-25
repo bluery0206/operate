@@ -42,16 +42,18 @@ def get_profiles(cand_list, reverse=True, by_array:bool=False):
 	for image in cands_image:
 
 		# extracting imagename.ext from full path
-		image_name = image.split("\\")[-1]
-		print(f"get_profiles(): {image_name = }")
+		embedding_name = image.split("\\")[-1]
+		name = embedding_name.split(".")[0]
+
+		print(f"get_profiles(): {embedding_name = }")
 
 
 		if by_array:
-			personnel 	= Personnel.objects.filter(embedding__endswith=image_name).first()
-			inmate		= Inmate.objects.filter(embedding__endswith=image_name).first()
+			personnel 	= Personnel.objects.filter(embedding__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
+			inmate		= Inmate.objects.filter(embedding__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
 		else:
-			personnel 	= Personnel.objects.filter(raw_image__endswith=image_name).first()
-			inmate		= Inmate.objects.filter(raw_image__endswith=image_name).first()
+			personnel 	= Personnel.objects.filter(raw_image__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
+			inmate		= Inmate.objects.filter(raw_image__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
 
 		# if personnel is not found then the image must be from inmate
 		profile = personnel if personnel else inmate
@@ -139,12 +141,12 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_
 
 		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
 
-		# print(f"search_face(): dist:{dist}, database_idx:{idx}")
+		print(f"search_face(): dist:{dist}, database_idx:{idx}")
 
 		if dist <= best_cand_dist:
 			best_cand_dist	= dist
 			best_cand_idx	= idx
-			print(f"search_face(): New candidate found: dist:{dist}, database_idx:{idx}")
+			# print(f"search_face(): New candidate found: dist:{dist}, database_idx:{idx}")
 
 			cand_list.append([get_percentage(threshold, dist), best_cand_idx])
 
@@ -261,23 +263,24 @@ def crop_image_from_center(image, is_gray=False):
 	return image[top:bottom, left:right]
 
 def save_embedding(inp_path:str|Path):
-	# print(f"save_embedding(): {str(inp_path) = }")
+	inp_path = Path(inp_path)
+	print(f"save_embedding(): {str(inp_path) = }")
 
 	inp_image	= open_gray_image(inp_path)
-	# print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
+	print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
 
 	inp_image	= preprocess_image(inp_image)
-	# print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
+	print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
 
 	inp_emb = get_image_embedding(inp_image)
-	# print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
+	print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
 
-	inp_name = inp_path.split("\\")[-1].split(".")[0]
+	inp_name = str(inp_path).split("\\")[-1].split(".")[0]
 	print(f"save_embedding(): {inp_name = }")
 
 	emb_name = f'{inp_name}.npy'
 
-	np.save(EMB_PATH.joinpath(emb_name), inp_emb)
+	idk = np.save(EMB_PATH.joinpath(emb_name), inp_emb)
 
 	is_saved = True if inp_emb is not None else False 
 
