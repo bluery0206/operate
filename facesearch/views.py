@@ -3,6 +3,7 @@ from pathlib import Path
 
 from .forms import UploadedImageForm
 from .models import UploadedImage
+from django.utils import timezone
 from .utils import *
 
 
@@ -29,7 +30,7 @@ def facesearch(request):
 	context['camera'] = int(request.GET.get("camera", int(defset.default_camera)))
 
 	if request.method == "POST":
-		context['threshold'] = float(request.POST.get("threshold", float(defset.default_threshold)))
+		context['threshold'] = float(request.POST.get("threshold", defset.default_threshold))
 
 		is_option_camera	= int(request.POST.get("option_camera", 0))
 		is_option_upload	= int(request.POST.get("option_upload", 0))
@@ -41,17 +42,17 @@ def facesearch(request):
 		image_name	= f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
 		input_path	= f"media/searches/{image_name}"
 		print(f"facesearch(): {image_name = }")
-		print(f"facesearch(): {input_path = }")
+		print(f"facesearch() 1: {input_path = }")
 
 		if is_option_camera:
-			context['camera'] = int(request.POST.get("camera", int(defset.default_camera)))
+			context['camera'] = int(request.POST.get("camera", defset.default_camera))
 
 			is_image_taken, input_image = take_image(context['camera'], int(defset.crop_camera), int(defset.default_crop_size))
 
 			if not is_image_taken:
 				return render(request, "facesearch/facesearch.html", context)
 			
-			save_image(input_path, input_image)
+			save_image(Path(input_path), input_image)
 
 		elif is_option_upload and 'image' in request.FILES: 
 			context['form'] = UploadedImageForm(request.POST, request.FILES)
@@ -62,7 +63,7 @@ def facesearch(request):
 
 		# print(f"facesearch(): input_image: {"Found" if input_image is not None else "Not found."}")
 		# print(f"facesearch(): {input_image.shape = }")
-		print(f"facesearch(): {input_path = }")
+		print(f"facesearch() 2: {input_path = }")
 		
 		# get profiles from images
 		cand_list	= search(
@@ -78,9 +79,8 @@ def facesearch(request):
 		) if cand_list else None
 
 		# Delete the image after use
-		instance = UploadedImage.objects.filter(image__endswith=str(image_name).split("\\")[-1]).first()
+		instance = UploadedImage.objects.filter(image__icontains=str(input_path).split("\\")[-1].split(".")[0]).first()
 		instance.delete() if instance else Path(input_path).unlink()
-			
 
 	return render(request, "facesearch/facesearch.html", context)
 

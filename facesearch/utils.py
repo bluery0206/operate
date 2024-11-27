@@ -67,7 +67,7 @@ def get_profiles(cand_list, reverse=True, by_array:bool=False):
 
 def search(input_path:Path,  threshold:int=1, by_array:bool=False):
 	input = open_gray_image(str(input_path))
-	print(f"facesearch(): {input.shape = }")
+	print(f"\nfacesearch(): {input.shape = }")
 
 	input = preprocess_image(input)
 	print(f"facesearch(): preprocess_image(): {input.shape = }")
@@ -110,9 +110,10 @@ def update_image_embeddings():
 	if not data:
 		return False
 
-	for profile in data:
+	print(f"Creating embedding from image using model: {OperateSetting.objects.first().model.name}")
 
-		print(f"Personnel: {profile}, raw_image_path: {profile.raw_image.path}")
+	for profile in data:
+		# print(f"Personnel: {profile}, raw_image_path: {profile.raw_image.path}")
 		is_image_saved, emb_name, inp_emb = save_embedding(profile.raw_image.path)
 
 		if not is_image_saved:
@@ -218,7 +219,7 @@ def get_image_embedding(inp_image):
 	if not model:
 		raise FileNotFoundError("There is no model found.")
 	
-	print(f"Creating embedding from image using model: {model.name}")
+	# print(f"Creating embedding from image using model: {model.name}")
 
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
@@ -264,25 +265,29 @@ def crop_image_from_center(image, is_gray=False):
 
 def save_embedding(inp_path:str|Path):
 	inp_path = Path(inp_path)
-	print(f"save_embedding(): {str(inp_path) = }")
+	# print(f"save_embedding(): {str(inp_path) = }")
 
 	inp_image	= open_gray_image(inp_path)
-	print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
+	# print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
 
 	inp_image	= preprocess_image(inp_image)
-	print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
+	# print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
 
 	inp_emb = get_image_embedding(inp_image)
-	print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
+	# print(f"save_embedding(): get_image_embedding: {inp_emb.shape = }")
 
 	inp_name = str(inp_path).split("\\")[-1].split(".")[0]
-	print(f"save_embedding(): {inp_name = }")
+	# print(f"save_embedding(): {inp_name = }")
 
 	emb_name = f'{inp_name}.npy'
 
-	idk = np.save(EMB_PATH.joinpath(emb_name), inp_emb)
+	np.save(EMB_PATH.joinpath(emb_name), inp_emb)
 
-	is_saved = True if inp_emb is not None else False 
+	exists = True if len(list(EMB_PATH.glob(emb_name))) > 0 else False
+
+	print(f"Array saved: {str(list(EMB_PATH.glob(emb_name))[0])}")
+
+	is_saved = True if exists else False 
 
 	return [is_saved, emb_name, inp_emb]
 	

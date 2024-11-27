@@ -22,10 +22,10 @@ def settings(request):
             if not request.FILES.get('model'):
                 form.instance.model = defset.model
 
-            if request.FILES.get('model'):
+            instance = form.save()
+            
+            if instance.model:
                 update_image_embeddings()
-
-            form.save()
 
             return redirect('operate-settings')
 
