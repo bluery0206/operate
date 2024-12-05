@@ -38,7 +38,7 @@
 									{% endfor %}
 								</div>
 							{% endif %}
-							<input type="text" class="form-control form-control-primary" name="{{form.username.name}}" value="{% if form.username.value %}{{form.username.value}}{% endif %}" id="{{form.username.id_for_label}}" required>
+							<input type="text" class="form-control form-control-primary" name="{{form.username.name}}" value="{% if form.username.value %}{{form.username.value}}{% endif %}" id="{{form.username.id_for_label}}" placeholder="Username" required>
 						</div>
 						<div class="field">
 							<label for="id_password">Password:</label>
@@ -49,7 +49,8 @@
 									{% endfor %}
 								</div>
 							{% endif %}
-							<input type="password" class="form-control form-control-primary" name="{{form.password.name}}" value="{% if form.password.value %}{{form.password.value}}{% endif %}" id="{{form.password.id_for_label}}" required>
+							{{ form.password }}
+							<!-- <input type="password" class="form-control form-control-primary" name="{{form.password.name}}" value="{% if form.password.value %}{{form.password.value}}{% endif %}" id="{{form.password.id_for_label}}" required> -->
 						</div>
 					</div>
     

@@ -12,6 +12,7 @@ def home(request):
 		"personnels"	: personnels,
 		"inmates"		: inmates,
 		'page_title'	: "OPERATE | Home",
-		'p_type'		: 'personnel'
+		'p_type'		: 'personnel',
+		'active'		: 'home'
 	}
 	return render(request, "home/index.html", context)

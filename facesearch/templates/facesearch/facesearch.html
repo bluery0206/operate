@@ -6,6 +6,8 @@
 		<div class="forms">
 			<h2>Facesearch</h2>	
 
+			<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
+
 			<!-- <div class="form">
 				<div class="fields">
 					<div class="field">
@@ -37,7 +39,7 @@
 					</div>
 				</div>
 		
-				<button class="btn btn-primary center" type="submit" name="option_upload" value="1">
+				<button class="btn btn-primary center" type="submit" name="option_upload" id="option_upload" value="1">
 					<span class="material-symbols-outlined">upload_2</span>
 					<span>Upload and search</span>
 				</button>
@@ -167,6 +169,27 @@
             search_method_input.addEventListener("change", function(event) {
 				search_method1.value = search_method_input.value;
 				search_method2.value = search_method_input.value;
+            });
+        });
+
+		
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const fileInput = document.getElementById("{{ form.image.id_for_label }}"); // Use the form field's ID
+            const imagePreview = document.getElementById("imagePreview");
+
+            fileInput.addEventListener("change", function(event) {
+                // Check if a file is selected
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result; // Set preview image source
+                        imagePreview.style.display = 'block'; // Make the image visible
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
+                }
             });
         });
     </script>

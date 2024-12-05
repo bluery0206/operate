@@ -9,11 +9,14 @@ from django.contrib.auth.views import (
 	PasswordResetDoneView,
 	PasswordResetCompleteView,
 )
+from .views import user_login
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='user/login.html'), name='user-login'),
     path('logout/', LogoutView.as_view(template_name='user/logout.html'), name='user-logout'),
 
+    # path('login/', LoginView.as_view(template_name='user/login.html'), name='user-login'),
+	path("login/", user_login, name = "user-login"),
+    
 	path("login/forgot_password/reset/", PasswordResetView.as_view(
 			template_name='user/password_reset.html'
 		), name = "password-reset"

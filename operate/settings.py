@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'archives',
     'facesearch',
     'settings',
+    'django_password_eye',
 
     # A library that will clean/delete old images when new ones are uploaded
     'django_cleanup.apps.CleanupConfig',

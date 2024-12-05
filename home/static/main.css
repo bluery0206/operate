@@ -787,7 +787,7 @@ footer {
 
 
 
-.form-control {
+.form-control, .django_password_eye {
     border          : none;
     outline         : none;
     background      : var(--white);
@@ -812,12 +812,14 @@ footer {
 
 
 
-.form-control-primary {
+.form-control-primary, .django_password_eye {
     outline         : 1px solid var(--primary);
     color           : var(--primary);
 }
 .form-control-primary:focus,
 .form-control-primary:active, 
+.django_password_eye:has(input:active),
+.django_password_eye:has(input:focus),
 .field-primary:hover {
     outline         : 2px solid var(--primary);
 }
@@ -838,6 +840,38 @@ footer {
 }
 
 
+
+.active {
+    filter: brightness(120%);
+}
+.active-dropdown {
+    filter: brightness(70%);
+}
+
+.django_password_eye {
+    display: flex;
+    padding         : 0.25em 0.75em;
+
+    input {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .input-group-addon, .form-control, .link {
+        padding: 0;
+        margin: 0;
+        align-self: center;
+        height: fit-content;
+        background: none;
+        border: none;
+    }
+
+    .link {
+        margin-right: 0.5em;
+    }
+} 
 
 
 
@@ -1140,6 +1174,3 @@ footer {
 .pagination.right {
     justify-content: end;
 }
-
-
-

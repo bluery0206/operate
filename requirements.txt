@@ -1,9 +1,7 @@
 django
 opencv-python 
 python-docx
-pillow 
 numpy 
-matplotlib 
 django-cleanup
-onnx
 onnxruntime
+django-password-eye

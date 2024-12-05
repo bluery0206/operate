@@ -140,7 +140,8 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_
 		if not by_array: 
 			val = get_image_embedding(val)
 
-		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
+		# dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
+		dist = np.sum(np.square(inp_emb - val), axis=-1)
 
 		print(f"search_face(): dist:{dist}, database_idx:{idx}")
 

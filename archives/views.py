@@ -46,7 +46,8 @@ def personnels(request):
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
 		'page_title'	: "Archived Personnel Profiles",
-		'p_type'		: 'personnel'
+		'p_type'		: 'personnel',
+		'active'		: 'archives personnels'
 	}
 
 	if request.method == "GET":
@@ -117,7 +118,8 @@ def inmates(request):
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
 		'page_title'	: "Archived Inmate Profiles",
-		'p_type'		: 'inmate'
+		'p_type'		: 'inmate',
+		'active'		: 'archives inmates'
 	}
 
 	if request.method == "GET":
@@ -194,7 +196,8 @@ def archive_add(request, p_type, pk):
 		'title' 		: f"Add {get_full_name(profile)}'s profile to archives?",
 		'warning' 		: f"You will not be able to see this profile in the \"Profile\" Page anymore.",
 		'page_title'	: f"Archiving {get_full_name(profile)}'s Profile",
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'active'		: 'archive ' + p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -216,7 +219,8 @@ def archive_remove(request, p_type, pk):
 
 	context = {
 		'title' 	: f"Remove {get_full_name(archive.profile)}'s profile from archives",
-		'p_type'	: p_type
+		'p_type'	: p_type,
+		'active'	: 'archive ' + p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -247,7 +251,8 @@ def archive_add_all(request, p_type):
 		'title' 		: f"Add all {p_type} profiles to archives",
 		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore. You can still view them in the \"Archives section\"",
 		'page_title'	: f"Archiving All Profiles",
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'active'		: 'archive ' + p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 
@@ -267,7 +272,8 @@ def archive_remove_all(request, p_type):
 	context = {
 		'title' 		: f"Remove all {p_type} profiles from archives",
 		'page_title'	: f"Unachiving All Profiles",
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'active'		: 'archive ' + p_type
 	}
 	return render(request, "home/confirmation_page.html", context)
 

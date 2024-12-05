@@ -24,7 +24,8 @@ def facesearch(request):
 		"camera"		: int(defset.default_camera),
 		"search_method" : int(defset.default_search_method),
 		"profiles"		: [],
-		"p_type"		: "personnel"
+		"p_type"		: "personnel",
+		'active'		: 'facesearch'
 	}
 
 	context['camera'] = int(request.GET.get("camera", int(defset.default_camera)))
@@ -59,7 +60,8 @@ def facesearch(request):
 			
 			if context['form'].is_valid():
 				instance	= context['form'].save()
-				input_path	= instance.image.path	
+				input_path	= instance.image.path
+				
 
 		# print(f"facesearch(): input_image: {"Found" if input_image is not None else "Not found."}")
 		# print(f"facesearch(): {input_image.shape = }")

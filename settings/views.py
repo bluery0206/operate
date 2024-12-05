@@ -24,7 +24,7 @@ def settings(request):
 
             instance = form.save()
             
-            if instance.model:
+            if request.FILES.get('model'):
                 update_image_embeddings()
 
             return redirect('operate-settings')
@@ -33,6 +33,7 @@ def settings(request):
         'p_type'            : 'personnel',
         'page_title'        : 'Settings',
         'default_settings'  : defset,
-        'form'              : form
+        'form'              : form,
+        'active'            : 'user settings'
     }
     return render(request, "settings/settings.html", context)

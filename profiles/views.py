@@ -69,7 +69,8 @@ def personnels(request):
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
 		'page_title'	: "Personnel Profiles",
-		'p_type'		: 'personnel'
+		'p_type'		: 'personnel',
+		'active'		: 'profiles personnels'
 	}
 
 
@@ -137,7 +138,8 @@ def inmates(request):
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
 		'page_title'	: "Inmate Profiles",
-		'p_type'		: 'inmate'
+		'p_type'		: 'inmate',
+		'active'		: 'profiles inmates'
 	}
 
 	if request.method == "GET":
@@ -219,7 +221,8 @@ def profile_add(request, p_type):
 		'p_type'		: p_type,
 		'page_title'	: "Add Profile",
 		'camera'		: defset.default_camera,
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'active'		: 'add ' + p_type
 	}
 
 	if request.method == "POST":
@@ -299,7 +302,7 @@ def profile_update(request, p_type, pk):
 		'p_type'		: p_type,
 		'page_title'	: f"Update {profile}",
 		'camera'		: defset.default_camera,
-		'profile'		: profile,
+		'profile'		: profile
 	}
 
 	if request.method == "POST":

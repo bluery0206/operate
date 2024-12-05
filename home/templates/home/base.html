@@ -23,7 +23,16 @@
 			
 
 		<!-- facesearch by  -->
-		<a class="btn btn-{{ p_type }}" href="{% url 'facesearch' %}">
+		<a 
+			class="
+				btn 
+				btn-light
+
+				{% if 'facesearch' in active %}
+					active-dropdown
+				{% endif %}
+			" 
+			href="{% url 'facesearch' %}">
 			<span class="material-symbols-outlined">account_box</span>
 			<span>FaceSearch</span>
 		</a>
@@ -32,7 +41,16 @@
 		
 		<nav>
 			<!-- home -->
-			<a class="btn btn-{{ p_type }}" href="{% url 'operate-home' %}">
+			<a
+				class ="
+					btn 
+					btn-{{ p_type }} 
+					
+					{% if active in 'home' %}
+						active
+					{% endif%}
+				"
+				href = "{% url 'operate-home' %}">
 				<span class="material-symbols-outlined">home</span>
 				<span>Home</span>
 			</a>
@@ -42,17 +60,40 @@
 
 			<!-- profiles -->
 			<div class="dropdown">
-				<button class="btn btn-{{ p_type }}">
+				<button class="
+					btn 
+					btn-{{ p_type }}
+
+					{% if 'profiles' in active %}
+						active
+					{% endif %}
+				">
 					<span class="material-symbols-outlined">Group</span>
 					<span>Profiles</span>
 				</button>
 
 				<div class="content">
-					<a class="btn" href="{% url 'profiles-personnels' %}">
+					<a 
+						class="
+							btn
+
+							{% if 'personnels' not in active and 'profiles' in active %}
+								active-dropdown
+							{% endif %}
+						"
+						href="{% url 'profiles-personnels' %}">
 						<span class="material-symbols-outlined">local_police</span>
 						<span>Personnel</span>
 					</a>
-					<a class="btn" href="{% url 'profiles-inmates' %}">
+					<a 
+						class="
+							btn
+
+							{% if 'inmates' not in active and 'profiles' in active %}
+								active-dropdown
+							{% endif %}
+						"
+						href="{% url 'profiles-inmates' %}">
 						<span class="material-symbols-outlined">person_alert</span>
 						<span>Inmates</span>
 					</a>
@@ -63,7 +104,15 @@
 
 			<!-- archives -->
 			<div class="dropdown">
-				<button class="btn btn-{{ p_type }}">
+				<button 
+					class="
+						btn 
+						btn-{{ p_type }}
+
+						{% if 'archive' in active %}
+							active
+						{% endif %}
+					">
 					<span class="material-symbols-outlined">
 						files
 					</span>
@@ -71,13 +120,29 @@
 				</button>
 
 				<div class="content">
-					<a class="btn" href="{% url 'archives-personnels' %}">
+					<a 
+						class="
+							btn
+
+							{% if 'personnel' not in active and 'archive' in active%}
+								active-dropdown
+							{% endif %}
+						" 
+						href="{% url 'archives-personnels' %}">
 						<span class="material-symbols-outlined">
 							local_police
 						</span>
 						Personnel
 					</a>
-					<a class="btn" href="{% url 'archives-inmates' %}">
+					<a 
+						class="
+							btn
+							
+							{% if 'inmate' not in active and 'archive' in active %}
+								active-dropdown
+							{% endif %}
+						" 
+						href="{% url 'archives-inmates' %}">
 						<span class="material-symbols-outlined">
 							person_alert
 						</span>
@@ -90,17 +155,41 @@
 
 			<!-- add -->
 			<div class="dropdown">
-				<button class="btn btn-{{ p_type }}">
+				<button 
+					class="
+						btn 
+						btn-{{ p_type }}
+							
+						{% if 'add' in active %}
+							active
+						{% endif %}
+					">
 					<span class="material-symbols-outlined">add_circle</span>
 					<span>Add</span>
 				</button>
 
 				<div class="content">
-					<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
+					<a
+						class="
+							btn
+							
+							{% if 'personnel' not in active and 'add' in active %}
+								active-dropdown
+							{% endif %}
+						" 
+						href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
 						<span class="material-symbols-outlined">encrypted_add_circle</span>
 						<span>Personnel</span>
 					</a>
-					<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}" title="Add new profile">
+					<a
+						class="
+							btn
+							
+							{% if 'inmate' not in active and 'add' in active %}
+								active-dropdown
+							{% endif %}
+						" 
+						href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}" title="Add new profile">
 						<span class="material-symbols-outlined">person_add</span>
 						<span>Inmate</span>
 					</a>

@@ -8,7 +8,7 @@ WIDGETS = {
 			'class': 'form-control form-control-primary',
 			'min': 0,
 			'max': 2000,
-			'step': 0.01,
+			'step': "any",
     }),
 	'default_camera' : forms.NumberInput(attrs={
 			'class': 'form-control form-control-primary',
