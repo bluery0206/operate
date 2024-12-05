@@ -427,6 +427,8 @@ def profile_docx_download(_, p_type, pk):
 	fields = [field.name for field in profile._meta.get_fields()]
 	fields.append("full_name")
 	fields = [f"[[{field}]]" for field in fields]
+
+	print(fields)
 	
 	data = {field.name: getattr(profile, field.name, None) for field in profile._meta.get_fields()}
 	data["full_name"] = get_full_name(profile)

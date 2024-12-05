@@ -1,6 +1,4 @@
 from django.http import HttpResponse
-from PIL import Image
-from django.utils import timezone
 import string
 from docx.shared import Inches
 from docx import Document
@@ -34,70 +32,6 @@ def format_text(text):
 	text = text.translate(translation_table)
 	return text
 
-def save_profile_picture(instance):	
-	ori_img = Image.open(instance.raw_image.path)
-
-	width, height = ori_img.size
-	print(f"{width = }, {height = }")
-
-	# To set the height or width of the least size
-	size 	= width if height > width else height
-	print(f"{size = }")
-
-
-	# Finding the center
-	left, top, right, bottom = get_img_size(width, height, size)
-
-	new_img = ori_img.crop((left, top, right, bottom))
-	new_img = new_img.resize((300, 300))
-	print(f"{ori_img = }")
-	print(f"{new_img = }")
-
-	# Just for name
-	time = timezone.now().strftime("%Y%m%d%H%M%S")
-	print(f"{time = }")
-
-	new_img_name = "thumbnails/" + time + ".png"
-	ori_img_name = "raw_images/" + time + ".png"
-
-	print(f"{new_img_name = }")
-	print(f"{ori_img_name = }")
-
-	print(f"{media_path.joinpath(ori_img_name) = }")
-	print(f"{media_path.joinpath(new_img_name) = }")
-
-	# Save images
-		
-	try:
-		ori_img.save(media_path.joinpath(ori_img_name) )
-	except Exception as e:
-		print(f"Error saving image: {e}")
-	try:
-		new_img.save(media_path.joinpath(new_img_name))
-	except Exception as e:
-		print(f"Error saving image: {e}")
-		
-
-	# Change image values
-	instance.thumbnail 	= new_img_name
-	instance.raw_image 	= ori_img_name
-
-	print(f"{instance.thumbnail = }")
-	print(f"{instance.raw_image = }")
-
-	res = instance.save()
-	print(f"{res = }")
-
-	return True if res else False
-
-def get_img_size(width, height, size) -> list:
-	left 	= (width - size) / 2
-	top 	= (height - size) / 2
-	right 	= (width + size) / 2
-	bottom 	= (height + size) / 2
-
-	return [left, top, right, bottom]
-
 def generate_docx(template_path, image_path, fields, data):
 	doc = Document(template_path)
 
@@ -123,9 +57,15 @@ def generate_docx(template_path, image_path, fields, data):
 						for run in paragraph.runs:
 							if field in run.text:
 								run.text = run.text.replace(field, str(value))
+
+							# if field in run.text:
+							# 	run.text = f"{run.text.replace(field, '{{ {value} }}')}"
 								run.font.name = 'Arial'
 
 	file_name	= f"{format_text(data[-1])}.docx"
+	if "[[rank]]" in fields:
+		file_name	= f"{format_text(data[-5])}_{file_name}"
+
 	save_path	= outputs_path.joinpath(file_name)
 	doc.save(save_path)
 

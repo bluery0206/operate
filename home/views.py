@@ -11,7 +11,7 @@ def home(request):
 	context = {
 		"personnels"	: personnels,
 		"inmates"		: inmates,
-		'page_title'	: "OPERATE | Home",
+		'page_title'	: "Home",
 		'p_type'		: 'personnel',
 		'active'		: 'home'
 	}
