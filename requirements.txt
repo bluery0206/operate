@@ -5,3 +5,4 @@ numpy
 django-cleanup
 onnxruntime
 django-password-eye
+docx2pdf
