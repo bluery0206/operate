@@ -13,9 +13,9 @@ if not exists:
     model 				= str(list(Path.cwd().glob("media/models/*.onnx"))[0])
 
     OperateSetting.objects.create(
-		personnel_template	= personnel_template, 
-		inmate_template		= inmate_template,
-		model				= model
+		personnel_template	= personnel_template if personnel_template else None, 
+		inmate_template		= inmate_template if inmate_template else None,
+		model				= model if model else None
 	)
 
 WIDGETS = {
