@@ -16,7 +16,7 @@
 4. Pull `git pull`
 5. Done
 
-# Push
+## Push
 1. Open cmd
 2. Change directory `cd PATH\operate`. Change `PATH` to actual full path to `operate` folder.
 3. Activate environment `venv\scripts\activate`
