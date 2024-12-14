@@ -5,8 +5,9 @@
 4. Create python environment `py -m venv venv`
 5. Activate environment `venv\scripts\activate`
 6. Install all dependencies `pip install -r requirements.txt`
-7. Run server `py manage.py runserver`
-8. Done
+7. Create your own admin account `py manage.py createsuperuser`
+8. Run server `py manage.py runserver`
+9. Done
 
 ## Pull
 1. Open cmd
