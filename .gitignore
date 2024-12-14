@@ -1,4 +1,7 @@
 **__pycache__/
-.vscode/
 venv/
 temp/
+media/embeddings/
+media/raw_images/
+media/thumbnails/
+.vscode/
