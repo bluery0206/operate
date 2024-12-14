@@ -4,4 +4,5 @@ temp/
 media/embeddings/
 media/raw_images/
 media/thumbnails/
+db.sqlite3
 .vscode/

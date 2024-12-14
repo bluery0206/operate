@@ -5,26 +5,18 @@ from django.db import models
 class OperateSetting(models.Model):
     default_threshold = models.FloatField(
         default = 1.0,
-        blank   = True,
-        null    = True
     )
 
     default_camera = models.IntegerField(
-        default = 1,
-        blank   = True,
-        null    = True
+        default = 0,
     )
 
     default_profiles_per_page = models.IntegerField(
         default = 20,
-        blank   = True,
-        null    = True
     )
 
     default_thumbnail_size = models.IntegerField(
         default = 200,
-        blank   = True,
-        null    = True
     )
 
     crop_camera = models.CharField(
@@ -38,8 +30,6 @@ class OperateSetting(models.Model):
 
     default_crop_size = models.IntegerField(
         default = 200,
-        blank   = True,
-        null    = True
     )
 
     default_search_method = models.CharField(
@@ -68,12 +58,4 @@ class OperateSetting(models.Model):
         null        = True,
         upload_to   = "models"
     )
-
-
-
-
-
-
-
-
 

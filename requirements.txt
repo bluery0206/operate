@@ -1,7 +1,7 @@
 django
 opencv-python 
 python-docx
-numpy 
+numpy
 django-cleanup
 onnxruntime
 django-password-eye
