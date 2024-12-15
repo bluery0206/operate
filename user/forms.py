@@ -1,6 +1,5 @@
 from django import forms
 from django_password_eye.fields import PasswordEye
-from django_password_eye.fields import PasswordEyeWidget
 from django.contrib.auth.models import User
 
 from django.contrib.auth.forms import AuthenticationForm

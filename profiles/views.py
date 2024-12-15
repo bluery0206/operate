@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .models import Personnel, Inmate
-from home.utils import get_full_name, generate_docx, save_docx
+from app.utils import get_full_name, generate_docx, save_file
 
 from .forms import (
 	CreatePersonnel, 
@@ -22,9 +22,10 @@ from .forms import (
 )
 from facesearch.utils import *
 
+from app import models as app_model
 
+OPERATE_SETTINGS = app_model.Setting
 
-from settings.views import OperateSetting
 
 ORDER_CHOICES = [
 	['descending',"Descending"],
@@ -114,7 +115,7 @@ def personnels(request):
 		context['filters'].update({"search": search})
 	
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], OperateSetting.objects.first().default_profiles_per_page)
+	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -179,7 +180,7 @@ def inmates(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], OperateSetting.objects.first().default_profiles_per_page)
+	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)
@@ -213,7 +214,7 @@ def profile(request, p_type, pk):
  
 def profile_add(request, p_type):
 	create_profile_form = CreatePersonnel if p_type == "personnel" else CreateInmate
-	defset				= OperateSetting.objects.first()
+	defset				= OPERATE_SETTINGS.objects.first()
 
 	context = {
 		'form'			: create_profile_form(),
@@ -294,7 +295,7 @@ def profile_add(request, p_type):
 
 def profile_update(request, p_type, pk):
 	p_class, update_form = [Personnel, UpdatePersonnel] if p_type == "personnel" else [Inmate, UpdateInmate]
-	defset				= OperateSetting.objects.first()
+	defset				= OPERATE_SETTINGS.objects.first()
 	profile = get_object_or_404(p_class, pk=pk)
 
 	context = {
@@ -420,7 +421,7 @@ def profile_delete_all(request, p_type):
 
 
 def profile_docx_download(_, p_type, pk):
-	p_class, template = [Personnel, OperateSetting.objects.first().personnel_template] if p_type == "personnel" else [Inmate, OperateSetting.objects.first().inmate_template]
+	p_class, template = [Personnel, OPERATE_SETTINGS.objects.first().personnel_template] if p_type == "personnel" else [Inmate, OPERATE_SETTINGS.objects.first().inmate_template]
 
 	profile		= p_class.objects.get(pk=pk)
 
@@ -451,6 +452,6 @@ def profile_docx_download(_, p_type, pk):
 		data 			= data
 	)
 
-	response = save_docx(file_name, save_path)
+	response = save_file(file_name, save_path)
 	
 	return response

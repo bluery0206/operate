@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from home.utils import get_full_name
+from app.utils import get_full_name
 from django.core.validators import FileExtensionValidator
 from .models import UploadedImage
 

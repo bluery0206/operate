@@ -1,17 +1,20 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 from pathlib import Path
-from django.conf import settings 
+from django.conf import settings
 
-from .models import DefaultSettings
+from . import models as app_models
+
+DJANGO_SETTINGS 	= settings
+OPERATE_SETTINGS 	= app_models.Setting
 
 # Creates initial settings if default settings doesnt exists just yet.
-if not DefaultSettings.objects.first():
-    inmate_template 	= str(list(settings.BASE_DIR.glob("media/templates/profile_inmate_templa*.docx"))[0])
-    personnel_template 	= str(list(settings.BASE_DIR.glob("media/templates/profile_personnel_templa*.docx"))[0])
-    model 				= str(list(settings.BASE_DIR.glob("media/models/*.onnx"))[0])
+if not OPERATE_SETTINGS.objects.first():
+    inmate_template 	= str(list(DJANGO_SETTINGS.BASE_DIR.glob("media/templates/profile_inmate_templa*.docx"))[0])
+    personnel_template 	= str(list(DJANGO_SETTINGS.BASE_DIR.glob("media/templates/profile_personnel_templa*.docx"))[0])
+    model 				= str(list(DJANGO_SETTINGS.BASE_DIR.glob("media/models/*.onnx"))[0])
 
-    DefaultSettings.objects.create(
+    OPERATE_SETTINGS.objects.create(
 		personnel_template	= personnel_template if personnel_template else None, 
 		inmate_template		= inmate_template if inmate_template else None,
 		model				= model if model else None
@@ -105,6 +108,6 @@ class FormDefaultSettings(forms.ModelForm):
     )
 	
 	class Meta:
-		model 	= DefaultSettings
+		model 	= OPERATE_SETTINGS
 		fields 	= FIELDS
 		widgets = WIDGETS

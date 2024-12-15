@@ -7,7 +7,10 @@ import logging
 import cv2 
 
 from profiles.models import Personnel, Inmate
-from settings.models import OperateSetting
+from app import models as app_model
+
+OPERATE_SETTINGS = app_model.Setting
+INP_SIZE = 105
 
 
 CWD_PATH	= Path().cwd()
@@ -20,8 +23,6 @@ SNN_PATH	= FS_PATH.joinpath(f"snn_models")
 EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 RAW_PATH	= MED_PATH.joinpath(f"raw_images")
 
-
-INP_SIZE = 105
 
 def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
@@ -112,7 +113,7 @@ def update_image_embeddings():
 	if not data:
 		return False
 
-	print(f"Creating embedding from image using model: {OperateSetting.objects.first().model.name}")
+	print(f"Creating embedding from image using model: {OPERATE_SETTINGS.objects.first().model.name}")
 
 	for profile in data:
 		# print(f"Personnel: {profile}, raw_image_path: {profile.raw_image.path}")
@@ -217,7 +218,7 @@ def save_image(image_path, image):
 	return cv2.imwrite(image_path, image)
 
 def get_image_embedding(inp_image):
-	model = OperateSetting.objects.first().model
+	model = OPERATE_SETTINGS.objects.first().model
 	
 	if not model:
 		raise FileNotFoundError("There is no model found.")

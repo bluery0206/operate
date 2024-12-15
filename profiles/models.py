@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import models
 
 
-from home.utils import get_full_name
+from app.utils import get_full_name
 
 CIVIL_STATUS_CHOICES = [
 	('single', 'Single'),

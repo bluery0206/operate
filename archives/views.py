@@ -9,9 +9,11 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import ArchivePersonnel, ArchiveInmate
 from profiles.models import Personnel, Inmate
-from settings.models import OperateSetting
-from home.utils import get_full_name
+# from app.models import OPERATE_SETTINGS
+from app import models as app_model
+from app.utils import get_full_name
 
+OPERATE_SETTINGS = app_model.Setting
 
 ORDER_CHOICES = [
 	['descending',"Descending"],
@@ -94,7 +96,7 @@ def personnels(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], OperateSetting.objects.first().default_profiles_per_page)
+	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -161,7 +163,7 @@ def inmates(request):
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], OperateSetting.objects.first().default_profiles_per_page)
+	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)

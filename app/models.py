@@ -1,6 +1,6 @@
 from django.db import models
 
-class DefaultSettings(models.Model):
+class Setting(models.Model):
     # Pagination
     profiles_per_page   = models.IntegerField(default = 20)
     thumbnail_size      = models.IntegerField(default = 200)

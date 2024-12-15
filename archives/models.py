@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
 
-from home.utils import get_full_name
+from app.utils import get_full_name
 from profiles.models import (
 	Personnel,
 	Inmate

@@ -6,8 +6,9 @@ from .models import UploadedImage
 from django.utils import timezone
 from .utils import *
 
+from app import models as app_models
 
-from settings.models import OperateSetting
+OPERATE_SETTINGS = app_models.Setting
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ DATABASE_PATH		= Path().cwd().joinpath("media/raw_images")
 SEARCH_IMAGE_PATH 	= Path().cwd().joinpath("media/searches")
 
 def facesearch(request):
-	defset = OperateSetting.objects.first()
+	defset = OPERATE_SETTINGS.objects.first()
 
 	context = {
 		"form"			: UploadedImageForm(),

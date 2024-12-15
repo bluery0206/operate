@@ -39,12 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'app',
-    'home',
     'user',
     'profiles',
     'archives',
     'facesearch',
-    'settings',
 
     'django_password_eye',
     'django_cleanup.apps.CleanupConfig',
@@ -136,7 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Unauthorized Accesses Redirect Path
-LOGIN_REDIRECT_URL  = 'operate-home'
+LOGIN_REDIRECT_URL  = 'operate-index'
 LOGIN_URL           = 'user-login'
 
 
