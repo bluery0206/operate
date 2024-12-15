@@ -489,11 +489,15 @@ def profile_pdf_download(_, p_type, pk):
 		data 			= data
 	)
 
-	pdf_path = str(docx_path).split(".")[-2] + ".pdf"
-	file_name = Path(pdf_path).name
-	print(f"{docx_path=}")
-	print(f"{file_name=}")
+	pdf_path = Path(str(docx_path).split(".")[-2] + ".pdf")
+	file_name = pdf_path.name
+	
+	# print(f"{docx_path=}")
+	# print(f"{file_name=}")
+	
 	convert(docx_path, pdf_path)
 	
-	response = save_docx(file_name, Path(pdf_path))
+	Path(docx_path).unlink()
+	response = save_docx(file_name, pdf_path)
+
 	return response
