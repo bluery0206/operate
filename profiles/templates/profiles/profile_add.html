@@ -1,4 +1,5 @@
 {% extends 'app/base_headered.html' %}
+{% load static %}
 
 {% block content %}
 <form class="profile" method="POST" enctype="multipart/form-data">
@@ -11,7 +12,7 @@
 		</a>
 
 		<h2 class="title">Add new {{ p_type }} profile</h2>
-		
+		<!-- {{ MEDIA_URL }}default.jpg -->
 		<div class="buttons">
 			<button class="btn btn-light" name="option_upload" value="1" type="submit">
 				<span class="material-symbols-outlined">save</span>
@@ -32,7 +33,8 @@
 					Please provide a profile image.
 				</div>
 			{% endif %}
-			<img src="{{ default_img }}" alt="" id="imagePreview">
+			<img src="{% static 'images/default.png' %}" alt="" id="imagePreview">
+		
 
 			<div class="form upload_image">
 				{% if form.raw_image.errors %}
@@ -90,7 +92,6 @@
 						{% endif %}
 						
 						{{ form.f_name.label_tag }}
-						
 						{{ form.f_name }}
 					</div>
 
@@ -104,7 +105,6 @@
 						{% endif %}
 						
 						{{ form.m_name.label_tag }}
-						
 						{{ form.m_name }}
 					</div>
 
@@ -118,7 +118,6 @@
 						{% endif %}
 						
 						{{ form.l_name.label_tag }}
-						
 						{{ form.l_name }}
 					</div>
 
@@ -132,7 +131,6 @@
 						{% endif %}
 						
 						{{ form.suffix.label_tag }}
-						
 						{{ form.suffix }}
 					</div>
 				</div>
@@ -147,7 +145,6 @@
 			{% endif %}
 			<div class="field age">
 				{{ form.age.label_tag }}
-
 				{{ form.age }}
 			</div> 
 
@@ -160,7 +157,6 @@
 			{% endif %}
 			<div class="field address">
 				{{ form.address.label_tag }}
-
 				{{ form.address }}
 			</div>
 
@@ -172,9 +168,7 @@
 				</div>
 			{% endif %}
 			<div class="field civil_status">
-
 				{{ form.civil_status.label_tag }}
-
 				{{ form.civil_status }}
 			</div>
 
@@ -187,7 +181,6 @@
 			{% endif %}
 			<div class="field">
 				{{ form.date_profiled.label_tag }}
-
 				{{ form.date_profiled }}
 			</div>
 
@@ -201,7 +194,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.rank.label_tag }}
-
 					{{ form.rank }}
 				</div>
 
@@ -214,7 +206,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.date_assigned.label_tag }}
-
 					{{ form.date_assigned }}
 				</div>
 
@@ -227,7 +218,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.date_relieved.label_tag }}
-
 					{{ form.date_relieved }}
 				</div>
 
@@ -240,7 +230,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.designation.label_tag }}
-
 					{{ form.designation }}
 				</div>
 			{% else %}
@@ -253,7 +242,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.date_arrested.label_tag }}
-
 					{{ form.date_arrested }}
 				</div>
 
@@ -266,7 +254,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.date_committed.label_tag }}
-
 					{{ form.date_committed }}
 				</div>
 
@@ -279,7 +266,6 @@
 				{% endif %}
 				<div class="field">
 					{{ form.crime_violated.label_tag }}
-
 					{{ form.crime_violated }}
 				</div>
 			{% endif %}
