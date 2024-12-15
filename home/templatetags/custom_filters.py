@@ -1,4 +1,5 @@
 from django import template
+
 from ..utils import get_full_name
 
 register = template.Library()
