@@ -5,16 +5,17 @@
 	<h2>Personnel Profiles</h2>
 
 	<div class="personnel filter-bar">
-		<!-- Search by text -->
+		<!-- Search -->
 		<form method="GET" class="search-form">
 			<input class="form-control form-control-secondary" type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}" title="Search">
 			
-			<!-- Keeping filter options because initiating a new search will reset the whole page -->
+			<!-- Keeps filter options because initiating a new search will reset the whole page -->
 			<input type="hidden" name="designation" value="{{ filters.designation }}">
 			<input type="hidden" name="rank" 		value="{{ filters.rank }}">
 			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
 			<input type="hidden" name="sort_by" 	value="{{ filters.sort_by }}">
 			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+			<input type="hidden" name="state" 		value="{{ filters.state }}">
 
 			<div class="actions">
 				<button class="btn" type="submit" title="Search">
@@ -29,16 +30,23 @@
 		<!-- Filter -->
 		<form method="GET" class="filter-form">
 
-			<!-- keeping the search value in here to preserve it when resetting filters -->
+			<!-- Keeps the search value in here to preserve it when resetting filters -->
 			<input type="hidden" name="search" value="{{ filters.search }}">
+			
+			<!-- state -->
+			<select class="form-control form-control-secondary" name="state" title="Filter by status">
+				<option class="option_title"  value="">State</option>
+				<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
+				<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
+			</select>
 
 			<input class="form-control form-control-secondary" type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
 			
 			<select class="form-control form-control-secondary" name="rank" title="Filter by rank">
-				<option class="option_title"  value="">Ranks</option>
+				<option class="option_title" value="">Ranks</option>
 				{% if ranks %}
 					{% for rank in ranks%}
-						<option value="{{ rank|lower }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank|upper }}</option>
+						<option value="{{ rank }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank }}</option>
 					{% endfor %}
 				{% endif %}
 			</select>
@@ -75,15 +83,15 @@
 			</button>
 
 			<div class="content">
-				<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
+				<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev=request.get_full_path|urlencode" title="Add new profile">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="{% url 'archive-add-all' 'personnel' %}?prev={{request.path}}" title="Add all profiles to archive">
+				<a class="btn" href="" title="Add all profiles to archive">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn btn-danger" href="{% url 'profile-delete-all' 'personnel' %}?prev={{request.path}}" title="Delete all profiles">
+				<a class="btn btn-danger" href="" title="Delete all profiles">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -92,7 +100,7 @@
 	</div>
 
 
-
+	<!-- Pagination -->
 	{% if is_paginated %}
 		<div class="pagination left">
 			<span class="page-list">
@@ -123,7 +131,7 @@
 		</div>
 	{% endif %}
 
-
+	<!-- request.get_full_path|urlencode -->
 
 	<div class="card-list">
 		{% if personnels %}
@@ -135,15 +143,15 @@
 								<span class="material-symbols-outlined">open_in_new</span>
 								<span>View profile</span>
 							</a>
-							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Edit profile">
+							<a class="btn btn-transparent-secondary" href="" title="Edit profile">
 								<span class="material-symbols-outlined">edit</span>
 								<span>Edit profile</span>
 							</a>
-							<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Add profile to archives">
+							<a class="btn btn-transparent-secondary" href="" title="Add profile to archives">
 								<span class="material-symbols-outlined">archive</span>
 								<span>Archive profile</span>
 							</a>
-							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.get_full_path|urlencode }}" title="Add profile to archives">
+							<a class="btn btn-transparent-danger" href="" title="Add profile to archives">
 								<span class="material-symbols-outlined">delete</span>
 								<span>Delete Profile</span>
 							</a>
@@ -153,7 +161,7 @@
 					</div>
 
 					<div class="details">
-						<div class="name detail">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+						<div class="name detail">{{ profile.rank }} {{ profile|full_name }}</div>
 						<div class="muted detail" title="{{ profile|full_name }}'s home address">
 							<span>Address: {{ profile.address|title }}</span>
 						</div>
@@ -179,6 +187,7 @@
 
 
 
+	<!-- Pagination -->
 	{% if is_paginated %}
 		<div class="pagination right">
 			<span class="page-list">

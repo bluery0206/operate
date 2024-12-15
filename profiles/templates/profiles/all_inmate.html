@@ -9,9 +9,10 @@
 		<form method="GET" class="search-form">
 			<input class="form-control form-control-secondary" type="search" name="search" placeholder="Search by name" value="{{ filters.search }}">
 
-			<input type="hidden" name="crime_violated" value="{{ filters.crime_violated }}">
-			<input type="hidden" name="sort_by" value="{{ filters.sort_by }}">
-			<input type="hidden" name="sort_order" value="{{ filters.sort_order }}">
+			<input type="hidden" name="crime_violated" 	value="{{ filters.crime_violated }}">
+			<input type="hidden" name="sort_by" 		value="{{ filters.sort_by }}">
+			<input type="hidden" name="sort_order" 		value="{{ filters.sort_order }}">
+			<input type="hidden" name="state" 			value="{{ filters.state }}">
 
 			<div class="actions">
 				<button class="btn" type="submit" title="Search">
@@ -28,6 +29,13 @@
 
 			<!-- keeping the search value in here to preserve it when resetting filters -->
 			<input type="hidden" name="search" value="{{ filters.search }}">
+
+			<!-- state -->
+			<select class="form-control form-control-secondary" name="state" title="Filter by status">
+				<option class="option_title"  value="">State</option>
+				<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
+				<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
+			</select>
 
 			<input class="form-control form-control-secondary" type="search" name="crime_violated" placeholder="Crime Violated" value="{{ filters.crime_violated }}">
 
@@ -52,7 +60,6 @@
 			<button class="form-control form-control-secondary" type="submit" title="Apply filter">
 				<span class="material-symbols-outlined">filter_alt</span>
 			</button>
-
 			<button class="form-control form-control-secondary" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
 				<span class="material-symbols-outlined">filter_alt_off</span>
 			</button>
@@ -61,17 +68,17 @@
 		<!-- User actions -->
 		<div class="dropdown">
 			<button class="btn btn-outline-light"><span class="material-symbols-outlined">more_vert</span></button>
-
+			<!-- request.path -->
 			<div class="content">
-				<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}">
+				<a class="btn" href="">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="{% url 'archive-add-all' 'inmate' %}?prev={{request.path}}">
+				<a class="btn" href="">
 					<span class="material-symbols-outlined">archive</span>
 					<span>Archive all</span>
 				</a>
-				<a class="btn btn-danger" href="{% url 'profile-delete-all' 'inmate' %}?prev={{request.path}}">
+				<a class="btn btn-danger" href="">
 					<span class="material-symbols-outlined">delete</span>
 					<span>Delete All</span>
 				</a>
@@ -119,19 +126,19 @@
 				<div class="card">
 					<div class="picture">
 						<div class="button-overlay">
-							<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+							<a class="btn btn-transparent-primary" href="" title="Open profile in detail">
 								<span class="material-symbols-outlined">open_in_new</span>
 								<span>View profile</span>
 							</a>
-							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+							<a class="btn btn-transparent-secondary" href="" title="Edit profile">
 								<span class="material-symbols-outlined">edit</span>
 								<span>Edit profile</span>
 							</a>
-							<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+							<a class="btn btn-transparent-secondary" href="" title="Add profile to archives">
 								<span class="material-symbols-outlined">archive</span>
 								<span>Archive profile</span>
 							</a>
-							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+							<a class="btn btn-transparent-danger" href="" title="Add profile to archives">
 								<span class="material-symbols-outlined">delete</span>
 								<span>Delete profile</span>
 							</a>
