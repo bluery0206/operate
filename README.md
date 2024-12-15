@@ -8,7 +8,7 @@ If not, select `main`
 
 ![branch](markdown_images/select_branches.jpg)
 
-3. Clone the repo: `git clone https://github.com/bluery0206/operate.git'.
+3. Clone the repo: `git clone https://github.com/bluery0206/operate.git`.
 4. Change directory `cd PATH\operate` after download. Change `PATH` to actual full path to `operate` folder.
 5. Create python environment `py -m venv venv`
 6. Activate environment `venv\scripts\activate`
