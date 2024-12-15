@@ -2,20 +2,6 @@ from django import forms
 from django.core.validators import FileExtensionValidator
 
 from .models import OperateSetting
-from pathlib import Path
-
-
-# Creates initial settings after install or if init settings doesnt exists just yet.
-if not OperateSetting.objects.first():
-    inmate_template 	= str(list(Path.cwd().glob("media/templates/profile_inmate_templa*.docx"))[0])
-    personnel_template 	= str(list(Path.cwd().glob("media/templates/profile_personnel_templa*.docx"))[0])
-    model 				= str(list(Path.cwd().glob("media/models/*.onnx"))[0])
-
-    OperateSetting.objects.create(
-		personnel_template	= personnel_template if personnel_template else None, 
-		inmate_template		= inmate_template if inmate_template else None,
-		model				= model if model else None
-	)
 
 WIDGETS = {
 	'default_threshold' : forms.NumberInput(attrs={
