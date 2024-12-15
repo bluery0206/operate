@@ -1,9 +1,10 @@
 **__pycache__/
 venv/
 temp/
-media/embeddings/
-media/raw_images/
-media/thumbnails/
-media/searches/
+media/embeddings/*
+media/raw_images/*
+media/thumbnails/*
+media/searches/*
+media/outputs/*
 db.sqlite3
 .vscode/
