@@ -21,6 +21,8 @@ EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 RAW_PATH	= MED_PATH.joinpath(f"raw_images")
 
 
+INP_SIZE = 105
+
 def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
 
@@ -67,9 +69,9 @@ def get_profiles(cand_list, reverse=True, by_array:bool=False):
 
 def search(input_path:Path,  threshold:int=1, by_array:bool=False):
 	input = open_gray_image(str(input_path))
-	print(f"\nfacesearch(): {input.shape = }")
+	# print(f"\nfacesearch(): {input.shape = }")
 
-	input = preprocess_image(input)
+	input = preprocess_image(input, img_size=INP_SIZE)
 	print(f"facesearch(): preprocess_image(): {input.shape = }")
 
 	# print(f"facesearch(): input_image: {"Found" if input_image is not None else "Not found."}")
@@ -89,7 +91,7 @@ def search(input_path:Path,  threshold:int=1, by_array:bool=False):
 		database = [open_gray_image(str(image_path)) for image_path in database]
 		print(f"facesearch(): open_gray_image(): {len(database)  = }")
 	
-		database = [preprocess_image(image) for image in database]
+		database = [preprocess_image(image, img_size=INP_SIZE) for image in database]
 		print(f"facesearch(): preprocess_image(): {len(database)  = }")
 
 	result = search_face(
@@ -143,24 +145,24 @@ def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_
 		# dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
 		dist = np.sum(np.square(inp_emb - val), axis=-1)
 
-		print(f"search_face(): dist:{dist}, database_idx:{idx}")
+		# print(f"search_face(): dist:{dist}, database_idx:{idx}, threshold:{threshold}")
 
-		if dist <= best_cand_dist:
+		if dist <= threshold:
 			best_cand_dist	= dist
 			best_cand_idx	= idx
-			# print(f"search_face(): New candidate found: dist:{dist}, database_idx:{idx}")
+			print(f"search_face(): New candidate found: dist:{dist}, threshold:{threshold}")
 
 			cand_list.append([get_percentage(threshold, dist), best_cand_idx])
 
-		if break_in_zero and dist <= 0: break
+		# if break_in_zero and dist <= 0: break
 
 	return cand_list if cand_list else None
 	
-def preprocess_image(image, img_size:int=105):
+def preprocess_image(image, img_size:int):
     cropped_image       = crop_image_from_center(image, True)
     resize_image        = cv2.resize(cropped_image, dsize=(img_size, img_size))
     normalized_image    = resize_image / 255.0
-    reshaped_image      = np.reshape(normalized_image, (1, 105, 105 ,1))
+    reshaped_image      = np.reshape(normalized_image, (1, img_size, img_size ,1))
     prep_image			= reshaped_image.astype(np.float32)
 
     return prep_image
@@ -271,7 +273,7 @@ def save_embedding(inp_path:str|Path):
 	inp_image	= open_gray_image(inp_path)
 	# print(f"save_embedding(): open_gray_image: {inp_image.shape = }")
 
-	inp_image	= preprocess_image(inp_image)
+	inp_image	= preprocess_image(inp_image, img_size=INP_SIZE)
 	# print(f"save_embedding(): preprocess_image: {inp_image.shape = }")
 
 	inp_emb = get_image_embedding(inp_image)

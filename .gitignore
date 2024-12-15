@@ -4,5 +4,6 @@ temp/
 media/embeddings/
 media/raw_images/
 media/thumbnails/
+media/searches/
 db.sqlite3
 .vscode/

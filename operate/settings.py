@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,15 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'home',
     'user',
     'profiles',
     'archives',
     'facesearch',
     'settings',
-    'django_password_eye',
 
-    # A library that will clean/delete old images when new ones are uploaded
+    'django_password_eye',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -128,24 +127,27 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Unauthorized Accesses Redirectories
-LOGIN_REDIRECT_URL = 'operate-home'
-LOGIN_URL = 'user-login'
 
-# Saving files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# Unauthorized Accesses Redirect Path
+LOGIN_REDIRECT_URL  = 'operate-home'
+LOGIN_URL           = 'user-login'
 
 
-# Sending Email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# Uploaded Media Path
+MEDIA_ROOT  = BASE_DIR.joinpath('media')
+MEDIA_URL   = '/media/'
+
+
+# Send Email
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_USE_TLS       = True
+EMAIL_PORT          = 587
+EMAIL_HOST_USER     = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")

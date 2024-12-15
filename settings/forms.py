@@ -4,10 +4,9 @@ from django.core.validators import FileExtensionValidator
 from .models import OperateSetting
 from pathlib import Path
 
-exists = OperateSetting.objects.first()
-print(exists)
 
-if not exists:
+# Creates initial settings after install or if init settings doesnt exists just yet.
+if not OperateSetting.objects.first():
     inmate_template 	= str(list(Path.cwd().glob("media/templates/profile_inmate_templa*.docx"))[0])
     personnel_template 	= str(list(Path.cwd().glob("media/templates/profile_personnel_templa*.docx"))[0])
     model 				= str(list(Path.cwd().glob("media/models/*.onnx"))[0])
@@ -80,7 +79,7 @@ FIELDS = [
     "model",
 ]
 
-VALIDATOR = [FileExtensionValidator(allowed_extensions=['docx'])]
+VALIDATOR 		= [FileExtensionValidator(allowed_extensions=['docx'])]
 MODEL_VALIDATOR = [FileExtensionValidator(allowed_extensions=['onnx'])]
 
 class OperateSettingsForm(forms.ModelForm):
