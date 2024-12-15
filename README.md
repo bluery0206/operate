@@ -1,13 +1,21 @@
 ## Install
 1. Open cmd
-2. Clone the repo: `git clone https://github.com/bluery0206/operate.git'.
-3. Change directory `cd PATH\operate` after download. Change `PATH` to actual full path to `operate` folder.
-4. Create python environment `py -m venv venv`
-5. Activate environment `venv\scripts\activate`
-6. Install all dependencies `pip install -r requirements.txt`
-7. Create your own admin account `py manage.py createsuperuser`
-8. Run server `py manage.py runserver`
-9. Done
+2. Check if you're in the `main` branch
+
+![branch](markdown_images/branches.jpg)
+
+If not, select `main`
+
+![branch](markdown_images/select_branches.jpg)
+
+3. Clone the repo: `git clone https://github.com/bluery0206/operate.git'.
+4. Change directory `cd PATH\operate` after download. Change `PATH` to actual full path to `operate` folder.
+5. Create python environment `py -m venv venv`
+6. Activate environment `venv\scripts\activate`
+7. Install all dependencies `pip install -r requirements.txt`
+8. Create your own admin account `py manage.py createsuperuser`
+9. Run server `py manage.py runserver`
+10. Done
 
 ## Pull
 1. Open cmd
