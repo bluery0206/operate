@@ -19,12 +19,12 @@
 11. Done
 
 #### Pull
-1. Activate environment. [More details here](#activating-python-environment)
+1. Activate environment. [More details here](#activate-python-environment)
 4. Pull `git pull`
 5. Done
 
 #### Push
-1. Activate environment. [More details here](#activating-python-environment)
+1. Activate environment. [More details here](#activate-python-environment)
 4. Pull first to fetch changes if there's any `git pull`
 5. Stage all changes `git add -A`
 6. Commit all changes `git commit -m MESSAGE`. Change `MESSAGE` to atual message like what have changed.
