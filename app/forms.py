@@ -12,13 +12,13 @@ COMMON_ATTRS    = {'class': 'form-control form-control-primary'}
 class DefaultSettingsForm(forms.ModelForm):
 	docx_validator	= [FileExtensionValidator(allowed_extensions=['docx'])]
 	
-	personnel_template = forms.FileField(
+	template_personnel = forms.FileField(
 		validators			= docx_validator,
 		widget				= forms.FileInput(attrs={'class': COMMON_ATTRS}),
 		allow_empty_file	= True,
 		required			= False
     )
-	inmate_template = forms.FileField(
+	template_inmate = forms.FileField(
 		validators			= docx_validator,
 		widget				= forms.FileInput(attrs={'class': COMMON_ATTRS}),
 		allow_empty_file	= True,
@@ -34,25 +34,25 @@ class DefaultSettingsForm(forms.ModelForm):
 	class Meta:
 		model 	= OPERATE_SETTINGS
 		widgets	= {
-			'default_threshold': forms.NumberInput(attrs={
+			'threshold': forms.NumberInput(attrs={
 					'class' : 'form-control form-control-primary',
 					'min'   : 0,
 					'max'   : 2000,
 					'step'  : "any",
 			}),
-			'default_camera' : forms.NumberInput(attrs={
+			'camera' : forms.NumberInput(attrs={
 					'class' : 'form-control form-control-primary',
 					'min'   : 0,
 					'max'   : 10,
 					'step'  : 1,
 			}),
-			'default_profiles_per_page': forms.NumberInput(attrs={
+			'profiles_per_page': forms.NumberInput(attrs={
 					'class' : 'form-control form-control-primary',
 					'min'   : 10,
 					'max'   : 50,
 					'step'  : 1,
 			}),
-			'default_thumbnail_size': forms.NumberInput(attrs={
+			'thumbnail_size': forms.NumberInput(attrs={
 					'class' : 'form-control form-control-primary',
 					'min'   : 100,
 					'step'  : 10,
@@ -62,20 +62,20 @@ class DefaultSettingsForm(forms.ModelForm):
 				},
 				choices={('0', 'False'), ('1', 'True')}
 			),
-			'default_crop_size': forms.NumberInput(attrs={
+			'crop_size': forms.NumberInput(attrs={
 					'class' : 'form-control form-control-primary',
 					'min'   : 100,
 					'step'  : 10,
 			}),
-			'default_search_method': forms.Select(attrs={
+			'search_mode': forms.Select(attrs={
 					'class': 'form-control form-control-primary',
 				},
 				choices={('0', 'Image'), ('1', 'Embedding (Faster)')}
 			),
-			'personnel_template' : forms.FileInput(attrs={
+			'template_personnel' : forms.FileInput(attrs={
 				'class': 'form-control form-control-primary',
 			}),
-			'inmate_template': forms.FileInput(attrs={
+			'template_inmate': forms.FileInput(attrs={
 				'class': 'form-control form-control-primary',
 			}),
 			'model': forms.FileInput(attrs={
@@ -83,15 +83,15 @@ class DefaultSettingsForm(forms.ModelForm):
 			}),
 		}
 		fields 	= [
-			"default_threshold",
-			"default_camera",
-			"default_profiles_per_page",
-			"default_thumbnail_size",
+			"threshold",
+			"camera",
+			"profiles_per_page",
+			"thumbnail_size",
 			"crop_camera",
-			"default_crop_size",
-			"default_search_method",
-			"personnel_template",
-			"inmate_template",
+			"crop_size",
+			"search_mode",
+			"template_personnel",
+			"template_inmate",
 			"model",
 		]
 

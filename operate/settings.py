@@ -39,9 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'app',
-    'user',
     'profiles',
-    'archives',
 
     'django_password_eye',
     'django_cleanup.apps.CleanupConfig',

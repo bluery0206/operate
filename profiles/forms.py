@@ -1,13 +1,12 @@
-from django.contrib.auth.models import User
 from django import forms
-from app.utils import get_full_name
 from django.core.validators import FileExtensionValidator
 
 from .models import (
 	Personnel, 
 	Inmate,
-	Template
 )
+
+
 
 WIDGETS = {
 	'date_profiled'	: forms.DateInput(
@@ -106,12 +105,10 @@ I_FIELDS = COMMON_FIELDS + [
 
 VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
 
+
+
 class CreatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(
-		validators			= VALIDATOR,
-		allow_empty_file	= True,
-		required			= False
-	)
+	raw_image = forms.FileField(validators=VALIDATOR)
 
 	class Meta:
 		model 	= Personnel
@@ -145,13 +142,4 @@ class UpdateInmate(forms.ModelForm):
 		model 	= Inmate
 		fields 	= I_FIELDS
 		widgets = WIDGETS
-
-class TemplateUploadForm(forms.ModelForm):
-	template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['docx'])])
-
-	class Meta:
-		model = Template
-		fields = [
-			'template_name',
-			'template',
-		]
+	

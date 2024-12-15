@@ -31,20 +31,17 @@ class Setting(models.Model):
         max_length=1,
     )
 
-
     # Templates
     template_personnel = models.FileField(
         blank       = True,
         null        = True,
         upload_to   = "templates"
     )
-
     template_inmate = models.FileField(
         blank       = True,
         null        = True,
         upload_to   = "templates"
     )
-
 
     # Model
     model = models.FileField(

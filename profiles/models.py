@@ -1,70 +1,48 @@
 from django.db.models.constraints import UniqueConstraint
-from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
 
-
 from app.utils import get_full_name
+
+
 
 CIVIL_STATUS_CHOICES = [
 	('single', 'Single'),
 	('married', 'Married'),
 	('widowed', 'Widowed'),
-	('legally_separated', 'Legally Separated '),
+	('legally_separated', 'Legally Separated'),
 ]
-
 RANKS = [
-	('pgen', 'Police General, PGEN'),
-	('pltgen', 'Police Lieutenant General, PLTGEN'),
-	('pmgen', 'Police Major General, PMGEN'),
-	('pbgen', 'Police Brigadier General, PBGEN'),
-	('pcol', 'Police Colonel, PCOL'),
-	('pltcol', 'Police Lieutenant Colonel, PLTCOL'),
-	('pmaj', 'Police Major, PMAJ'),
-	('pcpt', 'Police Captain, PCPT'),
-	('plt', 'Police Lieutenant, PLT'),
-	('pems', 'Police Executive Master Sergeant, PEMS'),
-	('pcms', 'Police Chief Master Sergeant, PCMS'),
-	('psms', 'Police Senior Master Sergeant, PSMS'),
-	('pmsg', 'Police Master Sergeant, PMSg'),
-	('pssg', 'Police Staff Sergeant, PSSg'),
-	('pcpl', 'Police Corporal, PCpl'),
-	('pat', 'Patrolman/Patrolwoman, Pat')
+	('Pat', 'Patrolman/Patrolwoman, Pat'),
+	('PCpl', 'Police Corporal, PCpl'),
+	('PSSg', 'Police Staff Sergeant, PSSg'),
+	('PMSg', 'Police Master Sergeant, PMSg'),
+	('PSMS', 'Police Senior Master Sergeant, PSMS'),
+	('PCMS', 'Police Chief Master Sergeant, PCMS'),
+	('PEMS', 'Police Executive Master Sergeant, PEMS'),
+	('PLT', 'Police Lieutenant, PLT'),
+	('PCPT', 'Police Captain, PCPT'),
+	('PMAJ', 'Police Major, PMAJ'),
+	('PLTCOL', 'Police Lieutenant Colonel, PLTCOL'),
+	('PCOL', 'Police Colonel, PCOL'),
+	('PBGEN', 'Police Brigadier General, PBGEN'),
+	('PGEN', 'Police General, PGEN'),
+	('PMGEN', 'Police Major General, PMGEN'),
+	('PLTGEN', 'Police Lieutenant General, PLTGEN'),
 ]
-
-P_FIELDS = [
+NAME_FIELDS = [
 	'f_name',
 	'l_name',
 	'm_name',
 	'suffix',
-	# 'age',
-	# 'address',
-	# 'civil_status',
-	# 'date_profiled',
-	# 'rank',
-	# 'date_assigned',
-	# 'date_relieved',
-	# 'designation'
 ]
 
-I_FIELDS = [
-	'f_name',
-	'l_name',
-	'm_name',
-	'suffix',
-	'age',
-	# 'address',
-	# 'civil_status',
-	# 'date_profiled',
-	# 'date_arrested',
-	# 'date_committed',
-	# 'crime_violated'
-]
+
 
 class Profile(models.Model):
-	RANKS = RANKS
+	date_profiled	= models.DateTimeField(default=timezone.now)
+	is_archived		= models.BooleanField(default=False)
 
-	# Images
 	thumbnail = models.FileField(
 		upload_to	= "thumbnails",
 		default 	= "default.png",
@@ -73,24 +51,21 @@ class Profile(models.Model):
 		upload_to	= "raw_images",
 		default 	= "default.png",
 	)
-
 	embedding = models.FileField(
-		upload_to="embeddings",
-		blank=True,
+		upload_to	="embeddings",
+		blank		=True,
 		null=True,
 	)
-
 
 	# Common details
 	f_name			= models.CharField(max_length=30)
 	m_name			= models.CharField(max_length=20, blank=True, default=None)
 	l_name			= models.CharField(max_length=20)
 	suffix			= models.CharField(max_length=10, blank=True, default=None)
+
 	age 			= models.IntegerField()
 	address			= models.CharField(max_length=250)
 	civil_status	= models.CharField(blank=True, max_length=20, choices=CIVIL_STATUS_CHOICES, default='single')
-	date_profiled	= models.DateTimeField(default=timezone.now)
-	is_archived		= models.BooleanField(default=False)
 
 	class Meta:
 		abstract = True
@@ -98,16 +73,15 @@ class Profile(models.Model):
 class Personnel(Profile):
 	p_type			= models.CharField(max_length=10, default="personnel")
 	rank			= models.CharField(max_length=10, choices=RANKS, default='pat')
-	date_assigned	= models.DateTimeField()
+	date_assigned	= models.DateTimeField(default=timezone.now)
 	date_relieved	= models.DateTimeField(blank=True, null=True)
 	designation		= models.CharField(max_length=250)
 
 	class Meta:
-		# Makes the entire row with specified fields unique.
 		constraints = [
 			UniqueConstraint(
-				fields = P_FIELDS,
-				name="unique-personnel-profile"
+				fields = NAME_FIELDS,
+				name	= "unique-personnel-profile"
 			)
 		]
 
@@ -115,9 +89,8 @@ class Personnel(Profile):
 		return get_full_name(self) + "'s Profile"
 
 class Inmate(Profile):
-	fields 			= I_FIELDS
 	p_type 			= models.CharField(max_length=10, default="inmate")
-	date_arrested	= models.DateTimeField()
+	date_arrested	= models.DateTimeField(default=timezone.now)
 	date_committed	= models.DateTimeField(null=True, blank=True)
 	crime_violated	= models.CharField(max_length=250)
 
@@ -125,7 +98,7 @@ class Inmate(Profile):
 		# Makes the entire row with specified fields unique.
 		constraints = [
 			UniqueConstraint(
-				fields = I_FIELDS,
+				fields = NAME_FIELDS,
 				name="unique-inmate-profile"
 			)
 		]
@@ -133,59 +106,28 @@ class Inmate(Profile):
 	def __str__(self):
 		return get_full_name(self) + "'s Profile"
 
-class Template(models.Model):
-	template_name = models.CharField(max_length=20)
-	template_file = models.FileField(upload_to="templates")
-
-	def __str__(self):
-		return self.template_name
-
-	def __repr__(self):
-		return self.template_name
 
 
 
 
 
 
+# P_FIELDS = [
+# 	'age',
+# 	'address',
+# 	'civil_status',
+# 	'date_profiled',
+# 	'rank',
+# 	'date_assigned',
+# 	'date_relieved',
+# 	'designation'
+# ]
 
-# from django.db.models.constraints import UniqueConstraint
-# from django.contrib.auth.models import User
-# from django.utils import timezone
-# from django.db import models
-
-# from app.utils import get_full_name
-# from profiles.models import (
-# 	Personnel,
-# 	Inmate
-# )
-
-
-# class Archive(models.Model):
-# 	# Common details
-# 	archive_date 	= models.DateField(default=timezone.now)
-# 	archive_by		= models.ForeignKey(User, null=True, on_delete=models.SET_NULL, default=None)
-
-# 	class Meta:
-# 		abstract = True
-
-
-# class ArchivePersonnel(Archive):
-# 	profile = models.OneToOneField(
-# 		Personnel, 
-# 		on_delete = models.CASCADE,
-# 		related_name='archivepersonnel'
-# 	)
-
-# 	def __str__(self):
-# 		return get_full_name(self.profile) + "'s Archived Profile"
-
-# class ArchiveInmate(Archive):
-# 	profile = models.OneToOneField(
-# 		Inmate, 
-# 		on_delete = models.CASCADE,
-# 		related_name='archiveinmate'
-# 	)
-
-# 	def __str__(self):
-# 		return get_full_name(self.profile) + "'s Archived Profile"
+# I_FIELDS = [
+# 	'address',
+# 	'civil_status',
+# 	'date_profiled',
+# 	'date_arrested',
+# 	'date_committed',
+# 	'crime_violated'
+# ]

@@ -12,87 +12,40 @@
 		OPeraTE{% if page_title %} | {{ page_title }}{% endif %}
 	</title>
 </head>
-			
+
 <body>
 	<header class="{{ p_type }}">
 		<div class="title">
 			<img src="{% static 'images/operate.png' %}" alt="operate.png">
-			OPeraTE
-		</div>	
-			
-			
+			<span>OPeraTE</span>
+		</div>
 
 		<!-- facesearch by  -->
-		<a 
-			class="
-				btn 
-				btn-light
-
-				{% if 'facesearch' in active %}
-					active-dropdown
-				{% endif %}
-			" 
-			href="{% url 'facesearch' %}">
+		<a class="btn btn-light" href="">
 			<span class="material-symbols-outlined">account_box</span>
 			<span>FaceSearch</span>
 		</a>
-			
 		
 		<nav>
 			<!-- home -->
-			<a
-				class ="
-					btn 
-					btn-{{ p_type }} 
-					
-					{% if active in 'home' %}
-						active
-					{% endif%}
-				"
-				href = "{% url 'operate-index' %}">
+			<a class="btn btn-{{ p_type }}" href = "{% url 'operate-index' %}">
 				<span class="material-symbols-outlined">home</span>
 				<span>Home</span>
 			</a>
-			
-			
-			
 
 			<!-- profiles -->
 			<div class="dropdown">
-				<button class="
-					btn 
-					btn-{{ p_type }}
-
-					{% if 'profiles' in active %}
-						active
-					{% endif %}
-				">
+				<button class="btn">
 					<span class="material-symbols-outlined">Group</span>
 					<span>Profiles</span>
 				</button>
 
 				<div class="content">
-					<a 
-						class="
-							btn
-
-							{% if 'personnels' not in active and 'profiles' in active %}
-								active-dropdown
-							{% endif %}
-						"
-						href="{% url 'profiles-personnels' %}">
+					<a class="btn" href="{% url 'profiles-all-personnel'%}">
 						<span class="material-symbols-outlined">local_police</span>
 						<span>Personnel</span>
 					</a>
-					<a 
-						class="
-							btn
-
-							{% if 'inmates' not in active and 'profiles' in active %}
-								active-dropdown
-							{% endif %}
-						"
-						href="{% url 'profiles-inmates' %}">
+					<a class="btn" href="{% url 'profiles-all-inmate'%}">
 						<span class="material-symbols-outlined">person_alert</span>
 						<span>Inmates</span>
 					</a>
@@ -102,93 +55,39 @@
 
 
 			<!-- archives -->
-			<div class="dropdown">
-				<button 
-					class="
-						btn 
-						btn-{{ p_type }}
-
-						{% if 'archive' in active %}
-							active
-						{% endif %}
-					">
-					<span class="material-symbols-outlined">
-						files
-					</span>
-					Archives
+			<!-- <div class="dropdown">
+				<button class="btn  btn-{{ p_type }}">
+					<span class="material-symbols-outlined">files</span>
+					<span>Archives</span>
 				</button>
 
 				<div class="content">
-					<a 
-						class="
-							btn
-
-							{% if 'personnel' not in active and 'archive' in active%}
-								active-dropdown
-							{% endif %}
-						" 
-						href="{% url 'archives-personnels' %}">
-						<span class="material-symbols-outlined">
-							local_police
-						</span>
-						Personnel
+					<a class="btn" href="">
+						<span class="material-symbols-outlined">local_police</span>
+						<span>Personnel</span>
 					</a>
-					<a 
-						class="
-							btn
-							
-							{% if 'inmate' not in active and 'archive' in active %}
-								active-dropdown
-							{% endif %}
-						" 
-						href="{% url 'archives-inmates' %}">
-						<span class="material-symbols-outlined">
-							person_alert
-						</span>
-						Inmates
+					<a class="btn" href="">
+						<span class="material-symbols-outlined">person_alert</span>
+						<span>Inmates</span>
 					</a>
 				</div>
-			</div>
-
+			</div> -->
 
 
 			<!-- add -->
 			<div class="dropdown">
 				<button 
-					class="
-						btn 
-						btn-{{ p_type }}
-							
-						{% if 'add' in active %}
-							active
-						{% endif %}
-					">
+					class="btn  btn-{{ p_type }}">
 					<span class="material-symbols-outlined">add_circle</span>
 					<span>Add</span>
 				</button>
 
 				<div class="content">
-					<a
-						class="
-							btn
-							
-							{% if 'personnel' not in active and 'add' in active %}
-								active-dropdown
-							{% endif %}
-						" 
-						href="{% url 'profile-add' 'personnel' %}?prev={{request.path}}" title="Add new profile">
+					<a class="btn" href="" title="Add new profile">
 						<span class="material-symbols-outlined">encrypted_add_circle</span>
 						<span>Personnel</span>
 					</a>
-					<a
-						class="
-							btn
-							
-							{% if 'inmate' not in active and 'add' in active %}
-								active-dropdown
-							{% endif %}
-						" 
-						href="{% url 'profile-add' 'inmate' %}?prev={{request.path}}" title="Add new profile">
+					<a class="btn" href="" title="Add new profile">
 						<span class="material-symbols-outlined">person_add</span>
 						<span>Inmate</span>
 					</a>
@@ -208,24 +107,19 @@
 
 			<div class="content">
 				<a class="btn" href="{% url 'operate-settings' %}">
-					<span class="material-symbols-outlined">
-						settings
-					</span>
-					Settings
+					<span class="material-symbols-outlined">settings</span>
+					<span>Settings</span>
 				</a>
 				<a class="btn" href="/admin/">
-					<span class="material-symbols-outlined">
-						admin_panel_settings
-					</span>
-					Admin
+					<span class="material-symbols-outlined">admin_panel_settings</span>
+					<span>Admin</span>
 				</a>
-				<form action="{% url 'user-logout' %}" method="POST">
+				<form action="" method="POST">
 					{% csrf_token %}
+
 					<button class="btn" type="submit">
-						<span class="material-symbols-outlined">
-							logout
-						</span>
-						Logout
+						<span class="material-symbols-outlined">logout</span>
+						<span>Logout</span>
 					</button>
 				</form>
 			</div>
@@ -245,19 +139,22 @@
 		<div class="footer-wrapper">
 			<div class="header">
 				<img src="{% static 'images/operate.png' %}" alt="operate.png">
+
 				<div class="title">
 					<h2>OPeraTE</h2>
 					<p><em>(Optimized Personnnel and Inmate Tracking Efficiency)</em></p>
 					<h3>for PNP-Clarin Through Facial Recognition</h3>
 				</div>
 			</div>
+
 			<div class="body">
 				<div class="section-1">
 					<h4>Hilario, Mark Ryan I.</h4>
+
 					<div class="contact-list">
-						<address class="contact">
+						<div class="contact">
 							Poblacion Sur, Clarin, Bohol
-						</address>
+						</div>
 						<div class="contact">
 							@hilariomarkryan3@gmail.com
 						</div>
@@ -276,9 +173,9 @@
 					<h4>Inferido, Eliezer C.</h4>
 					<div class="contact-list">
 						<div class="contact">
-							<address class="contact">
+							<div class="contact">
 								Poblacion Sur, Clarin, Bohol
-							</address>
+							</div>
 							<div class="contact">
 								eliezer.inferido@bisu.edu.ph
 							</div>
@@ -289,9 +186,9 @@
 					<h4>Melecio, Jhonlie C.</h4>
 					<div class="contact-list">
 						<div class="contact">
-							<address class="contact">
+							<div class="contact">
 								Villaflor, Clarin, Bohol
-							</address>
+							</div>
 							<div class="contact">
 								jhonlie.melecio@bisu.edu.ph
 							</div>
@@ -302,9 +199,9 @@
 					<h4>PNP-Clarin</h4>
 					<div class="contact-list">
 						<div class="contact">
-							<address class="contact">
+							<div class="contact">
 								Poblacion Norte, Clarin, Bohol
-							</address>
+							</div>
 							<div class="contact">
 							</div>
 						</div>
@@ -314,9 +211,9 @@
 					<h4>BISU-Clarin</h4>
 					<div class="contact-list">
 						<div class="contact">
-							<address class="contact">
+							<div class="contact">
 								Poblacion Norte, Clarin, Bohol
-							</address>
+							</div>
 							<div class="contact">
 							</div>
 						</div>
@@ -333,13 +230,13 @@
 
 				<div class="link-list">
 					<a href="{% url 'operate-index' %}" class="link">Home</a>
-					<a href="{% url 'facesearch' %}" class="link">FaceSearch</a>
-					<a href="{% url 'profiles-personnels' %}" class="link">Personnels</a>
-					<a href="{% url 'profiles-inmates' %}" class="link">Inmates</a>
-					<a href="{% url 'archives-personnels' %}" class="link">Archived Personnels</a>
-					<a href="{% url 'archives-inmates' %}" class="link">Archived Inmates</a>
+					<a href="" class="link">FaceSearch</a>
+					<a href="" class="link">Personnels</a>
+					<a href="" class="link">Inmates</a>
+					<a href="" class="link">Archived Personnels</a>
+					<a href="" class="link">Archived Inmates</a>
 					<a href="/admin/" class="link">Admin</a>
-					<a href="/logout/" class="link">Logout</a>
+					<a href="" class="link">Logout</a>
 				</div>
 			</div>
 		</div>

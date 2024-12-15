@@ -18,13 +18,13 @@ class AppConfig(AppConfig):
                 if not operate_setting.objects.exists():
                     
                     # Load default templates and models
-                    inmate_template     = str(list(settings.MEDIA_ROOT.glob("templates/profile_inmate_templa*.docx"))[0])
-                    personnel_template  = str(list(settings.MEDIA_ROOT.glob("templates/profile_personnel_templa*.docx"))[0])
+                    template_inmate     = str(list(settings.MEDIA_ROOT.glob("templates/profile_inmate_templa*.docx"))[0])
+                    template_personnel  = str(list(settings.MEDIA_ROOT.glob("templates/profile_personnel_templa*.docx"))[0])
                     model               = str(list(settings.MEDIA_ROOT.glob("models/*.onnx"))[0])
 
                     operate_setting.objects.create(
-                        personnel_template  = personnel_template if personnel_template else None,
-                        inmate_template     = inmate_template if inmate_template else None,
+                        template_personnel  = template_personnel if template_personnel else None,
+                        template_inmate     = template_inmate if template_inmate else None,
                         model               = model if model else None,
                     )
 

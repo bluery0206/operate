@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.conf import settings as DJANGO_SETTINGS
 from django.shortcuts import (
 	render, 
 	redirect, 
@@ -11,7 +12,7 @@ from django.utils import timezone
 from datetime import datetime
 from pathlib import Path
 
-from .models import Personnel, Inmate
+from . import models as profiles_models
 from app.utils import get_full_name, generate_docx, save_file
 
 from .forms import (
@@ -31,19 +32,16 @@ ORDER_CHOICES = [
 	['descending',"Descending"],
 	['ascending', "Ascending"],
 ]
-
 COMMON_SORT_CHOICES = [
 	['date_profiled',"Date Profiled"],
 	['l_name', "Last Name"],
 	['f_name', "First Name"],
 	['age', "Age"],
 ]
-
 PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_assigned',"Date Assigned"],
 	['date_relieved',"Date Relieved"],
 ]
-
 INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 	['date_arrested',"Date Arrested"],
 	['date_committed',"Date Committed"],
@@ -58,22 +56,20 @@ SNN_PATH	= FS_PATH.joinpath(f"snn_models")
 
 EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 RAW_PATH	= MED_PATH.joinpath(f"raw_images")
-EMB_PATH	= MED_PATH.joinpath(f"embeddings")
 
 
 
-def personnels(request):
+def all_personnel(request):
 	context = {
-		'personnels'	: Personnel.objects.exclude(archivepersonnel__isnull=False).order_by("-date_profiled"),
-		'ranks'			: [rank[0] for rank in Personnel.RANKS],
+		'page_title'	: "Personnel Profiles",
+		'active'		: 'personnels',
+		'p_type'		: 'personnel',
+		'personnels'	: profiles_models.Personnel.objects.filter(is_archived=False).order_by("-date_profiled"),
+		'ranks'			: [rank[0] for rank in profiles_models.RANKS],
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "Personnel Profiles",
-		'p_type'		: 'personnel',
-		'active'		: 'profiles personnels'
 	}
-
 
 	if request.method == "GET":
 		reset_filter		= request.GET.get("reset_filter", None)
@@ -81,7 +77,7 @@ def personnels(request):
 		search				= request.GET.get("search", "").strip()
 
 		if not reset_search and search:
-			context['personnels'] = Personnel.objects.filter(
+			context['personnels'] = profiles_models.Personnel.objects.filter(
 		        Q(f_name__icontains=search) |
 		        Q(l_name__icontains=search) |
 		        Q(m_name__icontains=search)
@@ -90,32 +86,43 @@ def personnels(request):
 			search = ""
 
 		if reset_filter:
-			designation, rank, sort_by, sort_order	= None, None, None, None
+			designation, rank, sort_by, sort_order= None, None, None, None
 		else:
 			designation	= request.GET.get("designation", "")
 			rank		= request.GET.get("rank", "")
 			sort_by		= request.GET.get("sort_by", "")
 			sort_order	= request.GET.get("sort_order", "descending")
+			state		= request.GET.get("state", "open")
 
 			designation = designation.strip()
 
-			if designation: context['personnels'] = context['personnels'].filter(designation__icontains=designation)
-			if rank: 		context['personnels'] = context['personnels'].filter(rank=rank)
+			if state:
+				context['personnels'] = context['personnels'].filter(
+					is_archived = True if state == "archived" else False
+				)
+
+			if designation:
+				context['personnels'] = context['personnels'].filter(designation__icontains=designation)
+
+			if rank: 		
+				context['personnels'] = context['personnels'].filter(rank=rank)
+
 			if sort_by:
 				sort = "-" + sort_by if sort_order == "descending" else sort_by
 				context['personnels'] = context['personnels'].order_by(sort)
 
 			context['filters'] = {
-				'designation': designation,
-				'rank': rank,
-				'sort_by': sort_by,
-				'sort_order': sort_order,
+				'state'			: state,
+				'designation'	: designation,
+				'rank'			: rank,
+				'sort_by'		: sort_by,
+				'sort_order'	: sort_order,
 			}
 
 		context['filters'].update({"search": search})
 	
-	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
+	page		= request.GET.get('page', 1)
+	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.objects.first().profiles_per_page)
 
 	try:
 		context['personnels'] = paginator.page(page)
@@ -126,30 +133,28 @@ def personnels(request):
 
 	context["is_paginated"] = paginator.num_pages > 1
 
-	return render(request, "profiles/personnels.html", context)
+	return render(request, "profiles/all_personnel.html", context)
 
 
 
-
-
-def inmates(request):
+def all_inmate(request):
 	context = {
-		'inmates'	: Inmate.objects.exclude(archiveinmate__isnull=False).order_by("-date_profiled"),
+		'page_title'	: "Inmate Profiles",
+		'active'		: 'inmates',
+		'p_type'		: 'inmate',
+		'inmates'		: profiles_models.Inmate.objects.filter(is_archived=False).order_by("-date_profiled"),
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
-		'page_title'	: "Inmate Profiles",
-		'p_type'		: 'inmate',
-		'active'		: 'profiles inmates'
 	}
 
 	if request.method == "GET":
 		reset_filter		= request.GET.get("reset_filter", "")
 		reset_search		= request.GET.get("reset_search", "")
-		search		= request.GET.get("search", "").strip()
+		search				= request.GET.get("search", "").strip()
 
 		if not reset_search and search:
-			context['inmates'] = Inmate.objects.filter(
+			context['inmates'] = profiles_models.Inmate.objects.filter(
 		        Q(f_name__icontains=search) |
 		        Q(l_name__icontains=search) |
 		        Q(m_name__icontains=search)
@@ -163,24 +168,31 @@ def inmates(request):
 			crime_violated	= request.GET.get("crime_violated", "")
 			sort_by			= request.GET.get("sort_by", "")
 			sort_order		= request.GET.get("sort_order", "descending")
+			state			= request.GET.get("state", "open")
 
 			crime_violated = crime_violated.strip()
 
-			if crime_violated: context['inmates'] = context['inmates'].filter(crime_violated__icontains=crime_violated)
+			if state:
+				context['inmates'] = context['inmates'].filter(
+					is_archived = True if state == "archived" else False
+				)
+
+			if crime_violated: 
+				context['inmates'] = context['inmates'].filter(crime_violated__icontains=crime_violated)
 			if sort_by:
 				sort = "-" + sort_by if sort_order == "descending" else sort_by
 				context['inmates'] = context['inmates'].order_by(sort)
 
 			context['filters'] = {
 				'crime_violated': crime_violated,
-				'sort_by': sort_by,
-				'sort_order': sort_order,
+				'sort_by'		: sort_by,
+				'sort_order'	: sort_order,
 			}
 
 		context['filters'].update({"search": search})
 
 	page		= request.GET.get('page', 1)  # Get the current page number
-	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
+	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.objects.first().profiles_per_page)
 
 	try:
 		context['inmates'] = paginator.page(page)
@@ -191,24 +203,19 @@ def inmates(request):
 
 	context["is_paginated"] = paginator.num_pages > 1
 
-	return render(request, "profiles/inmates.html", context)
-
-
-
+	return render(request, "profiles/all_inmate.html", context)
 
 
 
 def profile(request, p_type, pk):
-	p_class =  Personnel if p_type == "personnel" else Inmate
+	p_class =  profiles_models.Personnel if p_type == "personnel" else profiles_models.Inmate
 	profile =  get_object_or_404(p_class, pk=pk)
 	context = {
-		'profile'		: profile,
 		'page_title'	: profile,
+		'profile'		: profile,
 		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile.html", context)
-
-
 
 
  
@@ -217,13 +224,11 @@ def profile_add(request, p_type):
 	defset				= OPERATE_SETTINGS.objects.first()
 
 	context = {
-		'form'			: create_profile_form(),
-		'default_img'	: "../../../media/default.png",
-		'p_type'		: p_type,
 		'page_title'	: "Add Profile",
-		'camera'		: defset.default_camera,
+		'active'		: 'add ' + p_type,
 		'p_type'		: p_type,
-		'active'		: 'add ' + p_type
+		'form'			: create_profile_form(),
+		'camera'		: defset.camera,
 	}
 
 	if request.method == "POST":
@@ -249,10 +254,8 @@ def profile_add(request, p_type):
 				# Get camera
 				context["camera"] = int(request.POST.get("camera", 0))
 
-				# Take picture
-				is_image_taken, raw_image = take_image(context["camera"], defset.crop_camera, defset.default_crop_size)
+				is_image_taken, raw_image = take_image(context["camera"], defset.crop_camera, defset.crop_size)
 
-				# If not then, return
 				if not is_image_taken:
 					instance.delete()
 					return render(request, "profiles/profile_add.html", context)
@@ -273,7 +276,7 @@ def profile_add(request, p_type):
 
 			is_image_saved = save_image(thumbnail_save_path, resized_image)	
 
-			is_image_saved, emb_name, inp_emb = save_embedding(raw_image_save_path)
+			is_image_saved, emb_name, _ = save_embedding(raw_image_save_path)
 
 			if not is_image_saved:
 				instance.delete()
