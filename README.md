@@ -1,6 +1,6 @@
 ## Install
 1. Open cmd
-2. Clone the repo: `git clone https://github.com/bluery0206/operate.git'.
+2. Clone the repo: `git clone https://github.com/bluery0206/operate.git`.
 3. Change directory `cd PATH\operate` after download. Change `PATH` to actual full path to `operate` folder.
 4. Create python environment `py -m venv venv`
 5. Activate environment `venv\scripts\activate`
