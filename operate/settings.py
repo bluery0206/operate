@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'user',
     'profiles',
     'archives',
-    'facesearch',
 
     'django_password_eye',
     'django_cleanup.apps.CleanupConfig',

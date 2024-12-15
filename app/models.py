@@ -1,5 +1,8 @@
 from django.db import models
 
+class SearchImage(models.Model):
+	image = models.FileField()
+      
 class Setting(models.Model):
     # Pagination
     profiles_per_page   = models.IntegerField(default = 20)
@@ -9,13 +12,13 @@ class Setting(models.Model):
     camera              = models.IntegerField(default = 0)
     crop_size           = models.IntegerField(default = 200)
     crop_camera         = models.CharField(
-                            default='1',
-                            choices=[
-                                ('0', 'Do not crop'),
-                                ('1', 'Crop'),
-                            ], 
-                            max_length=1,
-                        )
+                                default='1',
+                                choices=[
+                                    ('0', 'Do not crop'),
+                                    ('1', 'Crop'),
+                                ],
+                                max_length=1,
+                            )
 
     # Search
     threshold   = models.FloatField(default = 1.0)

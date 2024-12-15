@@ -1,0 +1,197 @@
+{% extends 'app/base_headered.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<div class="facesearch">
+		<div class="forms">
+			<h2>Facesearch</h2>	
+
+			<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
+
+			<!-- <div class="form">
+				<div class="fields">
+					<div class="field">
+						<label for="threshold">Threshold: </label>
+						<input class="form-control form-control-secondary" type="number" id="threshold_input" value="{{ threshold }}" min="0.1" max="100" step="0.1">
+						<small class="muted"><em>The Confidence Level (CL) is relative to the threshold.</em></small>
+					</div>
+					<div class="field">
+						<label for="embedding">Search method: </label>
+						<select name="search_method_input" id="search_method_input" class="form-control form-control-secondary">
+							<option value="1" {% if search_method == 1 %}selected{% endif %}>Embedding (Faster)</option>
+							<option value="0" {% if search_method == 0 %}selected{% endif %}>Images</option>
+						</select>
+					</div>
+				</div>
+			</div> -->
+
+			<form class="form" method="POST" enctype="multipart/form-data">
+				<h3>Upload an image</h3>
+		
+				{% csrf_token %}
+		
+				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				<input type="hidden" name="search_method" id="search_method1" value="{{ search_method }}">
+				
+				<div class="fields">
+					<div class="field">
+						{{ form.image }}
+					</div>
+				</div>
+		
+				<button class="btn btn-primary center" type="submit" name="option_upload" id="option_upload" value="1">
+					<span class="material-symbols-outlined">upload_2</span>
+					<span>Upload and search</span>
+				</button>
+			</form>
+	
+			<form class="form" method="POST">
+				<h3>Capture image</h3>
+	
+				{% csrf_token %}
+	
+				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
+				<input type="hidden" name="search_method" id="search_method2" value="{{ search_method }}">
+	
+				<button class="btn btn-secondary center" name="option_camera" value="1" type="submit">
+					<span class="material-symbols-outlined">camera</span>
+					<span>Take a picture and search</span>
+				</button>
+				
+				<div class="fields">
+					<div class="field">
+						<label for="camera">Camera: </label>
+						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+						<small class="muted"><em>Change camera number if webcam doesn't show up</em></small>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="card-list">
+			{% if profiles %}
+				{% for dist, profile in profiles %}
+					<div class="card">
+						<div class="{{ profile.p_type }} header">
+							<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
+						</div>
+
+						<div class="picture">
+							<div class="button-overlay">
+								<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+									<span class="material-symbols-outlined">open_in_new</span>
+									<span>View profile</span>
+								</a>
+								<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+									<span class="material-symbols-outlined">edit</span>
+									<span>Edit profile</span>
+								</a>
+								{% if profile.archivepersonnel %}
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">unarchive</span>
+										<span>Unarchive</span>
+									</a>
+								{% elif profile.archiveinmate %}
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">unarchive</span>
+										<span>Unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-add' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+										<span class="material-symbols-outlined">archive</span>
+										<span>Archive profile</span>
+									</a>
+								{% endif %}
+								<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+									<span class="material-symbols-outlined">delete</span>
+									<span>Delete profile</span>
+								</a>
+							</div>
+
+							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+						</div>
+
+
+						<div class="details">
+							<div class="name">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s home address">
+								Address: {{ profile.address|title }}
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+								<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+							</div>
+							{% if profile.p_type == 'personnel' %}
+								<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
+									<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s relieved date">
+									<span>Relieved: {{ profile.date_relieved|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+									<span>Designation: {{ profile.designation|title }}</span>
+								</div>
+							{% else %}
+								<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
+									<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s committed date">
+									<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+									<span>Violation: {{ profile.crime_violated }}</span>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<h2>No similar faces found.</h2>
+			{% endif %}
+		</div>
+	</div>
+
+    <script>
+		// Change the value of hidden threshol on change
+        document.addEventListener("DOMContentLoaded", function() {
+            const threshold_input	= document.getElementById("threshold_input");
+            const threshold1		= document.getElementById("threshold1");
+            const threshold2		= document.getElementById("threshold2");
+
+            const search_method_input	= document.getElementById("search_method_input");
+            const search_method1		= document.getElementById("search_method1");
+            const search_method2		= document.getElementById("search_method2");
+
+            threshold_input.addEventListener("change", function(event) {
+				threshold1.value = threshold_input.value;
+				threshold2.value = threshold_input.value;
+            });
+
+            search_method_input.addEventListener("change", function(event) {
+				search_method1.value = search_method_input.value;
+				search_method2.value = search_method_input.value;
+            });
+        });
+
+		
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const fileInput = document.getElementById("{{ form.image.id_for_label }}"); // Use the form field's ID
+            const imagePreview = document.getElementById("imagePreview");
+
+            fileInput.addEventListener("change", function(event) {
+                // Check if a file is selected
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result; // Set preview image source
+                        imagePreview.style.display = 'block'; // Make the image visible
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
+                }
+            });
+        });
+    </script>
+
+{% endblock content %}

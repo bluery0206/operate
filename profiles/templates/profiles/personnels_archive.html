@@ -1,0 +1,201 @@
+{% extends 'app/base_headered.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<h2>Archived Personnel Profiles</h2>
+
+	<div class="personnel filter-bar">
+		<!-- Search by text -->
+		<form method="GET" class="search-form">
+			<input class="form-control form-control-secondary" type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}" title="Search">
+			
+			<!-- Keeping filter options because initiating a new search will reset the whole page -->
+			<input type="hidden" name="designation" value="{{ filters.designation }}">
+			<input type="hidden" name="rank" 		value="{{ filters.rank }}">
+			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+			<input type="hidden" name="sort_by" 	value="{{ filters.sort_by }}">
+			<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+
+			<div class="actions">
+				<button class="btn" type="submit" title="Search">
+					<span class="material-symbols-outlined">search</span>
+				</button>
+				<button class="btn" type="submit" name="reset_search" title="Reset search" value="reset_search">
+					<span class="material-symbols-outlined">search_off</span>
+				</button>
+			</div>
+		</form>
+
+		<!-- Filter -->
+		<form method="GET" class="filter-form">
+
+			<!-- keeping the search value in here to preserve it when resetting filters -->
+			<input type="hidden" name="search" value="{{ filters.search }}">
+
+			<input class="form-control form-control-secondary" type="search" name="designation" placeholder="Designation" value="{{ filters.designation }}">
+			
+			<select class="form-control form-control-secondary" name="rank" title="Filter by rank">
+				<option class="option_title"  value="">Ranks</option>
+				{% if ranks %}
+					{% for rank in ranks%}
+						<option value="{{ rank|lower }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank|upper }}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
+			
+			<select class="form-control form-control-secondary" name="sort_by" title="Sort by">
+				<option class="option_title" value="">Sort by</option>
+				{% if sort_choices %}
+					{% for pair in sort_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
+			
+			<select class="form-control form-control-secondary" name="sort_order" id="sort_order" title="Sort order">
+				{% if order_choices %}
+					{% for pair in order_choices %}
+						<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
+					{% endfor %}
+				{% endif %}
+			</select>
+
+			<button class="form-control form-control-secondary" type="submit" title="Apply filter">
+				<span class="material-symbols-outlined">filter_alt</span>
+			</button>
+			
+			<button class="form-control form-control-secondary" type="submit" name="reset_filter" title="Reset filter" value="reset_filter">
+				<span class="material-symbols-outlined">filter_alt_off</span>
+			</button>
+		</form>
+
+		<!-- Actions -->
+		<div class="dropdown">
+			<button class="btn btn-outline-light">
+				<span class="material-symbols-outlined">more_vert</span>
+			</button>
+
+			<div class="content">
+				<a class="btn" href="{% url 'archive-remove-all' 'personnel' %}?prev={{request.path}}">
+					<span class="material-symbols-outlined">unarchive</span>
+					<span>Unarchive all</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+ 
+
+	{% if is_paginated %}
+		<div class="pagination left">
+			<span class="page-list">
+				{% if personnels.has_previous %}
+					<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in personnels.paginator.page_range %}
+					{% if personnels.number == num %}
+						<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
+						<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if personnels.has_next %}
+					<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
+ 
+
+
+	<div class="card-list">
+		{% if personnels %}
+			{% for archive in personnels %}
+				<div class="card">
+					<div class="picture">
+						<div class="button-overlay">
+							<a class="btn btn-transparent-primary" href="{% url 'profile' archive.profile.p_type archive.profile.pk %}" title="Open profile in detail">
+								<span class="material-symbols-outlined">open_in_new</span>
+								<span>View profile</span>
+							</a>
+							<a class="btn btn-transparent-secondary" href="{% url 'profile-update' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Edit profile">
+								<span class="material-symbols-outlined">edit</span>
+								<span>Edit profile</span>
+							</a>
+							<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' archive.profile.p_type archive.pk %}?prev={{request.path}}" title="Add profile to archives">
+								<span class="material-symbols-outlined">archive</span>
+								<span>Unarchive profile</span>
+							</a>
+							<a class="btn btn-transparent-danger" href="{% url 'profile-delete' archive.profile.p_type archive.profile.pk %}?prev={{request.path}}" title="Add profile to archives">
+								<span class="material-symbols-outlined">archive</span>
+								<span>Delete profile</span>
+							</a>
+						</div>
+
+						<img src="{{ archive.profile.thumbnail.url }}" alt="{{ archive.profile|full_name }}'s profile picture">
+					</div>
+
+					<div class="details">
+						<div class="name detail">{{ archive.profile.rank|upper }} {{ archive.profile|full_name }}</div>
+						<div class="muted detail" title="{{ archive.profile|full_name }}'s home address">
+							<span>Address: {{ archive.profile.address|title }}</span>
+						</div>
+						<div class="muted detail" title="{{ archive.profile|full_name }}'s profiled date">
+							<span>Profiled: {{ archive.profile.date_profiled|date:"M j, Y" }}</span>
+						</div>
+						<div class="muted detail" title="{{ archive.profile|full_name }}'s assigned date">
+							<span>Assigned: {{ archive.profile.date_assigned|date:"M j, Y" }}</span>
+						</div>
+						<div class="muted detail" title="{{ archive.profile|full_name }}'s designation">
+							<span>Designation: {{ archive.profile.designation }}</span>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<h2>There are no personnels archived.</h2>
+		{% endif %}
+	</div>
+
+
+	
+	{% if is_paginated %}
+		<div class="pagination right">
+			<span class="page-list">
+				{% if personnels.has_previous %}
+					<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
+					<button class="btn btn-outline-secondary" disabled>Previous</button>
+				{% endif %}
+
+				{% for num in personnels.paginator.page_range %}
+					{% if personnels.number == num %}
+						<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+					{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
+						<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if personnels.has_next %}
+					<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
+					<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+				{% else %}
+					<button class="btn btn-outline-secondary" disabled>Next</button>
+					<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+				{% endif %}
+			</span>
+		</div>
+	{% endif %}
+{% endblock content %}

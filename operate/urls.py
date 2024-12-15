@@ -26,7 +26,6 @@ urlpatterns = [
     path('user/', include("user.urls")),
     path('profiles/', include("profiles.urls")),
     path('archives/', include("archives.urls")),
-    path('facesearch/', include("facesearch.urls")),
 ]
 
 if settings.DEBUG:
