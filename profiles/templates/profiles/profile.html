@@ -43,6 +43,10 @@
 							<span class="material-symbols-outlined">download</span>
 							<span>Download (.docx)</span>
 						</a>
+						<a class="btn" href="{% url 'profile-pdf-download' profile.p_type profile.pk %}">
+							<span class="material-symbols-outlined">picture_as_pdf</span>
+							<span>Download (.pfd)</span>
+						</a>
 						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
 							<span class="material-symbols-outlined">delete</span>
 							<span>Delete</span>

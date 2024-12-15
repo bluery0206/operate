@@ -22,7 +22,7 @@ from .forms import (
 )
 from facesearch.utils import *
 
-
+from docx2pdf import convert
 
 from settings.views import OperateSetting
 
@@ -450,7 +450,50 @@ def profile_docx_download(_, p_type, pk):
 		fields 			= fields, 
 		data 			= data
 	)
-
+	print(f"{file_name=}")
+	print(f"{save_path=}")
 	response = save_docx(file_name, save_path)
 	
+	return response
+
+
+def profile_pdf_download(_, p_type, pk):
+	p_class, template = [Personnel, OperateSetting.objects.first().personnel_template] if p_type == "personnel" else [Inmate, OperateSetting.objects.first().inmate_template]
+
+	profile		= p_class.objects.get(pk=pk)
+
+	fields = [field.name for field in profile._meta.get_fields()]
+	fields.append("full_name")
+	fields = [f"[[{field}]]" for field in fields]
+
+	# print(fields)
+	
+	data = {field.name: getattr(profile, field.name, None) for field in profile._meta.get_fields()}
+	data["full_name"] = get_full_name(profile)
+
+	time_format = "%B %d, %Y"
+
+	for key, value in data.items():
+		if "date" in key and value:
+			data[key] = datetime.fromisoformat(str(data[key])).strftime(time_format).upper()
+		elif type(value) == str:
+			data[key] = value.upper()
+
+	data = [value for key, value in data.items()]
+	print(f"{data=}")
+
+	file_name, docx_path = generate_docx(
+		template_path	= template.path, 
+		image_path		= profile.raw_image.path, 
+		fields 			= fields, 
+		data 			= data
+	)
+
+	pdf_path = str(docx_path).split(".")[-2] + ".pdf"
+	file_name = Path(pdf_path).name
+	print(f"{docx_path=}")
+	print(f"{file_name=}")
+	convert(docx_path, pdf_path)
+	
+	response = save_docx(file_name, Path(pdf_path))
 	return response
