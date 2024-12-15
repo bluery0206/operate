@@ -1,0 +1,113 @@
+{% extends 'app/base_headered.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<div class="new_profiles">
+		<!-- Personnel -->
+		{% if personnels %}
+			<div class="card-list-new">
+				<h2>Newly added personnels</h2>
+
+				{% for profile in personnels %}
+					<div class="card-new">
+						<div class="personnel header">
+							<h4 class="title">
+								<span class="material-symbols-outlined text-white">schedule</span>
+								<span class="text-white">{{ profile.date_profiled }}</span>
+							</h4>
+
+							<div class="buttons">
+								<a class="btn btn-outline-light" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+									<span class="material-symbols-outlined">open_in_new</span>
+									<span>View profile</span>
+								</a>
+							</div>
+						</div>
+
+						<div class="body">
+							<div class="picture">
+								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+							</div>
+	
+	
+							<div class="details">
+								<div class="name detail">{{ profile.rank|upper }} {{ profile|full_name }}</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s home address">
+									<span>Address: {{ profile.address|title }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+									<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
+									<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s relieved date">
+									<span>Relieved: {{ profile.date_relieved|date:"M j, Y" }}</span>
+								</div>
+								<div class="muted detail" title="{{ profile|full_name }}'s designation">
+									<span>Designation: {{ profile.designation }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>		
+		{% else %}
+			<h2>There are no personnels profiled.</h2>
+		{% endif %}
+
+		<!-- Inmates -->
+		{% if inmates %}
+			<div class="card-list-new">
+				<h2>Newly added inmates</h2>
+
+				{% for profile in inmates %}
+				<div class="card-new">
+					<div class="inmate header">
+						<h4 class="title">
+							<span class="material-symbols-outlined text-white">schedule</span>
+							<span class="text-white">{{ profile.date_profiled }}</span>
+						</h4>
+
+						<div class="buttons">
+							<a class="btn btn-outline-light" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+								<span class="material-symbols-outlined">open_in_new</span>
+								<span>View profile</span>
+							</a>
+						</div>
+					</div>
+
+					<div class="body">
+						<div class="picture">
+							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+						</div>
+
+
+						<div class="details">
+							<div class="name">{{ profile|full_name }}</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s home address">
+								Address: {{ profile.address|title }}
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
+								<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
+								<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s committed date">
+								<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
+							</div>
+							<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
+								<span>Violation: {{ profile.crime_violated }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{% endfor %}
+			</div>
+		{% else %}
+			<h2>There are no inmates profiled.</h2>
+		{% endif %}
+	</div>
+{% endblock content %}
