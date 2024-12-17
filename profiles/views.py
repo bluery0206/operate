@@ -442,7 +442,6 @@ def profile_docx_download(_, p_type, pk):
 			data[key] = value.upper()
 
 	data = [value for key, value in data.items()]
-	print(f"{data=}")
 
 	file_name, save_path = generate_docx(
 		template_path	= template.path, 
@@ -492,8 +491,8 @@ def profile_pdf_download(_, p_type, pk):
 	pdf_path = Path(str(docx_path).split(".")[-2] + ".pdf")
 	file_name = pdf_path.name
 	
-	# print(f"{docx_path=}")
-	# print(f"{file_name=}")
+	print(f"{docx_path=}")
+	print(f"{file_name=}")
 	
 	convert(docx_path, pdf_path)
 	

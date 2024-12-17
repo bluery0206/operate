@@ -3,10 +3,7 @@ import string
 from docx.shared import Inches
 from docx import Document
 from pathlib import Path
-
-cwd_path = Path().cwd()
-media_path = cwd_path.joinpath("media")
-outputs_path = media_path.joinpath("outputs")
+from django.conf import settings
 
 def get_full_name(profile:object, m_initial:bool=True):
 	full_name = profile.l_name
@@ -66,7 +63,7 @@ def generate_docx(template_path, image_path, fields, data):
 	if "[[rank]]" in fields:
 		file_name	= f"{format_text(data[-5])}_{file_name}"
 
-	save_path	= outputs_path.joinpath(file_name)
+	save_path	= settings.MEDIA_ROOT.joinpath(file_name)
 	doc.save(save_path)
 
 	return [file_name, save_path]
