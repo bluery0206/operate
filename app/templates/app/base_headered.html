@@ -51,29 +51,9 @@
 					</a>
 				</div>
 			</div>
+
+
 			
-
-
-			<!-- archives -->
-			<!-- <div class="dropdown">
-				<button class="btn  btn-{{ p_type }}">
-					<span class="material-symbols-outlined">files</span>
-					<span>Archives</span>
-				</button>
-
-				<div class="content">
-					<a class="btn" href="">
-						<span class="material-symbols-outlined">local_police</span>
-						<span>Personnel</span>
-					</a>
-					<a class="btn" href="">
-						<span class="material-symbols-outlined">person_alert</span>
-						<span>Inmates</span>
-					</a>
-				</div>
-			</div> -->
-
-
 			<!-- add -->
 			<div class="dropdown">
 				<button 
@@ -83,19 +63,19 @@
 				</button>
 
 				<div class="content">
-					<a class="btn" href="" title="Add new profile">
+					<a class="btn" href="{% url 'profile-add' 'personnel' %}" title="Add new profile">
 						<span class="material-symbols-outlined">encrypted_add_circle</span>
 						<span>Personnel</span>
 					</a>
-					<a class="btn" href="" title="Add new profile">
+					<a class="btn" href="{% url 'profile-add' 'inmate' %}" title="Add new profile">
 						<span class="material-symbols-outlined">person_add</span>
 						<span>Inmate</span>
 					</a>
 				</div>
 			</div>
 		</nav>
-			
-			
+
+
 
 		<!-- ser action -->
 		<div class="dropdown">
@@ -114,7 +94,7 @@
 					<span class="material-symbols-outlined">admin_panel_settings</span>
 					<span>Admin</span>
 				</a>
-				<form action="" method="POST">
+				<form action="{% url 'user-logout' %}" method="POST">
 					{% csrf_token %}
 
 					<button class="btn" type="submit">
