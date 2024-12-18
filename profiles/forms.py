@@ -1,10 +1,7 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from .models import (
-	Personnel, 
-	Inmate,
-)
+from . import models
 
 
 
@@ -103,43 +100,28 @@ I_FIELDS = COMMON_FIELDS + [
 	'crime_violated',
 ]
 
-VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
+IMG_VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
 
 
 
-class CreatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(validators=VALIDATOR)
+class PersonnelForm(forms.ModelForm):
+	raw_image = forms.FileField(validators=IMG_VALIDATOR)
 
 	class Meta:
-		model 	= Personnel
+		model 	= models.Personnel
 		fields 	= P_FIELDS
 		widgets = WIDGETS
 
-class UpdatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(validators=VALIDATOR)
-	
-	class Meta:
-		model 	= Personnel
-		fields 	= P_FIELDS
-		widgets = WIDGETS
-
-class CreateInmate(forms.ModelForm):
+class InmateForm(forms.ModelForm):
 	raw_image = forms.FileField(
-		validators 			= VALIDATOR,
+		validators 			= IMG_VALIDATOR,
 		allow_empty_file	= True,
-		required			=False
+		required			= False
 	)
 
 	class Meta:
-		model 	= Inmate
+		model 	= models.Inmate
 		fields	= I_FIELDS
 		widgets = WIDGETS
 
-class UpdateInmate(forms.ModelForm):
-	raw_image = forms.FileField(validators=VALIDATOR)
-	
-	class Meta:
-		model 	= Inmate
-		fields 	= I_FIELDS
-		widgets = WIDGETS
-	
+

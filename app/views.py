@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.conf import settings as DJANGO_SETTINGS
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
 
@@ -18,9 +19,10 @@ from profiles.models import (
 
 OPERATE_SETTINGS = app_models.Setting
 
-FORM_DEFAULT_SETTINGS 	= app_forms.DefaultSettingsForm
-FORM_IMAGE_SEARCH		= app_forms.SearchImageForm
+DEFAULT_SETTINGS_FORM 	= app_forms.DefaultSettingsForm
 DEFAULT_SETTINGS 		= app_models.Setting
+
+IMAGE_SEARCH_FORM		= app_forms.SearchImageForm
 
 
 @login_required
@@ -41,10 +43,10 @@ def index(request):
 @login_required
 def settings(request):
 	defset 	= DEFAULT_SETTINGS.objects.first()
-	form	= FORM_DEFAULT_SETTINGS(instance=defset)
+	form	= DEFAULT_SETTINGS_FORM(instance=defset)
 
 	if request.method == "POST":
-		form = FORM_DEFAULT_SETTINGS(request.POST, request.FILES, instance=defset)
+		form = DEFAULT_SETTINGS_FORM(request.POST, request.FILES, instance=defset)
 
 		if form.is_valid():
 			if not request.FILES.get('template_inmate'):
@@ -72,6 +74,38 @@ def settings(request):
 	return render(request, "app/settings.html", context)
 
 
+
+def user_login(request):
+	login_form = app_forms.LoginForm
+
+	if request.method == "POST":
+		form = login_form(request, data=request.POST)
+
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+
+			user = authenticate(request, username=username, password=password)
+
+			if user is not None:
+				login(request, user)
+				return redirect('operate-index')
+			else:
+				form.add_error(None, "Invalid username or password")
+	else:
+		form = login_form()
+
+	context = {
+		'page_title'	: 'User login',
+		'title'			: 'User login',
+		'form'			: form,
+	}
+	return render(request, "app/base_public.html", context)
+
+
+
+
+
 DATABASE_PATH		= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("raw_images")
 SEARCH_IMAGE_PATH 	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("searches")
 
@@ -83,7 +117,7 @@ SEARCH_IMAGE_PATH 	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("searches")
 # 	context = {
 # 		"page_title"	: "Facesearch",
 # 		'active'		: 'facesearch',
-# 		"form"			: FORM_IMAGE_SEARCH(),
+# 		"form"			: IMAGE_SEARCH_FORM(),
 # 		"threshold"		: float(default.threshold),
 # 		"camera"		: int(default.camera),
 # 		"search_method" : int(default.search_mode),
@@ -154,36 +188,6 @@ SEARCH_IMAGE_PATH 	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("searches")
 
 
 
-
-
-# from django.shortcuts import render,redirect
-# from django.contrib.auth import authenticate, login
-# from django.contrib.auth.decorators import login_required
-
-# from .forms import LoginForm
-
-# def user_login(request):
-#     if request.method == "POST":
-#         form = LoginForm(request, data=request.POST)
-
-#         if form.is_valid():
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password')
-
-#             print(f"username: {username}, password: {password}")
-
-#             user = authenticate(request, username=username, password=password)
-
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('operate-home')
-#             else:
-#                 # Invalid credentials
-#                 form.add_error(None, "Invalid username or password")
-#     else:
-#         form = LoginForm()
-
-#     return render(request, "user/login.html", {"form": form})
 
 
 

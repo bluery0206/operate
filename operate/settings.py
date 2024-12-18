@@ -139,6 +139,24 @@ LOGIN_URL           = 'user-login'
 MEDIA_ROOT  = BASE_DIR.joinpath('media')
 MEDIA_URL   = '/media/'
 
+EMBEDDING_ROOT  = MEDIA_ROOT.joinpath("embeddings")
+MODEL_ROOT      = MEDIA_ROOT.joinpath("models")
+RAW_IMG_ROOT    = MEDIA_ROOT.joinpath("raw_images")
+TEMPLATE_ROOT   = MEDIA_ROOT.joinpath("templates")
+THUMBNAIL_ROOT  = MEDIA_ROOT.joinpath("thumbnails")
+
+directories = [
+    MEDIA_ROOT,
+    EMBEDDING_ROOT,
+    MODEL_ROOT,
+    RAW_IMG_ROOT,
+    TEMPLATE_ROOT,
+    THUMBNAIL_ROOT,
+]
+
+for dir in directories:
+    if not dir.exists():
+        dir.mkdir()
 
 # Send Email
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'

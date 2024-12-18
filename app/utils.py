@@ -16,37 +16,28 @@ import cv2
 # from profiles.models import Personnel, Inmate
 from app import models as app_model
 
-OPERATE_SETTINGS = app_model.Setting
+DJANGO_SETTINGS 	= settings
+OPERATE_SETTINGS 	= app_model.Setting
+
 INP_SIZE = 105
 
 
-CWD_PATH	= Path().cwd()
 
-FS_PATH		= CWD_PATH.joinpath("facesearch")
-MED_PATH 	= CWD_PATH.joinpath("media")
-
-SNN_PATH	= FS_PATH.joinpath(f"snn_models")
-
-EMB_PATH	= MED_PATH.joinpath(f"embeddings")
-RAW_PATH	= MED_PATH.joinpath(f"raw_images")
-
-
-
-def take_image(camera, crop_camera:int|None=None, crop_size:int|None=None):
+def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bool, np.ndarray]:
 	is_image_taken	= False
 	image 			= None
 
 	try:
-		cap	= cv2.VideoCapture(int(camera))
+		cap	= cv2.VideoCapture(camera)
 	except BrokenPipeError:
 		return [is_image_taken, image]
 
-	while cap.isOpened(): 
+	while True: 
 		try:
 			_, frame = cap.read()
 			
-			if crop_camera and crop_size:
-				frame = crop_frame_from_center(frame, crop_size)
+			if clip_camera and clip_size:
+				frame = crop_frame_from_center(frame, clip_size)
 
 			cv2.imshow('"c" to capture | "q" to exit', frame)
 
@@ -61,8 +52,6 @@ def take_image(camera, crop_camera:int|None=None, crop_size:int|None=None):
 			# Capture
 			if (cv2.waitKey(1) & 0XFF == ord('c')):
 				image = frame
-
-			if image:
 				is_image_taken 	= True
 				break
 
@@ -95,7 +84,7 @@ def save_image(image_path:str|Path, image:np.ndarray) -> bool:
 
 
 def create_thumbnail(raw_image_path:Path, thumbnail_size):
-	raw_image_name	= str(raw_image_path).split("\\")[-1]
+	raw_image_name	= raw_image_path.name
 	raw_image		= open_image(raw_image_path)
 
 	print(f"Raw Image: {"Found" if raw_image is not None else "Not found"}, {raw_image_name = }")
@@ -150,13 +139,13 @@ def save_embedding(inp_path:str|Path):
 	inp_name = str(inp_path).split("\\")[-1].split(".")[0]
 	emb_name = f'{inp_name}.npy'
 
-	np.save(EMB_PATH.joinpath(emb_name), inp_emb)
+	np.save(DJANGO_SETTINGS.EMBEDDING_ROOT.joinpath(emb_name), inp_emb)
 
-	exists = True if len(list(EMB_PATH.glob(emb_name))) > 0 else False
+	exists = True if len(list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob(emb_name))) > 0 else False
 
 	if exists:
 		is_saved = True
-		print(f"Array saved: {str(list(EMB_PATH.glob(emb_name))[0])}")
+		print(f"Array saved: {str(list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob(emb_name))[0])}")
 
 	return [is_saved, emb_name, inp_emb]
 
@@ -261,7 +250,7 @@ def save_file(file_name:str, save_path:Path):
 			content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 		)
 		response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-	
+
 	save_path.unlink()
 
 	return response

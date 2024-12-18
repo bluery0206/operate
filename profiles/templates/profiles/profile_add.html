@@ -12,7 +12,7 @@
 		</a>
 
 		<h2 class="title">Add new {{ p_type }} profile</h2>
-		<!-- {{ MEDIA_URL }}default.jpg -->
+		  
 		<div class="buttons">
 			<button class="btn btn-light" name="option_upload" value="1" type="submit">
 				<span class="material-symbols-outlined">save</span>
@@ -28,13 +28,7 @@
 
 	<div class="body">
 		<div class="picture">
-			{% if missing_image %}
-				<div class="alert alert-danger">
-					Please provide a profile image.
-				</div>
-			{% endif %}
 			<img src="{% static 'images/default.png' %}" alt="" id="imagePreview">
-		
 
 			<div class="form upload_image">
 				{% if form.raw_image.errors %}
@@ -57,13 +51,15 @@
 					<span>Take a picture and search</span>
 				</button>
 
-				<div class="fields">
-					<div class="field">
-						<label for="camera">Camera: </label>
-						<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
-						<small>(Try to change if doesn't work)</small>
+				<!--
+					<div class="fields">
+						<div class="field">
+							<label for="camera">Camera: </label>
+							<input class="form-control form-control-secondary" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+							<small>(Try to change if doesn't work)</small>
+						</div>
 					</div>
-				</div>
+				-->
 			</div>
 		</div>
 

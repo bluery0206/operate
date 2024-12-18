@@ -13,7 +13,7 @@
 			<h2 class="title">{{ profile.f_name }}'s Profile</h2>
 			
 			<div class="buttons">
-				<a class="btn btn-light-outline-{{ profile.p_type }}" href="">
+				<a class="btn btn-light-outline-{{ profile.p_type }}" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{ request.path }}">
 					<span class="material-symbols-outlined">edit</span>
 					<span>Edit Profile</span>
 				</a>
