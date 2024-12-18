@@ -540,57 +540,55 @@ def archive_remove_all(request, p_type):
 
 
 
-# def profile_docx_download(_, p_type, pk):
-# 	p_class, template = [Personnel, OPERATE_SETTINGS.objects.first().personnel_template] if p_type == "personnel" else [Inmate, OPERATE_SETTINGS.objects.first().inmate_template]
+def profile_download(_, p_type, pk, d_type):
+	personnel	= [profiles_models.Personnel, OPERATE_SETTINGS.objects.first().template_personnel]
+	inmate		= [profiles_models.Inmate, OPERATE_SETTINGS.objects.first().template_inmate]
 
-# 	profile		= p_class.objects.get(pk=pk)
+	p_class, template = personnel if p_type == "personnel" else inmate
 
-# 	fields = [field.name for field in profile._meta.get_fields()]
-# 	fields.append("full_name")
-# 	fields = [f"[[{field}]]" for field in fields]
+	profile = p_class.objects.get(pk=pk)
 
-# 	print(fields)
+	fields = [field.name for field in profile._meta.get_fields()]
+	fields.append("full_name")
+	fields = [f"[[{field.strip()}]]" for field in fields]
+
+	for field in fields:
+		print(field)
 	
-# 	data = {field.name: getattr(profile, field.name, None) for field in profile._meta.get_fields()}
-# 	data["full_name"] = get_full_name(profile)
+	data = {field.name: getattr(profile, field.name, None) for field in profile._meta.get_fields()}
+	data["full_name"] = app_utils.get_full_name(profile)
 
-# 	time_format = "%B %d, %Y"
+	time_format = "%B %d, %Y"
 
-# 	for key, value in data.items():
-# 		if "date" in key and value:
-# 			data[key] = datetime.fromisoformat(str(data[key])).strftime(time_format).upper()
-# 		elif type(value) == str:
-# 			data[key] = value.upper()
+	for key, value in data.items():
+		if "date" in key and value:
+			data[key] = datetime.fromisoformat(str(data[key])).strftime(time_format).upper()
+		elif type(value) == str:
+			data[key] = value.upper()
 
-# 	data = [value for key, value in data.items()]
-# 	print(f"{data=}")
+	data = [value for key, value in data.items()]
+	print(f"{data=}")
 
-# 	file_name, save_path = generate_docx(
-# 		template_path	= template.path, 
-# 		image_path		= profile.raw_image.path, 
-# 		fields 			= fields, 
-# 		data 			= data
-# 	)
+	file_name, docx_path = app_utils.generate_docx(
+		template_path	= template.path, 
+		image_path		= profile.raw_image.path, 
+		fields 			= fields, 
+		data 			= data
+	)
 
-# 	response = save_file(file_name, save_path)
-	
-# 	return response
+	if d_type == "pdf":
+		pdf_path = Path(str(docx_path).split(".")[-2] + ".pdf")
+		pdf_name = pdf_path.name
+		
+		convert(docx_path, pdf_path)
+		
+		Path(docx_path).unlink()
 
+		response = app_utils.save_file(pdf_name, pdf_path)
+	else:
+		response = app_utils.save_file(file_name, docx_path)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return response
 
 
 

@@ -34,9 +34,13 @@
 					<button class="btn btn-outline-light"><span class="material-symbols-outlined">more_vert</span></button>
 
 					<div class="content">
-						<a class="btn" href="">
+						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}">
 							<span class="material-symbols-outlined">download</span>
 							<span>Download (.docx)</span>
+						</a>
+						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}">
+							<span class="material-symbols-outlined">picture_as_pdf</span>
+							<span>Download (.pdf)</span>
 						</a>
 						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
 							<span class="material-symbols-outlined">delete</span>
