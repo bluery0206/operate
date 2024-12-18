@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.utils.http import urlsafe_base64_decode
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
@@ -16,12 +19,12 @@ from profiles.models import (
     Inmate
 )
 
+
+
 OPERATE_SETTINGS = app_models.Setting
 
 DEFAULT_SETTINGS_FORM 	= app_forms.DefaultSettingsForm
 DEFAULT_SETTINGS 		= app_models.Setting
-
-IMAGE_SEARCH_FORM		= app_forms.SearchImageForm
 
 
 @login_required
@@ -37,6 +40,7 @@ def index(request):
 		"inmates"		: inmates,
 	}
 	return render(request, "app/index.html", context)
+
 
 
 @login_required
@@ -99,11 +103,40 @@ def user_login(request):
 		'title'			: 'User login',
 		'form'			: form,
 	}
-	return render(request, "app/base_public.html", context)
+	return render(request, "app/user/login.html", context)
 
 
-DATABASE_PATH		= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("raw_images")
-SEARCH_IMAGE_PATH 	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("searches")
+
+def password_reset_confirm(request, uidb64, token):
+	login_form = app_forms.PasswordResetForm
+
+	try:
+		uid = urlsafe_base64_decode(uidb64).decode()
+		user = User.objects.get(pk=uid)
+	except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+		user = None
+
+	# Check if the token is valid for the user
+	if user is None or not default_token_generator.check_token(user, token):
+		return render(request, "app/user/password_reset_invalid.html")
+
+	if request.method == "POST":
+		form = login_form(user, request.POST)
+
+		if form.is_valid():
+			form.save()
+
+			return redirect('password_reset_complete')
+	else:
+		form = login_form(user)
+
+	context = {
+		'page_title'	: 'User login',
+		'title'			: 'User login',
+		'form'			: form,
+	}
+	return render(request, "app/user/password_reset_confirm.html", context)
+
 
 
 @login_required

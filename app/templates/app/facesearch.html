@@ -78,21 +78,16 @@
 
 						<div class="picture">
 							<div class="button-overlay">
-								<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}" title="Open profile in detail">
+								<a class="btn btn-transparent-primary" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}" title="Open profile in detail">
 									<span class="material-symbols-outlined">open_in_new</span>
 									<span>View profile</span>
 								</a>
-								<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{request.path}}" title="Edit profile">
+								<a class="btn btn-transparent-secondary" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{ request.path }}" title="Edit profile">
 									<span class="material-symbols-outlined">edit</span>
 									<span>Edit profile</span>
 								</a>
-								{% if profile.archivepersonnel %}
-									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archivepersonnel.pk %}?prev={{request.path}}" title="Add profile to archives">
-										<span class="material-symbols-outlined">unarchive</span>
-										<span>Unarchive</span>
-									</a>
-								{% elif profile.archiveinmate %}
-									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.archiveinmate.pk %}?prev={{request.path}}" title="Add profile to archives">
+								{% if profile.is_archived %}
+									<a class="btn btn-transparent-secondary" href="{% url 'archive-remove' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
 										<span class="material-symbols-outlined">unarchive</span>
 										<span>Unarchive</span>
 									</a>
@@ -102,6 +97,14 @@
 										<span>Archive profile</span>
 									</a>
 								{% endif %}
+								<a class="btn btn-transparent-secondary" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}">
+									<span class="material-symbols-outlined">docs</span>
+									<span>Download (.docx)</span>
+								</a>
+								<a class="btn btn-transparent-secondary" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}">
+									<span class="material-symbols-outlined">picture_as_pdf</span>
+									<span>Download (.pdf)</span>
+								</a>
 								<a class="btn btn-transparent-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{request.path}}" title="Add profile to archives">
 									<span class="material-symbols-outlined">delete</span>
 									<span>Delete profile</span>

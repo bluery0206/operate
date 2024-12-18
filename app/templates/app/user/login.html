@@ -1,0 +1,65 @@
+{% extends 'app/base_empty.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+	<div class="dialog-wrapper">
+        <div class="dialog">
+            <div class="header">
+				<div class="title">
+					<img src="{% static 'images/operate.png' %}" alt="operate.png">
+                    <h3>Welcome to OPERATE!</h3>
+                </div>
+            </div>
+    
+            <div class="body">
+				<div class="description">
+					<h2>Login</h2>
+				</div>
+    
+                <form method="POST">
+                    {% csrf_token %}
+
+					{% if form.non_field_errors %}
+						<div class="alert alert-danger">
+							{% for error in form.non_field_errors %}
+								{{ error }}
+							{% endfor %}
+						</div>
+					{% endif %}
+
+					<div class="fields">
+						<div class="field">
+							<label for="id_username">Username:</label>
+							{% if form.username.errors %}
+								<div class="alert alert-danger">
+									{% for error in form.username.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% endif %}
+							<input type="text" class="form-control form-control-primary" name="{{form.username.name}}" value="{% if form.username.value %}{{form.username.value}}{% endif %}" id="{{form.username.id_for_label}}" placeholder="Username" required>
+						</div>
+						<div class="field">
+							<label for="id_password">Password:</label>
+							{% if form.password.errors %}
+								<div class="alert alert-danger">
+									{% for error in form.password.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% endif %}
+							{{ form.password }}
+							<!-- <input type="password" class="form-control form-control-primary" name="{{form.password.name}}" value="{% if form.password.value %}{{form.password.value}}{% endif %}" id="{{form.password.id_for_label}}" required> -->
+						</div>
+					</div>
+    
+                    <div class="actions vertical">
+						<a class="btn right" href="{% url 'password-reset' %}">Forgot password?</a>
+						<button class="btn btn-primary center" type="submit">LOGIN</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

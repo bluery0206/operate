@@ -1,0 +1,26 @@
+{% extends 'app/base_empty.html' %}
+{% load static %}
+
+{% block content %}
+	<div class="dialog-wrapper">
+        <div class="dialog">
+            <div class="header">
+				<div class="title">
+					<img src="{% static 'images/operate.png' %}" alt="operate.png">
+                    <h3>Welcome to OPERATE!</h3>
+                </div>
+            </div>
+    
+            <div class="body">
+				<div class="description">
+					<h2>Logout</h2>
+					<p>You have been logged-out.</p>
+				</div>
+    
+				<div class="actions vertical">
+					<a href="{% url 'user-login' %}" class="btn btn-primary center">LOGIN</a>
+				</div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

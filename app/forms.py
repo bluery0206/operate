@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.core.validators import FileExtensionValidator
 from django.conf import settings as DJANGO_SETTINGS
 from django import forms
@@ -130,6 +130,22 @@ class LoginForm(AuthenticationForm):
         fields 	= ['username', 'password']
         widgets = {
             'password': forms.PasswordInput(attrs={
+                'class': COMMON_CLASS,
+            }),
+        }
+
+class PasswordResetForm(SetPasswordForm):
+    new_password1 = PasswordEye(label='')
+    new_password2 = PasswordEye(label='')
+
+    class Meta: 
+        model 	= User
+        fields 	= ['new_password1', 'new_password2']
+        widgets = {
+            'new_password1': forms.PasswordInput(attrs={
+                'class': COMMON_CLASS,
+            }),
+            'new_password2': forms.PasswordInput(attrs={
                 'class': COMMON_CLASS,
             }),
         }

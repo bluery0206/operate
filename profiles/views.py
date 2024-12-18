@@ -125,6 +125,7 @@ def all_personnel(request):
 	return render(request, "profiles/all_personnel.html", context)
 
 
+
 def all_inmate(request):
 	context = {
 		'page_title'	: "Inmate Profiles",
@@ -195,6 +196,7 @@ def all_inmate(request):
 	return render(request, "profiles/all_inmate.html", context)
 
 
+
 def profile(request, p_type, pk):
 	p_class =  profiles_models.Personnel if p_type == "personnel" else profiles_models.Inmate
 	profile =  get_object_or_404(p_class, pk=pk)
@@ -204,6 +206,7 @@ def profile(request, p_type, pk):
 		'p_type'		: p_type
 	}
 	return render(request, "profiles/profile.html", context)
+
 
 
 def profile_add(request, p_type):
@@ -304,6 +307,7 @@ def profile_add(request, p_type):
 	return render(request, "profiles/profile_add.html", context)
 
 
+
 def profile_update(request, p_type, pk):
 	prev_page 	= request.GET.get("prev", "/")
 	curr_page	= request.build_absolute_uri()
@@ -398,6 +402,7 @@ def profile_update(request, p_type, pk):
 	return render(request, "profiles/profile_update.html", context)
 
 
+
 def profile_delete(request, p_type, pk):
 	prev = request.GET.get("prev", "")
 
@@ -421,13 +426,22 @@ def profile_delete(request, p_type, pk):
 
 
 def profile_delete_all(request, p_type):
-	prev = request.GET.get("prev", "")
+	prev	= request.GET.get("prev", "")
+	state	= request.GET.get("state", "open")
 
 	if request.method == "POST":
-		if p_type == "personnel":
-			profiles_models.Personnel.objects.filter(is_archived=False).delete() 
+		if state:
+			is_archived = True if state == "archived" else False
+
+			if p_type == "personnel":
+				profiles_models.Personnel.objects.filter(is_archived=is_archived).delete() 
+			else:
+				profiles_models.Inmate.objects.filter(is_archived=is_archived).delete() 
 		else:
-			profiles_models.Inmate.objects.filter(is_archived=False).delete() 
+			if p_type == "personnel":
+				profiles_models.Personnel.objects.all().delete() 
+			else:
+				profiles_models.Inmate.objects.all().delete() 
 
 		return redirect(prev)
 
@@ -439,6 +453,7 @@ def profile_delete_all(request, p_type):
 		'danger'		: True
 	}
 	return render(request, "app/base_confirmation.html", context)
+
 
 
 def archive_add(request, p_type, pk):
@@ -466,6 +481,7 @@ def archive_add(request, p_type, pk):
 	return render(request, "app/base_confirmation.html", context)
 
 
+
 def archive_remove(request, p_type, pk):
 	prev 	= request.GET.get("prev", "")
 
@@ -479,7 +495,7 @@ def archive_remove(request, p_type, pk):
 		profile.is_archived = False
 		profile.save()
 
-		return redirect('profile', p_type, profile.pk)
+		return redirect(prev) if prev else redirect('profile', p_type, profile.pk)
 
 	context = {
 		'page_title'	: "Unarchive: " + str(profile),
@@ -488,6 +504,7 @@ def archive_remove(request, p_type, pk):
 		'active'		: p_type,
 	}
 	return render(request, "app/base_confirmation.html", context)
+
 
 
 def archive_add_all(request, p_type):
@@ -513,6 +530,7 @@ def archive_add_all(request, p_type):
 		'active'		: p_type,
 	}
 	return render(request, "app/base_confirmation.html", context)
+
 
 
 def archive_remove_all(request, p_type):

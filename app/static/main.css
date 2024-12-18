@@ -456,6 +456,8 @@ footer {
             .button-overlay {
                 transition: all ease-in-out 0.2s;
                 width: inherit;
+                height: inherit;
+                border-radius: var(--radius-medium);
                 padding: 1em;
                 gap: 0.5em;
                 position: absolute;
@@ -479,13 +481,10 @@ footer {
                 }
         }
     }
-        
-    .picture:hover {
-        img {
-            filter: brightness(50%);
-        }    
+    .card:hover {
         .button-overlay {
             opacity: 100%;
+            background: rgba(0,0,0,0.75);
             z-index: 1;
         }
     }
