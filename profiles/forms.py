@@ -105,7 +105,11 @@ IMG_VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'
 
 
 class PersonnelForm(forms.ModelForm):
-	raw_image = forms.FileField(validators=IMG_VALIDATOR)
+	raw_image = forms.FileField(
+		validators=IMG_VALIDATOR,
+		allow_empty_file	= True,
+		required			= False
+		)
 
 	class Meta:
 		model 	= models.Personnel
@@ -116,7 +120,7 @@ class InmateForm(forms.ModelForm):
 	raw_image = forms.FileField(
 		validators 			= IMG_VALIDATOR,
 		allow_empty_file	= True,
-		required			= False
+		required			= False,
 	)
 
 	class Meta:

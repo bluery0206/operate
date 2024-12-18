@@ -15,6 +15,7 @@ import cv2
 
 # from profiles.models import Personnel, Inmate
 from app import models as app_model
+from profiles import models as profiles_model
 
 DJANGO_SETTINGS 	= settings
 OPERATE_SETTINGS 	= app_model.Setting
@@ -195,6 +196,8 @@ def get_full_name(profile:object, m_initial:bool=True) -> str:
 
 	return full_name
 
+
+
 def format_text(text:str) -> str:
 	text    = text.strip()
 	symbols = string.punctuation.replace('_', ' ')
@@ -203,6 +206,8 @@ def format_text(text:str) -> str:
 	text = text.replace(",", "")
 	text = text.translate(translation_table)
 	return text
+
+
 
 def generate_docx(template_path:str, image_path:str, fields:list[str], data:list[str]) -> list[str]:
 	doc = Document(template_path)
@@ -243,6 +248,8 @@ def generate_docx(template_path:str, image_path:str, fields:list[str], data:list
 
 	return [file_name, save_path]
 
+
+
 def save_file(file_name:str, save_path:Path):
 	with open(save_path, 'rb') as f:
 		response = HttpResponse(
@@ -255,148 +262,122 @@ def save_file(file_name:str, save_path:Path):
 
 	return response
 
+
+
 def format_image_name(image_name):
 	return image_name.replace(" ", "_") if " " in image_name else image_name
 
-# def get_profiles(cand_list, reverse=True, by_array:bool=False):
 
-# 	# Get dataset from path
-# 	database = list(EMB_PATH.glob("*")) if by_array else list(RAW_PATH.glob("*"))
-# 	database = [str(image_path) for image_path in database]
-# 	print(f"get_profiles(): {len(database) = }")
 
-# 	# Getting profiles
-# 	cands_dist 	= [float(dist) for dist, idx in cand_list]
-# 	cands_image	= [str(database[idx]) for dist, idx in cand_list]
+def search(input_path:Path, threshold:float, search_mode:str):
+	print(f"\nInitiating Facesearch...")
+	print(f"Search mode: " + search_mode)
 
-# 	# Candidates profiles
-# 	cands_prof	= []
+	input = open_image(input_path, True)
+	print("Input shape: " + str(input.shape))
+
+	input = preprocess_image(input, img_size=INP_SIZE)
+	print("Preprocessed input shape: " + str(input.shape))
+
+	if search_mode == "embedding":
+		database = list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob("*"))
+		database = [np.load(emb_path) for emb_path in database]
+	else:
+		database = list(DJANGO_SETTINGS.RAW_IMG_ROOT.glob("*"))
+		database = [open_image(image_path, True) for image_path in database]
+		database = [preprocess_image(image, img_size=INP_SIZE) for image in database]
+
+	print(f"Searching...")
+	result = search_face(
+		inp_image	= input, 
+		val_images	= database, 
+		threshold	= threshold,
+		search_mode	= search_mode
+	)
+
+	return result
+
+
+
+def search_face(inp_image:np.ndarray, val_images:list[np.ndarray], threshold:float, search_mode:str="embedding"):
+	cand_list = []
+
+	inp_emb	= get_image_embedding(inp_image)
+
+	for idx, val in enumerate(val_images):
+		if search_mode == "image": 
+			val = get_image_embedding(val)
+
+		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
+
+		if dist <= threshold:
+			percentage = get_percentage(threshold, dist)
+			cand_list.append([percentage, idx])
+
+			print(f"New candidate found: distance:{dist:.5f}, percentage:{percentage:.2f}")
+
+	print("Total: " + str(len(cand_list)))
+	return cand_list if cand_list else None
+
+
+
+def get_percentage(threshold:float, distance:float):
+	return (1 - (distance/threshold)) * 100
+
+
+
+def get_profiles(cand_list:list[np.ndarray], reverse:bool=True, search_mode:str="embedding"):
+	if search_mode == "embedding":
+		database = list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob("*"))
+	else:
+		database = list(DJANGO_SETTINGS.RAW_IMG_ROOT.glob("*"))
+
+	database = [str(image_path) for image_path in database]
+
+	cands_dist 	= [float(dist) for dist, idx in cand_list]
+	cands_image	= [str(database[idx]) for dist, idx in cand_list]
 	
-# 	for image in cands_image:
-
-# 		# extracting imagename.ext from full path
-# 		embedding_name = image.split("\\")[-1]
-# 		name = embedding_name.split(".")[0]
-
-# 		print(f"get_profiles(): {embedding_name = }")
-
-
-# 		if by_array:
-# 			personnel 	= Personnel.objects.filter(embedding__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
-# 			inmate		= Inmate.objects.filter(embedding__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
-# 		else:
-# 			personnel 	= Personnel.objects.filter(raw_image__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
-# 			inmate		= Inmate.objects.filter(raw_image__endswith=embedding_name, raw_image__icontains=name, thumbnail__icontains=name).first()
-
-# 		# if personnel is not found then the image must be from inmate
-# 		profile = personnel if personnel else inmate
-
-# 		if profile: cands_prof.append(profile)
-
-# 	result = list(zip(cands_dist, cands_prof))
-# 	result = sorted(result, key=lambda x: x[0], reverse=reverse)
-
-# 	return result
-
-# def search(input_path:Path,  threshold:int=1, by_array:bool=False):
-# 	input = open_gray_image(str(input_path))
-# 	# print(f"\nfacesearch(): {input.shape = }")
-
-# 	input = preprocess_image(input, img_size=INP_SIZE)
-# 	print(f"facesearch(): preprocess_image(): {input.shape = }")
-
-# 	# print(f"facesearch(): input_image: {"Found" if input_image is not None else "Not found."}")
-# 	# print(f"facesearch(): {input_image.shape = }")
+	candidate_profiles = []
 	
-# 	if by_array:
-# 		database = list(EMB_PATH.glob("*"))
-# 		print(f"facesearch(): by_array: {len(database) = }")
-	
-# 		database = [np.load(emb_path) for emb_path in database]
-# 		print(f"facesearch(): by_array: {len(database) = }")
-# 	else:
-# 		# fetching and preprocessing database/validation images
-# 		database = list(RAW_PATH.glob("*"))
-# 		print(f"facesearch(): {len(database) = }")
-	
-# 		database = [open_gray_image(str(image_path)) for image_path in database]
-# 		print(f"facesearch(): open_gray_image(): {len(database)  = }")
-	
-# 		database = [preprocess_image(image, img_size=INP_SIZE) for image in database]
-# 		print(f"facesearch(): preprocess_image(): {len(database)  = }")
+	for image in cands_image:
+		name = Path(image).stem
 
-# 	result = search_face(
-# 		inp_image	= input, 
-# 		val_images	= database, 
-# 		threshold	= threshold,
-# 		by_array	= by_array
-# 	)
+		personnel	= profiles_model.Personnel.objects.filter(embedding__icontains=name, raw_image__icontains=name, thumbnail__icontains=name).first()
+		inmate		= profiles_model.Inmate.objects.filter(embedding__icontains=name, raw_image__icontains=name, thumbnail__icontains=name).first()
 
-# 	return result
+		profile = personnel if personnel else inmate
 
-# def update_image_embeddings():
-# 	personnels 	= Personnel.objects.all()
-# 	inmates 	= Inmate.objects.all()
+		if profile: candidate_profiles.append(profile)
 
-# 	data = list(personnels) + list(inmates)
+	result = list(zip(cands_dist, candidate_profiles))
+	result = sorted(result, key=lambda x: x[0], reverse=reverse)
 
-# 	if not data:
-# 		return False
+	return result
 
-# 	print(f"Creating embedding from image using model: {OPERATE_SETTINGS.objects.first().model.name}")
 
-# 	for profile in data:
-# 		# print(f"Personnel: {profile}, raw_image_path: {profile.raw_image.path}")
-# 		is_image_saved, emb_name, inp_emb = save_embedding(profile.raw_image.path)
 
-# 		if not is_image_saved:
-# 			print(f"Personnel: {profile} embedding was not generated.")
-# 			continue
+def update_image_embeddings():
+	personnels 	= profiles_model.Personnel.objects.all()
+	inmates 	= profiles_model.Inmate.objects.all()
+
+	data = list(personnels) + list(inmates)
+
+	if not data:
+		return False
+
+	print(f"Creating embedding from image using model: {OPERATE_SETTINGS.objects.first().model.name}")
+
+	for profile in data:
+		is_image_saved, emb_name, _ = save_embedding(profile.raw_image.path)
+
+		if not is_image_saved:
+			print(f"Personnel: {profile} embedding was not generated.")
+			continue
 		
-# 		profile.embedding = f"embeddings/{emb_name}"
+		profile.embedding = f"embeddings/{emb_name}"
 
-# 		profile.save()
+		profile.save()
 
-# 	return True
-
-# def search_face(inp_image, val_images, threshold, by_array:bool=False, break_in_zero:bool=True):
-# 	best_cand_dist  = threshold
-# 	best_cand_idx	= None
-# 	cand_list       = []
-
-# 	inp_emb	= get_image_embedding(inp_image)
-
-# 	for idx, val in enumerate(val_images):
-
-# 		# if not array meaning the search method was image and
-# 		# so the image needs to be processed and get its embedding
-# 		if not by_array: 
-# 			val = get_image_embedding(val)
-
-# 		# dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
-# 		dist = np.sum(np.square(inp_emb - val), axis=-1)
-
-# 		# print(f"search_face(): dist:{dist}, database_idx:{idx}, threshold:{threshold}")
-
-# 		if dist <= threshold:
-# 			best_cand_dist	= dist
-# 			best_cand_idx	= idx
-# 			print(f"search_face(): New candidate found: dist:{dist}, threshold:{threshold}")
-
-# 			cand_list.append([get_percentage(threshold, dist), best_cand_idx])
-
-# 		# if break_in_zero and dist <= 0: break
-
-# 	return cand_list if cand_list else None
+	return True
 
 
-# def get_percentage(threshold, best_cand_dist):
-# 	return (1 - (best_cand_dist/threshold)) * 100
-
-# 
-
-# def save_image(image_path, image):
-# 	return cv2.imwrite(image_path, image)
-
-
-	

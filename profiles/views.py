@@ -10,16 +10,19 @@ from django.conf import settings
 
 from datetime import datetime
 from pathlib import Path
+from docx2pdf import convert
+
+from app import (
+    utils as app_utils,
+    models as app_model,
+)
 
 from . import (
     models as profiles_models,
 	forms as profiles_forms
 )
 
-from app import (
-    utils as app_utils,
-    models as app_model,
-)
+
 
 DJANGO_SETTINGS		= settings
 OPERATE_SETTINGS 	= app_model.Setting
@@ -50,7 +53,7 @@ def all_personnel(request):
 		'page_title'	: "Personnel Profiles",
 		'active'		: 'personnels',
 		'p_type'		: 'personnel',
-		'personnels'	: profiles_models.Personnel.objects.filter(is_archived=False).order_by("-date_profiled"),
+		'personnels'	: profiles_models.Personnel.objects.all().order_by("-date_profiled"),
 		'ranks'			: [rank[0] for rank in profiles_models.RANKS],
 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
@@ -127,7 +130,7 @@ def all_inmate(request):
 		'page_title'	: "Inmate Profiles",
 		'active'		: 'inmates',
 		'p_type'		: 'inmate',
-		'inmates'		: profiles_models.Inmate.objects.filter(is_archived=False).order_by("-date_profiled"),
+		'inmates'		: profiles_models.Inmate.objects.all().order_by("-date_profiled"),
 		'sort_choices'	: INMATE_SORT_CHOICES,
 		'order_choices'	: ORDER_CHOICES,
 		'filters'		: {},
@@ -169,6 +172,7 @@ def all_inmate(request):
 				context['inmates'] = context['inmates'].order_by(sort)
 
 			context['filters'] = {
+				'state'			: state,
 				'crime_violated': crime_violated,
 				'sort_by'		: sort_by,
 				'sort_order'	: sort_order,
@@ -219,6 +223,8 @@ def profile_add(request, p_type):
 		if form.is_valid():
 			is_option_camera = request.POST.get("option_camera", 0)
 			is_option_upload = request.POST.get("option_upload", 0)
+			
+			print(is_option_camera)
 
 			if not is_option_camera and 'raw_image' not in request.FILES:
 				form.add_error(
@@ -239,8 +245,8 @@ def profile_add(request, p_type):
 
 				is_image_taken, raw_image = app_utils.take_image(
 					camera		= camera, 
-					crop_camera	= defset.clip_camera, 
-					crop_size	= defset.clip_size
+					clip_camera = defset.clip_camera, 
+					clip_size	= defset.clip_size
 				)
 
 				if not is_image_taken:
@@ -279,13 +285,14 @@ def profile_add(request, p_type):
 				instance.delete()
 				return redirect(prev)
 			
-			instance.embedding = "embeddings/" + emb_name
-			instance.raw_image = "raw_images/" + image_name
-			instance.thumbnail = "thumbnails/" + image_name
+			if is_image_saved:
+				instance.embedding = "embeddings/" + emb_name
+				instance.raw_image = "raw_images/" + image_name
+				instance.thumbnail = "thumbnails/" + image_name
 
-			instance.save()
+				instance.save()
 
-			return redirect('profile', p_type, instance.pk)
+				return redirect('profile', p_type, instance.pk)
 
 	context = {
 		'page_title'	: "Add " + p_type.title() + " Profile",
@@ -391,7 +398,6 @@ def profile_update(request, p_type, pk):
 	return render(request, "profiles/profile_update.html", context)
 
 
-
 def profile_delete(request, p_type, pk):
 	prev = request.GET.get("prev", "")
 
@@ -401,40 +407,136 @@ def profile_delete(request, p_type, pk):
 	if request.method == "POST":
 		profile.delete()
 
-		return redirect(prev) if prev else redirect(f"profiles-{p_type}s")
+		return redirect(f"profiles-all-{p_type}")
 
 	context = {
 		'page_title'	: "Delete " + str(profile),
+		'title'			: "Delete Profile: " + app_utils.get_full_name(profile),
 		'warning' 		: "You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
 		'prev'			: prev,
 		'p_type'		: p_type,
 		'danger'		: True
 	}
-	return render(request, "home/confirmation_page.html", context)
+	return render(request, "app/base_confirmation.html", context)
 
 
+def profile_delete_all(request, p_type):
+	prev = request.GET.get("prev", "")
 
-# def profile_delete_all(request, p_type):
-# 	prev 	= request.GET.get("prev", "")
+	if request.method == "POST":
+		if p_type == "personnel":
+			profiles_models.Personnel.objects.filter(is_archived=False).delete() 
+		else:
+			profiles_models.Inmate.objects.filter(is_archived=False).delete() 
 
-# 	if request.method == "POST":
-# 		if p_type == "personnel":
-# 			Personnel.objects.exclude(archivepersonnel__isnull=False).delete() 
-# 		else:
-# 			Inmate.objects.exclude(archiveinmate__isnull=False).delete() 
+		return redirect(prev)
 
-# 		return redirect(prev)
-
-# 	context = {
-# 		'title' 		: f"Delete All Profile",
-# 		'warning' 		: f"You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
-# 		'page_title'	: f"Delete All",
-# 		'p_type'		: p_type,
-# 		'danger'		: True
-# 	}
-# 	return render(request, "home/confirmation_page.html", context)
+	context = {
+		'title' 		: "Delete All Profile",
+		'page_title'	: "Delete All Profile",
+		'warning' 		: "You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
+		'p_type'		: p_type,
+		'danger'		: True
+	}
+	return render(request, "app/base_confirmation.html", context)
 
 
+def archive_add(request, p_type, pk):
+	prev 	= request.GET.get("prev", "")
+
+	personnel	= profiles_models.Personnel
+	inmate		= profiles_models.Inmate
+
+	p_class = personnel if p_type == "personnel" else inmate
+	profile = get_object_or_404(p_class, pk=pk)
+
+	if request.method == "POST":
+		profile.is_archived = True
+		profile.save()
+
+		return redirect(prev) if prev else redirect('profile', p_type, profile.pk)
+
+	context = {
+		'page_title'	: "Archive: " + str(profile),
+		'title' 		: "Archive: " + str(profile),
+		'warning' 		: "You will not be able to see this profile in the \"Profile\" Page anymore.",
+		'p_type'		: p_type,
+		'active'		: p_type
+	}
+	return render(request, "app/base_confirmation.html", context)
+
+
+def archive_remove(request, p_type, pk):
+	prev 	= request.GET.get("prev", "")
+
+	personnel	= profiles_models.Personnel
+	inmate		= profiles_models.Inmate
+
+	p_class = personnel if p_type == "personnel" else inmate
+	profile = get_object_or_404(p_class, pk=pk)
+
+	if request.method == "POST":
+		profile.is_archived = False
+		profile.save()
+
+		return redirect('profile', p_type, profile.pk)
+
+	context = {
+		'page_title'	: "Unarchive: " + str(profile),
+		'title' 		: "Archive: " + str(profile),
+		'p_type'		: p_type,
+		'active'		: p_type,
+	}
+	return render(request, "app/base_confirmation.html", context)
+
+
+def archive_add_all(request, p_type):
+	prev = request.GET.get("prev", "")
+
+	if request.method == "POST":
+		if p_type == "personnel":
+			profiles = profiles_models.Personnel.objects.filter(is_archived=False).all() 
+		else:
+			profiles = profiles_models.Inmate.objects.filter(is_archived=False).all() 
+
+		for profile in profiles:
+			profile.is_archived = True
+			profile.save()
+
+		return redirect(prev) if prev else redirect(f'profiles-all-{p_type}')
+
+	context = {
+		'page_title'	: f"Archive all {p_type}s",
+		'title'			: f"Archive all {p_type}s",
+		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore. You can still view them in the \"Archives section\"",
+		'p_type'		: p_type,
+		'active'		: p_type,
+	}
+	return render(request, "app/base_confirmation.html", context)
+
+
+def archive_remove_all(request, p_type):
+	prev 	= request.GET.get("prev", "")
+
+	if request.method == "POST":
+		if p_type == "personnel":
+			profiles = profiles_models.Personnel.objects.filter(is_archived=True).all() 
+		else:
+			profiles = profiles_models.Inmate.objects.filter(is_archived=True).all() 
+
+		for profile in profiles:
+			profile.is_archived = False
+			profile.save()
+
+		return redirect(prev) if prev else redirect(f'profiles-all-{p_type}')
+
+	context = {
+		'page_title'	: f"Unarchive all {p_type}s",
+		'title'			: f"Unarchive all {p_type}s",
+		'p_type'		: p_type,
+		'active'		: p_type,
+	}
+	return render(request, "app/base_confirmation.html", context)
 
 
 
@@ -484,287 +586,14 @@ def profile_delete(request, p_type, pk):
 
 
 
-# from django.shortcuts import render, get_object_or_404, redirect
-# from django.db.models import Q
-# from django.shortcuts import (
-# 	render, 
-# 	redirect, 
-# 	get_object_or_404
-# )	
-# from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-# from .models import ArchivePersonnel, ArchiveInmate
-# from profiles.models import Personnel, Inmate
-# # from app.models import OPERATE_SETTINGS
-# from app import models as app_model
-# from app.utils import get_full_name
 
-# OPERATE_SETTINGS = app_model.Setting
 
-# ORDER_CHOICES = [
-# 	['descending',"Descending"],
-# 	['ascending', "Ascending"],
-# ]
 
-# COMMON_SORT_CHOICES = [
-# 	['l_name', "Last Name"],
-# 	['f_name', "First Name"],
-# 	['age', "Age"]
-# ]
 
-# PERSONNEL_SORT_CHOICES = COMMON_SORT_CHOICES + [
-# 	['date_profiled',"Date Profiled"],
-# 	['date_assigned',"Date Assigned"],
-# 	['date_relieved',"Date Relieved"],
-# ]
 
-# INMATE_SORT_CHOICES = [
-# 	['date_profiled',"Date Profiled"],
-# 	['date_arrested',"Date Arrested"],
-# 	['date_committed',"Date Committed"],
-# ]
 
 
-
-
-# def personnels(request):
-# 	context = {
-# 		'personnels'	: ArchivePersonnel.objects.all(),
-# 		'ranks'			: [rank[0] for rank in Personnel.RANKS],
-# 		'sort_choices'	: PERSONNEL_SORT_CHOICES,
-# 		'order_choices'	: ORDER_CHOICES,
-# 		'filters'		: {},
-# 		'page_title'	: "Archived Personnel Profiles",
-# 		'p_type'		: 'personnel',
-# 		'active'		: 'archives personnels'
-# 	}
-
-# 	if request.method == "GET":
-# 		reset_filter		= request.GET.get("reset_filter", None)
-# 		reset_search		= request.GET.get("reset_search", None)
-# 		search				= request.GET.get("search", "").strip()
-
-# 		if not reset_search and search:
-# 			context['personnels'] = ArchivePersonnel.objects.filter(
-# 		        Q(profile__f_name__icontains=search) |
-# 		        Q(profile__l_name__icontains=search) |
-# 		        Q(profile__m_name__icontains=search)
-# 	        )
-# 		else:
-# 			search = ""
-
-# 		if reset_filter:
-# 			designation, rank, sort_by, sort_order	= None, None, None, None
-# 		else:
-# 			designation	= request.GET.get("designation", "")
-# 			rank		= request.GET.get("rank", "")
-# 			sort_by		= request.GET.get("sort_by", "")
-# 			sort_order	= request.GET.get("sort_order", "descending")
-
-# 			designation = designation.strip()
-
-# 			if designation: 
-# 				context['personnels'] = context['personnels'].filter(profile__designation__icontains=designation)
-
-# 			if rank: 
-# 				context['personnels'] = context['personnels'].filter(profile__rank=rank)
-
-# 			if sort_by:
-# 				sort = "-profile__" + sort_by if sort_order == "descending" else "profile__" + sort_by
-# 				context['personnels'] = context['personnels'].order_by(sort)
-
-# 			context['filters'] = {
-# 				'designation'	: designation,
-# 				'rank'			: rank,
-# 				'sort_by'		: sort_by,
-# 				'sort_order'	: sort_order,
-# 			}
-
-# 		context['filters'].update({"search": search})
-
-# 	page		= request.GET.get('page', 1)  # Get the current page number
-# 	paginator	= Paginator(context['personnels'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
-
-# 	try:
-# 		context['personnels'] = paginator.page(page)
-# 	except PageNotAnInteger:
-# 		context['personnels'] = paginator.page(1)  # If page is not an integer, show the first page
-# 	except EmptyPage:
-# 		context['personnels'] = paginator.page(paginator.num_pages)  # If page is out of range, show the last page
-
-# 	context["is_paginated"] = paginator.num_pages > 1
-
-# 	return render(request, "archives/personnels.html", context)
-
-
-
-
-
-# def inmates(request):
-# 	context = {
-# 		'inmates'		: ArchiveInmate.objects.all(),
-# 		'sort_choices'	: INMATE_SORT_CHOICES,
-# 		'order_choices'	: ORDER_CHOICES,
-# 		'filters'		: {},
-# 		'page_title'	: "Archived Inmate Profiles",
-# 		'p_type'		: 'inmate',
-# 		'active'		: 'archives inmates'
-# 	}
-
-# 	if request.method == "GET":
-# 		reset_filter		= request.GET.get("reset_filter", "")
-# 		reset_search		= request.GET.get("reset_search", "")
-# 		search				= request.GET.get("search", "").strip()
-
-# 		if not reset_search and search:
-# 			context['inmates'] = ArchiveInmate.objects.filter(
-# 		        Q(profile__f_name__icontains=search) |
-# 		        Q(profile__l_name__icontains=search) |
-# 		        Q(profile__m_name__icontains=search)
-# 	        )
-# 		else:
-# 			search = ""
-
-# 		if reset_filter:
-# 			crime_violated, sort_by, sort_order	= None, None, None
-# 		else:
-# 			crime_violated	= request.GET.get("crime_violated", "")
-# 			sort_by			= request.GET.get("sort_by", "")
-# 			sort_order		= request.GET.get("sort_order", "descending")
-
-# 			crime_violated = crime_violated.strip()
-
-# 			if crime_violated: 
-# 				context['inmates'] = context['inmates'].filter(profile__crime_violated__icontains=crime_violated)
-
-# 			if sort_by:
-# 				sort = "-profile__" + sort_by if sort_order == "descending" else "profile__" + sort_by
-# 				context['inmates'] = context['inmates'].order_by(sort)
-
-# 			context['filters'] = {
-# 				'crime_violated': crime_violated,
-# 				'sort_by'		: sort_by,
-# 				'sort_order'	: sort_order,
-# 			}
-
-# 		context['filters'].update({"search": search})
-
-# 	page		= request.GET.get('page', 1)  # Get the current page number
-# 	paginator	= Paginator(context['inmates'], OPERATE_SETTINGS.objects.first().default_profiles_per_page)
-
-# 	try:
-# 		context['inmates'] = paginator.page(page)
-# 	except PageNotAnInteger:
-# 		context['inmates'] = paginator.page(1)  # If page is not an integer, show the first page
-# 	except EmptyPage:
-# 		context['inmates'] = paginator.page(paginator.num_pages)  # If page is out of range, show the last page
-
-# 	context["is_paginated"] = paginator.num_pages > 1
-
-# 	return render(request, "archives/inmates.html", context)
-
-
-
-
-
-# def archive_add(request, p_type, pk):
-# 	prev 	= request.GET.get("prev", "")
-
-# 	p_class, archive_form = [Personnel, ArchivePersonnel] if p_type == "personnel" else [Inmate, ArchiveInmate]
-
-# 	profile = get_object_or_404(p_class, pk=pk)
-# 	user	= request.user
-
-# 	if request.method == "POST":
-# 		archive = archive_form(profile=profile, archive_by=user)
-# 		archive.save()
-
-# 		return redirect(prev) if prev else redirect('profile', p_type, profile.pk)
-
-# 	context = {
-# 		'title' 		: f"Add {get_full_name(profile)}'s profile to archives?",
-# 		'warning' 		: f"You will not be able to see this profile in the \"Profile\" Page anymore.",
-# 		'page_title'	: f"Archiving {get_full_name(profile)}'s Profile",
-# 		'p_type'		: p_type,
-# 		'active'		: 'archive ' + p_type
-# 	}
-# 	return render(request, "home/confirmation_page.html", context)
-
-
-
-
-
-# def archive_remove(request, p_type, pk):
-# 	prev 	= request.GET.get("prev", "")
-
-# 	a_class = ArchivePersonnel if p_type == "personnel" else ArchiveInmate
-
-# 	archive = get_object_or_404(a_class, pk=pk)
-
-# 	if request.method == "POST":
-# 		archive.delete()
-
-# 		return redirect(prev) if prev else redirect('profile', p_type, archive.profile.pk)
-
-# 	context = {
-# 		'title' 	: f"Remove {get_full_name(archive.profile)}'s profile from archives",
-# 		'p_type'	: p_type,
-# 		'active'	: 'archive ' + p_type
-# 	}
-# 	return render(request, "home/confirmation_page.html", context)
-
-
-
-
-
-# def archive_add_all(request, p_type):
-# 	prev 	= request.GET.get("prev", "")
-
-# 	if request.method == "POST":
-# 		if p_type == "personnel":
-# 			profiles = Personnel.objects.exclude(archivepersonnel__isnull=False).all() 
-# 			a_class = ArchivePersonnel
-# 		else:
-# 			profiles = Inmate.objects.exclude(archiveinmate__isnull=False).all() 
-# 			a_class = ArchiveInmate
-
-# 		user = request.user
-
-# 		for profile in profiles:
-# 			archive = a_class.objects.create(archive_by=user, profile=profile)
-# 			archive.save()
-
-# 		return redirect(prev) if prev else redirect(f'archives-{p_type}s')
-
-# 	context = {
-# 		'title' 		: f"Add all {p_type} profiles to archives",
-# 		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore. You can still view them in the \"Archives section\"",
-# 		'page_title'	: f"Archiving All Profiles",
-# 		'p_type'		: p_type,
-# 		'active'		: 'archive ' + p_type
-# 	}
-# 	return render(request, "home/confirmation_page.html", context)
-
-
-
-
-
-# def archive_remove_all(request, p_type):
-# 	prev 	= request.GET.get("prev", "")
-# 	a_class = ArchivePersonnel if p_type == "personnel" else ArchiveInmate
-
-# 	if request.method == "POST":
-# 		a_class.objects.all().delete()
-
-# 		return redirect(prev) if prev else redirect(f'profiles-{p_type}s')
-
-# 	context = {
-# 		'title' 		: f"Remove all {p_type} profiles from archives",
-# 		'page_title'	: f"Unachiving All Profiles",
-# 		'p_type'		: p_type,
-# 		'active'		: 'archive ' + p_type
-# 	}
-# 	return render(request, "home/confirmation_page.html", context)
 
 
 

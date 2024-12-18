@@ -32,7 +32,7 @@
 
 			<!-- state -->
 			<select class="form-control form-control-secondary" name="state" title="Filter by status">
-				<option class="option_title"  value="">State</option>
+				<option class="option_title"  value="">All</option>
 				<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
 				<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
 			</select>
@@ -70,18 +70,28 @@
 			<button class="btn btn-outline-light"><span class="material-symbols-outlined">more_vert</span></button>
 			<!-- request.path -->
 			<div class="content">
-				<a class="btn" href="">
+				<a class="btn" href="{% url 'profile-add' 'inmate' %}">
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="">
-					<span class="material-symbols-outlined">archive</span>
-					<span>Archive all</span>
-				</a>
-				<a class="btn btn-danger" href="">
-					<span class="material-symbols-outlined">delete</span>
-					<span>Delete All</span>
-				</a>
+
+				{% if inmates %}
+					{% if filters.state == "archived" %}
+						<a class="btn" href="{% url 'archive-remove-all' 'inmate' %}" title="Unarchive all profiles">
+							<span class="material-symbols-outlined">unarchive</span>
+							<span>Unarchive all</span>
+						</a>
+					{% elif filters.state == "open" %}
+						<a class="btn" href="{% url 'archive-add-all' 'inmate' %}" title="Add all profiles to archive">
+							<span class="material-symbols-outlined">archive</span>
+							<span>Archive all</span>
+						</a>
+					{% endif %}
+					<a class="btn btn-danger" href="{% url 'profile-delete-all' 'inmate' %}?prev={{ request.path }}">
+						<span class="material-symbols-outlined">delete</span>
+						<span>Delete All</span>
+					</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>

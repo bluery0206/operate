@@ -4,7 +4,7 @@
 {% block content %}
 	<div class="dialog-wrapper">
         <div class="dialog">
-            <div class="header">
+            <div class="header {% if danger %}danger{% endif %}">
                 <div class="title">
                     <img src="{% static 'images/operate.png' %}" alt="">
                     <h3>{{ title }}</h3>
@@ -30,7 +30,7 @@
                     <input type="hidden" name="prev" value="{{ prev }}">
                     
                     <div class="actions">
-                        <button class="btn btn-a btn-danger" type="submit">Confirm</button>
+                        <button class="btn btn-{% if danger %}danger{% endif %}" type="submit">Confirm</button>
                         <a class="btn btn-b btn-secondary" href="javascript:history.go(-1)">Cancel</a>
                     </div>
                 </form>

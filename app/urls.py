@@ -15,6 +15,7 @@ from . import views
 urlpatterns = [
 	path("", views.index, name="operate-index"),
 	path("settings/", views.settings, name="operate-settings"),
+	path("facesearch/", views.facesearch, name="facesearch"),
 
 	# path('login/', LoginView.as_view(template_name='user/login.html'), name='user-login'),
 	path("login/", views.user_login, name = "user-login"),

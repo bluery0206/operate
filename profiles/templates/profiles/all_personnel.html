@@ -34,8 +34,8 @@
 			<input type="hidden" name="search" value="{{ filters.search }}">
 			
 			<!-- state -->
-			<select class="form-control form-control-secondary" name="state" title="Filter by status">
-				<option class="option_title"  value="">State</option>
+			<select class="form-control form-control-secondary" name="state" title="Filter by state">
+				<option class="option_title"  value="">All</option>
 				<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
 				<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
 			</select>
@@ -87,14 +87,24 @@
 					<span class="material-symbols-outlined">add</span>
 					<span>Add new profile</span>
 				</a>
-				<a class="btn" href="" title="Add all profiles to archive">
-					<span class="material-symbols-outlined">archive</span>
-					<span>Archive all</span>
-				</a>
-				<a class="btn btn-danger" href="" title="Delete all profiles">
-					<span class="material-symbols-outlined">delete</span>
-					<span>Delete All</span>
-				</a>
+				{% if personnels %}
+					{% if filters.state == "archived" %}
+						<a class="btn" href="{% url 'archive-remove-all' 'personnel' %}" title="Unarchive all profiles">
+							<span class="material-symbols-outlined">unarchive</span>
+							<span>Unarchive all</span>
+						</a>
+					{% elif filters.state == "open" %}
+						<a class="btn" href="{% url 'archive-add-all' 'personnel' %}" title="Add all profiles to archive">
+							<span class="material-symbols-outlined">archive</span>
+							<span>Archive all</span>
+						</a>
+					{% endif %}
+
+					<a class="btn btn-danger" href="{% url 'profile-delete-all' 'personnel' %}?prev={{ request.path }}" title="Delete all profiles">
+						<span class="material-symbols-outlined">delete</span>
+						<span>Delete All</span>
+					</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>

@@ -6,11 +6,10 @@ from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
 
-from .utils import *
-
 from . import (
     models 	as app_models,
     forms 	as app_forms,
+	utils	as app_utils
 )
 from profiles.models import (
     Personnel, 
@@ -103,84 +102,81 @@ def user_login(request):
 	return render(request, "app/base_public.html", context)
 
 
-
-
-
 DATABASE_PATH		= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("raw_images")
 SEARCH_IMAGE_PATH 	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath("searches")
 
-# @login_required
-# def facesearch(request):
-# 	default = OPERATE_SETTINGS.objects.first()
 
+@login_required
+def facesearch(request):
+	prev_page 	= request.GET.get("prev", "/")
+	curr_page	= request.build_absolute_uri()
 
-# 	context = {
-# 		"page_title"	: "Facesearch",
-# 		'active'		: 'facesearch',
-# 		"form"			: IMAGE_SEARCH_FORM(),
-# 		"threshold"		: float(default.threshold),
-# 		"camera"		: int(default.camera),
-# 		"search_method" : int(default.search_mode),
-# 		"profiles"		: [],
-# 	}
+	defset = OPERATE_SETTINGS.objects.first()
 
-# 	context['camera'] = int(request.GET.get("camera", context['camera']))
+	form_class	= app_forms.SearchImageForm
+	form_model	= app_models.SearchImage
+	form 		= form_class()
+	threshold	= defset.threshold
+	search_mode = defset.search_mode
+	camera		= defset.camera
+	profiles	= []
 
-# 	if request.method == "POST":
-# 		context['threshold'] = float(request.POST.get("threshold", context['threshold']))
+	if request.method == "POST":
+		is_option_camera	= int(request.POST.get("option_camera", 0))
+		is_option_upload	= int(request.POST.get("option_upload", 0))
 
-# 		is_option_camera	= int(request.POST.get("option_camera", 0))
-# 		is_option_upload	= int(request.POST.get("option_upload", 0))
-# 		context['search_method'] = int(request.POST.get("search_method", context['search_method']))
-# 		print(f"facesearch(): {is_option_camera = }")
-# 		print(f"facesearch(): {is_option_upload = }")
-# 		print(f"facesearch(): {context['search_method'] = }")
+		curr_time	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
+		image_name	= curr_time + ".png"
 
-# 		image_name	= f"{str(timezone.now().strftime("%Y%m%d%H%M%S"))}.png"
-# 		input_path	= f"media/searches/{image_name}"
-# 		print(f"facesearch(): {image_name = }")
-# 		print(f"facesearch() 1: {input_path = }")
+		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(image_name)
 
-# 		if is_option_camera:
-# 			context['camera'] = int(request.POST.get("camera", defset.default_camera))
+		if is_option_camera:
+			camera = int(request.POST.get("camera", defset.camera))
 
-# 			is_image_taken, input_image = take_image(context['camera'], int(defset.crop_camera), int(defset.default_crop_size))
+			is_image_taken, input_image = app_utils.take_image(
+				camera		= camera, 
+				clip_camera = defset.clip_camera, 
+				clip_size	= defset.clip_size
+			)
 
-# 			if not is_image_taken:
-# 				return render(request, "facesearch/facesearch.html", context)
+			if not is_image_taken:
+				return render(curr_page)
 			
-# 			save_image(Path(input_path), input_image)
+			app_utils.save_image(Path(input_path), input_image)
 
-# 		elif is_option_upload and 'image' in request.FILES: 
-# 			context['form'] = UploadedImageForm(request.POST, request.FILES)
+		elif is_option_upload and 'image' in request.FILES: 
+			form = form_class(request.POST, request.FILES)
 			
-# 			if context['form'].is_valid():
-# 				instance	= context['form'].save()
-# 				input_path	= instance.image.path
-				
+			if form.is_valid():
+				instance	= form.save()
+				input_path	= instance.image.path
 
-# 		# print(f"facesearch(): input_image: {"Found" if input_image is not None else "Not found."}")
-# 		# print(f"facesearch(): {input_image.shape = }")
-# 		print(f"facesearch() 2: {input_path = }")
-		
-# 		# get profiles from images
-# 		cand_list	= search(
-# 			input_path	= input_path, 
-# 			threshold	= context['threshold'], 
-# 			by_array	= context['search_method']
-# 		)
+		# get profiles from images
+		cand_list	= app_utils.search(
+			input_path	= input_path, 
+			threshold	= threshold, 
+			search_mode	= search_mode
+		)
+		# search_mode			
+		profiles = app_utils.get_profiles(
+			cand_list	= cand_list,
+			reverse		= True,							 
+			search_mode	= search_mode					 
+		) if cand_list else None
 
-# 		context['profiles']	= get_profiles(
-# 			cand_list	= cand_list,
-# 			reverse		= True,							 
-# 			by_array	= context['search_method']							 
-# 		) if cand_list else None
+		# Delete the image after use
+		instance = form_model.objects.filter(image__icontains=Path(input_path).stem).first()
+		instance.delete() if instance else Path(input_path).unlink()
 
-# 		# Delete the image after use
-# 		instance = UploadedImage.objects.filter(image__icontains=str(input_path).split("\\")[-1].split(".")[0]).first()
-# 		instance.delete() if instance else Path(input_path).unlink()
-
-# 	return render(request, "facesearch/facesearch.html", context)
+	context = {
+		"page_title"	: "Facesearch",
+		'active'		: 'facesearch',
+		"form"			: form,
+		"threshold"		: threshold,
+		"camera"		: camera,
+		"profiles"		: profiles,
+	}
+	return render(request, "app/facesearch.html", context)
 
 
 

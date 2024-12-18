@@ -46,15 +46,19 @@ class Profile(models.Model):
 	thumbnail = models.FileField(
 		upload_to	= "thumbnails",
 		default 	= "default.png",
+		blank		= True,
+		null		= True,
 	)
 	raw_image = models.FileField(
 		upload_to	= "raw_images",
 		default 	= "default.png",
+		blank		= True,
+		null		= True,
 	)
 	embedding = models.FileField(
-		upload_to	="embeddings",
-		blank		=True,
-		null=True,
+		upload_to	= "embeddings",
+		blank		= True,
+		null		= True,
 	)
 
 	# Common details

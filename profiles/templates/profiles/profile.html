@@ -18,18 +18,13 @@
 					<span>Edit Profile</span>
 				</a>
 			
-				{% if profile.archivepersonnel %}
-					<a class="btn btn-outline-light" href="">
-						<span class="material-symbols-outlined">unarchive</span>
-						<span>Unarchive</span>
-					</a>
-				{% elif profile.archiveinmate %}
-					<a class="btn btn-outline-light" href="">
+				{% if profile.is_archived %}
+					<a class="btn btn-outline-light" href="{% url 'archive-remove' profile.p_type profile.pk %}">
 						<span class="material-symbols-outlined">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% else %}
-					<a class="btn btn-outline-light" href="">
+					<a class="btn btn-outline-light" href="{% url 'archive-add' profile.p_type profile.pk %}">
 						<span class="material-symbols-outlined">archive</span>
 						<span>Add to archive</span>
 					</a>
@@ -43,7 +38,7 @@
 							<span class="material-symbols-outlined">download</span>
 							<span>Download (.docx)</span>
 						</a>
-						<a class="btn" href="">
+						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
 							<span class="material-symbols-outlined">delete</span>
 							<span>Delete</span>
 						</a>
