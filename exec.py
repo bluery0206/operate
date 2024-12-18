@@ -25,13 +25,12 @@ if not venv.exists():
 # So if only pip packages are in the packages, then the commands below
 #   will be added to the list of commands to execute.
 if len(pkgs) < 3:
-    commands.append(
-        [str(venv), "-m", "pip", "install", "-r", "requirements.txt"],
-        [str(venv), str(mnge), "makemigrations"],
-        [str(venv), str(mnge), "migrate"],
-        [str(venv), str(mnge), "createsuperuser"])
+    commands.append( [str(venv), "-m", "pip", "install", "-r", "requirements.txt"])
+    commands.append([str(venv), str(mnge), "makemigrations"])
+    commands.append([str(venv), str(mnge), "migrate"])
+    commands.append([str(venv), str(mnge), "createsuperuser"])
 
-commands.append(str(venv) + " " + str(mnge) + " runserver")
+commands.append([str(venv), str(mnge), "runserver"])
 
 for idx, command in enumerate(commands):
     # Open browser after a set time when the last command is to be executed

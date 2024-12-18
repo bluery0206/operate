@@ -51,7 +51,7 @@ INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 def all_personnel(request):
 	context = {
 		'page_title'	: "Personnel Profiles",
-		'active'		: 'personnels',
+		'active'		: 'profiles personnel',
 		'p_type'		: 'personnel',
 		'personnels'	: profiles_models.Personnel.objects.all().order_by("-date_profiled"),
 		'ranks'			: [rank[0] for rank in profiles_models.RANKS],
@@ -129,7 +129,7 @@ def all_personnel(request):
 def all_inmate(request):
 	context = {
 		'page_title'	: "Inmate Profiles",
-		'active'		: 'inmates',
+		'active'		: 'profiles inmate',
 		'p_type'		: 'inmate',
 		'inmates'		: profiles_models.Inmate.objects.all().order_by("-date_profiled"),
 		'sort_choices'	: INMATE_SORT_CHOICES,
