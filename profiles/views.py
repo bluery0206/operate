@@ -198,12 +198,15 @@ def all_inmate(request):
 
 
 def profile(request, p_type, pk):
+	prev 	= request.GET.get("prev", "")
+
 	p_class =  profiles_models.Personnel if p_type == "personnel" else profiles_models.Inmate
 	profile =  get_object_or_404(p_class, pk=pk)
 	context = {
 		'page_title'	: profile,
 		'profile'		: profile,
-		'p_type'		: p_type
+		'p_type'		: p_type,
+		'prev'			: prev,
 	}
 	return render(request, "profiles/profile.html", context)
 
@@ -412,7 +415,9 @@ def profile_delete(request, p_type, pk):
 	if request.method == "POST":
 		profile.delete()
 
-		return redirect(f"profiles-all-{p_type}")
+		print(f"{prev=}")
+
+		return redirect(prev) if prev else redirect(f"profiles-all-{p_type}")
 
 	context = {
 		'page_title'	: "Delete " + str(profile),

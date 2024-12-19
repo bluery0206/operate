@@ -2,77 +2,116 @@
 {% load custom_filters %}
 
 {% block content %}
-	<h2>Home</h2>
-	<div class="new_profiles">
-		<!-- Personnel -->
-		{% if personnels %}
-			<div class="card-list-new">
-				<h2>Newly added personnels</h2>
+	<div class="index">
+		<h2>Home</h2>
 
-				{% for profile in personnels %}
-					<a class="card-new" href="{% url 'profile' profile.p_type profile.pk %}"> 
-						<div class="picture">
-							<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
-						</div>
-
-						<div class="details">
-							<div class="name detail">{{ profile.rank|upper }} {{ profile|full_name }}</div>
-							<div class="muted detail" title="{{ profile|full_name }}'s home address">
-								<span>Address: {{ profile.address|title }}</span>
-							</div>
-							<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
-								<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
-							</div>
-							<div class="muted detail" title="{{ profile|full_name }}'s assigned date">
-								<span>Assigned: {{ profile.date_assigned|date:"M j, Y" }}</span>
-							</div>
-							<div class="muted detail" title="{{ profile|full_name }}'s designation">
-								<span>Designation: {{ profile.designation }}</span>
-							</div>
-						</div>
-					</a>
+		{% if messages %}
+			<div class="messages-list">
+				{% for message in messages %}
+					<div class="message message-{{ message.tags }}">
+						{{ message }}
+					</div>
 				{% endfor %}
-			</div>		
-		{% else %}
-			<h2>There are no personnels profiled.</h2>
+			</div>
 		{% endif %}
 
-		<!-- Inmates -->
-		{% if inmates %}
+		<div class="new-profiles">
 			<div class="card-list-new">
-				<h2>Newly added inmates</h2>
+				<div class="header">
+					<h5 class="title">RECENTLY ADDED PERSONNELS</h5>
 
-				{% for profile in inmates %}
-				<div class="card-new">
-					<div class="picture">
-						<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
-					</div>
-
-
-					<div class="details">
-						<div class="name">{{ profile|full_name }}</div>
-						<div class="muted detail" title="{{ profile|full_name }}'s home address">
-							Address: {{ profile.address|title }}
-						</div>
-						<div class="muted detail" title="{{ profile|full_name }}'s profiled date">
-							<span>Profiled: {{ profile.date_profiled|date:"M j, Y" }}</span>
-						</div>
-						<div class="muted detail" title="{{ profile|full_name }}'s arrested date">
-							<span>Arrested: {{ profile.date_arrested|date:"M j, Y" }}</span>
-						</div>
-						<div class="muted detail" title="{{ profile|full_name }}'s committed date">
-							<span>Committed: {{ profile.date_committed|date:"M j, Y" }}</span>
-						</div>
-						<div class="muted detail" title="{{ profile|full_name }}'s crime violation(s)">
-							<span>Violation: {{ profile.crime_violated }}</span>
-						</div>
+					<div class="actions">
+						<a class="btn btn-empty-personnel" href="{% url 'profile-add' 'personnel' %}" title="Add new personnel profile">
+							<i class="fa-solid fa-square-plus"></i>
+							<span>Add New Profile</span>
+						</a>
 					</div>
 				</div>
 
-				{% endfor %}
+				{% if personnels %}
+					{% for profile in personnels %}
+						<a class="card-new personnel" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+							<div class="picture">
+								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+							</div>
+
+							<div class="details">
+								<span class="name detail">
+									{{ profile.rank|upper }} {{ profile|full_name }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s home address">
+									<i class="fa-solid fa-location-dot"></i>
+									Address: {{ profile.address|title }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s profiled date">
+									<!-- <i class="fa-solid fa-square-person-confined"></i> -->
+									<i class="fa-solid fa-clock"></i>
+									Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s assigned date">
+									<i class="fa-solid fa-clipboard-check"></i>
+									Assigned: {{ profile.date_assigned|date:"M j, Y" }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s designation">
+									<i class="fa-solid fa-id-card"></i>
+									Designation: {{ profile.designation }}
+								</span>
+							</div>
+						</a>
+					{% endfor %}
+				{% else %}
+					<h3 class="muted">There are no personnels profiled.</h3>
+				{% endif %}
+			</div>		
+
+			<!-- Inmates -->
+			 
+			<div class="card-list-new">
+				<div class="header">
+					<h5 class="title">RECENTLY ADDED INMATES</h5>
+
+					<div class="actions">
+						<a class="btn btn-empty-inmate" href="{% url 'profile-add' 'inmate' %}" title="Add new inmate profile">
+							<i class="fa-solid fa-square-plus"></i>
+							<span>Add New Profile</span>
+						</a>
+					</div>
+				</div>
+
+				{% if inmates %}
+					{% for profile in inmates %}
+						<a class="card-new inmate" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+							<div class="picture">
+								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+							</div>
+
+							<div class="details">
+								<span class="name detail">
+									{{ profile.rank|upper }} {{ profile|full_name }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s home address">
+									<i class="fa-solid fa-location-dot"></i>
+									Address: {{ profile.address|title }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s profiled date">
+									<i class="fa-solid fa-clock"></i>
+									Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s arrested date">
+									<i class="fa-solid fa-people-robbery"></i>
+									Arrested: {{ profile.date_arrested|date:"M j, Y" }}
+								</span>
+								<span class="detail" title="{{ profile|full_name }}'s crime violation(s)">
+									<i class="fa-solid fa-gavel"></i>
+									Violation(s): {{ profile.crime_violated }}
+								</span>
+							</div>
+						</a>
+					{% endfor %}
+				{% else %}
+					<h3 class="muted">There are no inmates profiled.</h3>
+				{% endif %}
 			</div>
-		{% else %}
-			<h2>There are no inmates profiled.</h2>
-		{% endif %}
+		</div>
 	</div>
 {% endblock content %}

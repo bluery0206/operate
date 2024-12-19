@@ -4,50 +4,52 @@
 {% block content %}
 
 	<div class="profile">
-		<div class=" {{ profile.p_type }}  header">
-			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
-				<span class="material-symbols-outlined">arrow_back_ios</span>
+		<div class="header bg-gradient-{{ profile.p_type }}">
+			<a class="btn" href="javascript:history.go(-1)">
+				<i class="fa-solid fa-caret-left"></i>
 				<span>Back</span>
 			</a>
 
-			<h2 class="title">{{ profile.f_name }}'s Profile</h2>
+			<h2 class="title">{{ profile }}</h2>
 			
-			<div class="buttons">
-				<a class="btn btn-light-outline-{{ profile.p_type }}" href="{% url 'profile-update' profile.p_type profile.pk %}?prev={{ request.path }}">
-					<span class="material-symbols-outlined">edit</span>
-					<span>Edit Profile</span>
+			<div class="actions">
+				<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+					<i class="fa-solid fa-pen-to-square"></i>
+					<span>Edit</span>
 				</a>
 			
 				{% if profile.is_archived %}
-					<a class="btn btn-outline-light" href="{% url 'archive-remove' profile.p_type profile.pk %}">
-						<span class="material-symbols-outlined">unarchive</span>
+					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+						<span class="material-symbols-rounded">unarchive</span>
 						<span>Unarchive</span>
 					</a>
 				{% else %}
-					<a class="btn btn-outline-light" href="{% url 'archive-add' profile.p_type profile.pk %}">
-						<span class="material-symbols-outlined">archive</span>
-						<span>Add to archive</span>
+					<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+						<span class="material-symbols-rounded">archive</span>
+						<span>Archive</span>
 					</a>
 				{% endif %}
 				
 				<div class="dropdown">
-					<button class="btn btn-outline-light"><span class="material-symbols-outlined">more_vert</span></button>
+					<button class="btn">
+						<i class="fa-solid fa-download"></i>
+						<span>Download</span>	
+					</button>
 
 					<div class="content">
-						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}">
-							<span class="material-symbols-outlined">docx</span>
-							<span>Download (.docx)</span>
+						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
+							<i class="fa-solid fa-file-word"></i>
+							<span>as .docx</span>
 						</a>
-						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}">
-							<span class="material-symbols-outlined">picture_as_pdf</span>
-							<span>Download (.pdf)</span>
-						</a>
-						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
-							<span class="material-symbols-outlined">delete</span>
-							<span>Delete</span>
+						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
+							<i class="fa-solid fa-file-pdf"></i>
+							<span>as .pdf</span>
 						</a>
 					</div>
 				</div>
+				<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+					<i class="fa-solid fa-trash"></i>
+				</a>
 			</div>
 		</div>
 
@@ -55,77 +57,82 @@
 			<div class="picture">
 				<img src="{{ profile.thumbnail.url }}" alt="">
 			</div>
+
 			<hr>
-			<div class="field-list">
+
+			<div class="fields">
 				<div class="field full-name">
 					<label for="">Full Name:</label>
-					<div class="field-list">
-						<div class="field">
+
+					<div class="fields">
+						<div class="form-field">
 							<label for="">First name</label>
 							<input class="form-control" type="text" value="{{ profile.f_name|title }}" placeholder="N/A" disabled>
 						</div>
-						<div class="field">
+						<div class="form-field">
 							<label for="">Middle name</label>
 							<input class="form-control" type="text" value="{{ profile.m_name|title }}" placeholder="N/A" disabled>
 						</div>
-						<div class="field">
+						<div class="form-field">
 							<label for="">Last name</label>
 							<input class="form-control" type="text" value="{{ profile.l_name|title }}" placeholder="N/A" disabled>
 						</div>
-						<div class="field">
+						<div class="form-field">
 							<label for="">Suffix</label>
 							<input class="form-control" type="text" value="{{ profile.suffix|title }}" placeholder="N/A" disabled>
 						</div>
 					</div>
 				</div> <!-- full name  -->
 
-				<div class="field">
+				<hr>
+
+				<div class="form-field">
 					<label for="">Age:</label>
 					<input class="form-control" type="number" value="{{ profile.age}}" placeholder="N/A" disabled>
 				</div>
 
-				<div class="field">
+				<div class="form-field">
 					<label for="">Address:</label>
 					<input class="form-control" type="text" value="{{ profile.address|title }}" placeholder="N/A" disabled>
 				</div>
 
-				<div class="field">
+				<div class="form-field">
 					<label for="">Civil status:</label>
 					<input class="form-control" type="text" value="{{ profile.civil_status|title }}" placeholder="N/A" disabled>
 				</div>
 
-				<div class="field">
+				<div class="form-field">
 					<label for="">Date profiled:</label>
 					<input class="form-control" type="text" value="{{ profile.date_profiled }}" placeholder="N/A" disabled>
 				</div>
 
 				{% if profile.p_type == 'personnel' %}
-					<div class="field">
+					<div class="form-field">
 						<label for="">Rank:</label>
 						<input class="form-control" type="text" value="{{ profile.rank|upper }}" placeholder="N/A" disabled>
 					</div>
-					<div class="field">
+					<div class="form-field">
 						<label for="">Date assigned:</label>
 						<input class="form-control" type="text" value="{{ profile.date_assigned }}" placeholder="N/A" disabled>
 					</div>
-					<div class="field">
+					<div class="form-field">
 						<label for="">Date relieved:</label>
 						<input class="form-control" type="text" value="{{ profile.date_relieved }}" placeholder="N/A" disabled>
 					</div>
-					<div class="field">
+					<div class="form-field">
 						<label for="">Designation:</label>
 						<input class="form-control" type="text" value="{{ profile.designation|title }}" placeholder="N/A" disabled>
 					</div>
 				{% else %}
-					<div class="field">
+					<div class="form-field">
 						<label for="">Date arrested:</label>
 						<input class="form-control" type="text" value="{{ profile.date_arrested }}" placeholder="N/A" disabled>
 					</div>
-					<div class="field">
+					<div class="form-field">
 						<label for="">Date committed:</label>
 						<input class="form-control" type="text" value="{{ profile.date_committed }}" placeholder="N/A" disabled>
 					</div>
-					<div class="field">
+					<div class="form-field">
 						<label for="">Crime violated:</label>
 						<input class="form-control" type="text" value="{{ profile.crime_violated }}" placeholder="N/A" disabled>
 					</div>
