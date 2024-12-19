@@ -112,7 +112,6 @@ h1, h2, h3, h4, h5, h6 {
 body {
     /* background: #F4F4F5; */
     background: var(--white-1);
-    min-height: 100dvh;
     font-family: var(--font-regular);
 }
 
@@ -177,10 +176,9 @@ header h4 {
     transition: all 0.2s;
     border: none;
     border-left: 0px solid var(--secondary);
-    outline: 1px solid rgba(255, 255, 255, 0);
+    outline: none;
     font-size: 1em;
     /* outline: 1px solid red; */
-    font-family: var(--font-bold);
 
     i, .material-symbols-rounded {
         text-align: center;
@@ -214,6 +212,20 @@ header .active {
 .btn-danger {
     background: var(--danger);
     color: var(--text-white);
+}
+.btn-primary {
+    background: var(--primary);
+    color: var(--text-white);
+}
+.btn-success {
+    background: var(--success);
+    color: var(--text-white);
+}
+.btn:hover {
+    filter: brightness(105%);
+}
+.btn:focus {
+    filter: brightness(115%);
 }
 .btn-empty-personnel {
     color: var(--personnel);
@@ -251,7 +263,7 @@ header .active {
     grid-template-columns: 49% 49%;
     justify-content: space-between;
 }
-.card-list-new {
+.card-list {
     /* border: 1px solid green; */
     padding: 1.5em;
     border-radius: 10px;
@@ -271,7 +283,7 @@ header .active {
         }
     }
 
-    .card-new {
+    .card {
         border-radius: 15px;
         padding: 1em;
         background: var(--white-1);
@@ -328,21 +340,21 @@ header .active {
         }
     }
 
-    .card-new.personnel {
+    .card.personnel {
         background: var(--personnel-gradient);
         background-size: 2% 100%;
         background-repeat: no-repeat;
         transition: all 0.3s ease-in-out;
         transform-origin: left;
     }
-    .card-new.inmate {
+    .card.inmate {
         background: var(--inmate-gradient);
         background-size: 2% 100%;
         background-repeat: no-repeat;
         transition: all 0.3s ease-in-out;
         transform-origin: left;
     }
-    .card-new:hover {
+    .card:hover {
         background-size: 25% 100%;
         color: var(--text-white);
     }
@@ -389,70 +401,66 @@ header .active {
 
 
 .profile {
-    /* border: 1px solid red; */
-
     .header {
-        /* border: 1px solid red; */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5em 2em;
-        color: var(--text-white);
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        padding         : 0.5em 2em;
+        color           : var(--text-white);
 
         .actions {
-            background: var(--white);
-            padding: 0 1em;
-            border-radius: 10px;
-            display: flex;
-            gap: 0.25em;
-            align-items: center;
+            background      : var(--white);
+            border-radius   : 10px;
+            display         : flex;
+            gap             : 0.25em;
+            align-items     : center;
         }
 
         > .btn {
-        color: var(--text-white);
-        /* border: 1px solid red; */
+            color: var(--text-white);
         }
     }
 
     .body {
-        display: flex;
-        /* border: 1px solid red; */
-        gap: 1em;
-        padding: 2em;
-        margin: 1em 2em 2em 2em;
-        border-radius: 10px;
-        background: var(--white);
+        display         : grid;
+        grid-template-columns: var(--img-size-r) 1px auto;
+        gap             : 1em;
+        padding         : 2em;
+        margin          : 1em 2em 2em 2em;
+        border-radius   : 10px;
+        background      : var(--white);
+
 
         .picture {
-            width: var(--img-size-r);
-            height: var(--img-size-r);
-            border-radius: 10px;
+            display         : grid;
+            border-radius   : 10px;
+            overflow        : hidden;
 
             img {
-                width: inherit;
-                height: inherit;
-                object-fit: contain;
+                width       : var(--img-size-r);
+                height      : var(--img-size-r);
+                object-fit  : cover;
             }
 
             .image-fields {
-                padding: 0.125em;
-                display: grid;
-                overflow: hidden;
-                row-gap: 0.5em;
+                padding     : 0.125em;
+                display     : grid;
+                overflow    : hidden;
+                row-gap     : 0.5em;
 
                 .field {
-                    width: 100%;
-                    display: grid;
-                    row-gap: 0.25em;
+                    width   : 100%;
+                    display : grid;
+                    row-gap : 0.25em;
 
                     .form-control {
                         width: 100%;
                     }
 
                     .fields .form-field {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.25em;
+                        display     : flex;
+                        align-items : center;
+                        gap         : 0.25em;
 
                         label {
                             width: fit-content;
@@ -463,13 +471,10 @@ header .active {
         }
 
         > .fields {
-            width: 100%;
-            /* border: 1px solid red; */
             display: grid;
             row-gap: 0.75em;
 
             .form-control {
-                /* border: 1px solid green; */
                 width: 100%;
             }
         }
@@ -492,21 +497,144 @@ header .active {
  
     }
 }
+body:has(.profiles) {
+}
+.profiles {
+    display: grid;
+    grid-template-columns: 75% 25%;
+
+    .left {
+        display: grid;
+        padding: 1em 1em;
+        row-gap: 1em;
+        align-content: start;
+        height: 100dvh;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .actions {
+                display: flex;
+                gap: 0.25em;
+            }
+        }
+
+        .card-list {
+            display: grid;
+            grid-template-columns: 49% 49%;
+            gap: 0.5em;
+            max-height: 100dvh;
+            row-gap: 0.5em;
+        }
+    }
+
+    .right {
+        background: var(--white-2);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1em;
+        color: var(--muted);
+
+        h4 {
+            color: var(--muted);
+        }
+
+        .filter-bar {
+            display: grid;
+            row-gap: 1em;
+            padding: 0.125em;
+            overflow: hidden;
+
+            .search-form {
+                display: grid;
+                row-gap: 0.5em;
+            } 
+
+            .filter-form {
+                display: grid;
+                row-gap: 0.5em;
+
+                .form-field {
+                    row-gap: 0.25em;
+                    display: grid;
+                }   
+            }
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5em;
+            padding: 0.25em 0;
+
+            .btn-secondary {
+                width: 100%;
+            }
+
+            .btn {
+                justify-content: center;
+                padding: 0.5em 0.125em;
+            }
+        }
+
+/*                 
+        .form-control {
+            border-left: 0px solid var(--secondary);
+            border-bottom: 0px solid var(--secondary);
+            background: var(--white-1);
+            border-radius: 10px;
+            transition: all 0.1s;
+            outline: none;
+        }
+        .form-control:hover{
+            border-left: 2px solid var(--secondary);
+            border-bottom: 1px solid var(--secondary);
+            outline: none;
+        }
+        .form-control:focus{
+            border-left: 5px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
+            outline: none;
+            background: var(--white);
+        }  */
+    }
+
+}
 
 
 
 .form-field {
     display: flex;
+    align-items: center;
+
     label {
         width: 10em;
     }
 }
 .form-control {
     border: none;
-    outline: 1px solid var(--dark);
+    /* outline: 1px solid var(--primary); */
+    outline: none;
+    background: var(--white-1);
     padding: 0.5em 1em;
     border-radius: 5px;
+    transition: all 0.1s;
 }
+.form-control:hover{
+    /* border-left: 2px solid var(--secondary);
+    border-bottom: 1px solid var(--secondary); */
+    outline: 1px solid var(--primary);
+}
+.form-control:focus{
+    /* border-left: 5px solid var(--primary);
+    border-bottom: 3px solid var(--primary);
+    background: var(--white); */
+    outline: 2px solid var(--primary);
+} 
 
 
 

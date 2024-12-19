@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import (
@@ -47,7 +48,7 @@ INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 ]
 
 
-
+@login_required
 def all_personnel(request):
 	context = {
 		'page_title'	: "Personnel Profiles",
@@ -125,7 +126,7 @@ def all_personnel(request):
 	return render(request, "profiles/all_personnel.html", context)
 
 
-
+@login_required
 def all_inmate(request):
 	context = {
 		'page_title'	: "Inmate Profiles",
@@ -197,6 +198,7 @@ def all_inmate(request):
 
 
 
+@login_required
 def profile(request, p_type, pk):
 	prev 	= request.GET.get("prev", "")
 
@@ -212,6 +214,7 @@ def profile(request, p_type, pk):
 
 
 
+@login_required
 def profile_add(request, p_type):
 	defset		= OPERATE_SETTINGS.objects.first()
 	camera		= defset.camera
@@ -311,6 +314,7 @@ def profile_add(request, p_type):
 
 
 
+@login_required
 def profile_update(request, p_type, pk):
 	prev_page 	= request.GET.get("prev", "/")
 	curr_page	= request.build_absolute_uri()
@@ -406,6 +410,7 @@ def profile_update(request, p_type, pk):
 
 
 
+@login_required
 def profile_delete(request, p_type, pk):
 	prev = request.GET.get("prev", "")
 
@@ -430,6 +435,7 @@ def profile_delete(request, p_type, pk):
 	return render(request, "app/base_confirmation.html", context)
 
 
+@login_required
 def profile_delete_all(request, p_type):
 	prev	= request.GET.get("prev", "")
 	state	= request.GET.get("state", "open")
@@ -461,6 +467,7 @@ def profile_delete_all(request, p_type):
 
 
 
+@login_required
 def archive_add(request, p_type, pk):
 	prev 	= request.GET.get("prev", "")
 
@@ -487,6 +494,7 @@ def archive_add(request, p_type, pk):
 
 
 
+@login_required
 def archive_remove(request, p_type, pk):
 	prev 	= request.GET.get("prev", "")
 
@@ -512,6 +520,7 @@ def archive_remove(request, p_type, pk):
 
 
 
+@login_required
 def archive_add_all(request, p_type):
 	prev = request.GET.get("prev", "")
 
@@ -538,6 +547,7 @@ def archive_add_all(request, p_type):
 
 
 
+@login_required
 def archive_remove_all(request, p_type):
 	prev 	= request.GET.get("prev", "")
 
@@ -563,6 +573,7 @@ def archive_remove_all(request, p_type):
 
 
 
+@login_required
 def profile_download(_, p_type, pk, d_type):
 	personnel	= [profiles_models.Personnel, OPERATE_SETTINGS.objects.first().template_personnel]
 	inmate		= [profiles_models.Inmate, OPERATE_SETTINGS.objects.first().template_inmate]

@@ -16,7 +16,7 @@
 		{% endif %}
 
 		<div class="new-profiles">
-			<div class="card-list-new">
+			<div class="card-list">
 				<div class="header">
 					<h5 class="title">RECENTLY ADDED PERSONNELS</h5>
 
@@ -30,7 +30,7 @@
 
 				{% if personnels %}
 					{% for profile in personnels %}
-						<a class="card-new personnel" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+						<a class="card personnel" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
 							<div class="picture">
 								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
 							</div>
@@ -66,7 +66,7 @@
 
 			<!-- Inmates -->
 			 
-			<div class="card-list-new">
+			<div class="card-list">
 				<div class="header">
 					<h5 class="title">RECENTLY ADDED INMATES</h5>
 
@@ -80,7 +80,7 @@
 
 				{% if inmates %}
 					{% for profile in inmates %}
-						<a class="card-new inmate" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+						<a class="card inmate" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
 							<div class="picture">
 								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
 							</div>
