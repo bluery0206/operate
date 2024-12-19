@@ -26,37 +26,43 @@
 			</div>
 		</div>
 
+
 		<div class="body">
 			<div class="picture">
 				<img src="{{ profile.thumbnail.url }}" alt="" id="imagePreview">
 
-				<div class="form upload_image">
-					{% if form.raw_image.errors %}
-						<div class="alert alert-danger">
-							{% for error in for.raw_image.errors %}
-								{{ error }}
-							{% endfor %}
-						</div>
-					{% endif %}
-
-					<h3>Upload image</h3>
-					<input class="form-control" type="file" name="raw_image" id="raw_image">
-				</div>
-
-				<span>or</span>
-
-				<div class="form capture_image">
-					<button class="btn btn-secondary center" name="option_camera" value="1" type="submit">
-						<i class="fa-solid fa-camera"></i>
-						<span>Take a picture</span>
-					</button>
+				<div class="image-fields">
+					<div class="field">
+						{% comment %} 						
+							{% if form.raw_image.errors %}
+								<div class="alert alert-danger">
+									{% for error in for.raw_image.errors %}
+										{{ error }}
+									{% endfor %}
+								</div>
+							{% endif %}
+						{% endcomment %}
+					</div>
+					<div class="field">
+						<h3>Upload image</h3>
+						<input class="form-control" type="file" name="raw_image" id="raw_image">
+					</div>
 	
-					<div class="fields">
-						<div class="form-field">
-							<label for="camera">Camera: </label>
-							<input class="form-control" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+					<span>or</span>
+	
+					<div class="field">
+						<button class="btn btn-secondary" name="option_camera" value="1" type="submit">
+							<i class="fa-solid fa-camera"></i>
+							<span>Take a picture</span>
+						</button>
+		
+						<div class="fields">
+							<div class="form-field">
+								<label for="camera">Camera: </label>
+								<input class="form-control" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+							</div>
+							<small>(Try to change if doesn't work)</small>
 						</div>
-						<small>(Try to change if doesn't work)</small>
 					</div>
 				</div>
 			</div>
@@ -124,6 +130,8 @@
 						</div>
 					</div>
 				</div>
+
+				<hr>
 
 				<div class="form-field">
 					{{ form.age.label_tag }}

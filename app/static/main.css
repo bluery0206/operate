@@ -75,7 +75,7 @@
     --white-1:#F4F4F5;
     --white-2 :#E8EAED;
 
-    --text-white: #FAFAFA;
+    --text-white: var(--white);
     --text-white-1:#F4F4F5;
     --text-white-2 :#E8EAED;
 
@@ -185,6 +185,7 @@ header h4 {
     i, .material-symbols-rounded {
         text-align: center;
         width: 20px;
+        overflow: hidden;
     }
     .material-symbols-rounded{
         padding: 0;
@@ -196,7 +197,7 @@ header .btn {
     font-family: var(--font-regular);
     width: 100%;
 }
-header .btn:hover {
+header .btn:hover, header .btn:focus {
     border-left: 5px solid var(--secondary);
     background: var(--white-1);
 }
@@ -206,23 +207,26 @@ header .active {
     font-family: var(--font-bold);
     color: var(--primary);
 }
-.btn-empty-personnel {
-    color: var(--personnel);
-}
-.btn-empty-personnel:hover {
-    outline: 1px solid var(--personnel);
-}
-.btn-empty-inmate {
-    color: var(--inmate);
-}
-.btn-empty-inmate:hover {
-    outline: 1px solid var(--inmate);
+.btn-secondary {
+    background: var(--secondary);
+    color: var(--text-white);
 }
 .btn-danger {
     background: var(--danger);
     color: var(--text-white);
 }
-
+.btn-empty-personnel {
+    color: var(--personnel);
+}
+.btn-empty-personnel:hover, .btn-empty-personnel:focus {
+    outline: 1px solid var(--personnel);
+}
+.btn-empty-inmate {
+    color: var(--inmate);
+}
+.btn-empty-inmate:hover, .btn-empty-inmate:focus  {
+    outline: 1px solid var(--inmate);
+}
 
 
 .facesearch {
@@ -429,6 +433,33 @@ header .active {
                 height: inherit;
                 object-fit: contain;
             }
+
+            .image-fields {
+                padding: 0.125em;
+                display: grid;
+                overflow: hidden;
+                row-gap: 0.5em;
+
+                .field {
+                    width: 100%;
+                    display: grid;
+                    row-gap: 0.25em;
+
+                    .form-control {
+                        width: 100%;
+                    }
+
+                    .fields .form-field {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.25em;
+
+                        label {
+                            width: fit-content;
+                        }
+                    }
+                }
+            }
         }
 
         > .fields {
@@ -437,8 +468,9 @@ header .active {
             display: grid;
             row-gap: 0.75em;
 
-            .field {
+            .form-control {
                 /* border: 1px solid green; */
+                width: 100%;
             }
         }
 
@@ -461,6 +493,8 @@ header .active {
     }
 }
 
+
+
 .form-field {
     display: flex;
     label {
@@ -473,6 +507,8 @@ header .active {
     padding: 0.5em 1em;
     border-radius: 5px;
 }
+
+
 
 .dropdown{
     width: fit-content;
@@ -511,6 +547,35 @@ header .active {
         display: grid;
     }
 }
+
+
+
+
+.messages {
+    display: grid;
+    row-gap: 0.5em;
+}
+.alert, .message {
+    border-radius: 10px;
+    padding: 0.5em 1em;
+    display: flex;
+    font-family: var(--font-bold);
+    background: none;
+    color: var(--text-dark);
+}
+.alert-danger {
+    background: var(--danger);
+    color: var(--text-white);
+}
+.message-success {
+    background: var(--success);
+    color: var(--text-white);
+}
+.message-error {
+    background: var(--danger);
+    color: var(--text-white);
+}
+
 /* 
 
 
