@@ -30,34 +30,72 @@
 
 				{% if personnels %}
 					{% for profile in personnels %}
-						<a class="card personnel" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
-							<div class="picture">
-								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+						<div class="card personnel">
+							<div class="actions">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</a>
+							
+								{% if profile.is_archived %}
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+										<span class="material-symbols-rounded">unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+										<span class="material-symbols-rounded">archive</span>
+									</a>
+								{% endif %}
+								
+								<div class="dropdown">
+									<button class="btn">
+										<i class="fa-solid fa-download"></i>
+									</button>
+				
+									<div class="content">
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
+											<i class="fa-solid fa-file-word"></i>
+											<span>as .docx</span>
+										</a>
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
+											<i class="fa-solid fa-file-pdf"></i>
+											<span>as .pdf</span>
+										</a>
+									</div>
+								</div>
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+									<i class="fa-solid fa-trash"></i>
+								</a>
 							</div>
 
-							<div class="details">
-								<span class="name detail">
-									{{ profile.rank|upper }} {{ profile|full_name }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s home address">
-									<i class="fa-solid fa-location-dot"></i>
-									Address: {{ profile.address|title }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s profiled date">
-									<!-- <i class="fa-solid fa-square-person-confined"></i> -->
-									<i class="fa-solid fa-clock"></i>
-									Profiled: {{ profile.date_profiled|date:"M j, Y" }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s assigned date">
-									<i class="fa-solid fa-clipboard-check"></i>
-									Assigned: {{ profile.date_assigned|date:"M j, Y" }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s designation">
-									<i class="fa-solid fa-id-card"></i>
-									Designation: {{ profile.designation }}
-								</span>
-							</div>
-						</a>
+							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+								<div class="picture">
+									<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+								</div>
+	
+								<div class="details">
+									<span class="name detail">
+										{{ profile.rank|upper }} {{ profile|full_name }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s home address">
+										<i class="fa-solid fa-location-dot"></i>
+										Address: {{ profile.address|title }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s profiled date">
+										<!-- <i class="fa-solid fa-square-person-confined"></i> -->
+										<i class="fa-solid fa-clock"></i>
+										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s assigned date">
+										<i class="fa-solid fa-clipboard-check"></i>
+										Assigned: {{ profile.date_assigned|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s designation">
+										<i class="fa-solid fa-id-card"></i>
+										Designation: {{ profile.designation }}
+									</span>
+								</div>
+							</a>
+						</div>
 					{% endfor %}
 				{% else %}
 					<h3 class="muted">There are no personnels profiled.</h3>
@@ -80,33 +118,71 @@
 
 				{% if inmates %}
 					{% for profile in inmates %}
-						<a class="card inmate" href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
-							<div class="picture">
-								<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+						<div class="card inmate">
+							<div class="actions">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</a>
+							
+								{% if profile.is_archived %}
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+										<span class="material-symbols-rounded">unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+										<span class="material-symbols-rounded">archive</span>
+									</a>
+								{% endif %}
+								
+								<div class="dropdown">
+									<button class="btn">
+										<i class="fa-solid fa-download"></i>
+									</button>
+				
+									<div class="content">
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
+											<i class="fa-solid fa-file-word"></i>
+											<span>as .docx</span>
+										</a>
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
+											<i class="fa-solid fa-file-pdf"></i>
+											<span>as .pdf</span>
+										</a>
+									</div>
+								</div>
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+									<i class="fa-solid fa-trash"></i>
+								</a>
 							</div>
 
-							<div class="details">
-								<span class="name detail">
-									{{ profile.rank|upper }} {{ profile|full_name }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s home address">
-									<i class="fa-solid fa-location-dot"></i>
-									Address: {{ profile.address|title }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s profiled date">
-									<i class="fa-solid fa-clock"></i>
-									Profiled: {{ profile.date_profiled|date:"M j, Y" }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s arrested date">
-									<i class="fa-solid fa-people-robbery"></i>
-									Arrested: {{ profile.date_arrested|date:"M j, Y" }}
-								</span>
-								<span class="detail" title="{{ profile|full_name }}'s crime violation(s)">
-									<i class="fa-solid fa-gavel"></i>
-									Violation(s): {{ profile.crime_violated }}
-								</span>
-							</div>
-						</a>
+							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}"> 
+								<div class="picture">
+									<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+								</div>
+	
+								<div class="details">
+									<span class="name detail">
+										{{ profile.rank|upper }} {{ profile|full_name }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s home address">
+										<i class="fa-solid fa-location-dot"></i>
+										Address: {{ profile.address|title }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s profiled date">
+										<i class="fa-solid fa-clock"></i>
+										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s arrested date">
+										<i class="fa-solid fa-people-robbery"></i>
+										Arrested: {{ profile.date_arrested|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s crime violation(s)">
+										<i class="fa-solid fa-gavel"></i>
+										Violation(s): {{ profile.crime_violated }}
+									</span>
+								</div>
+							</a>
+						</div>
 					{% endfor %}
 				{% else %}
 					<h3 class="muted">There are no inmates profiled.</h3>

@@ -15,94 +15,90 @@
 </head>
 
 <body lang="en">
-	<div class="main">
-		<div class="left">
-			<header>
-				<div class="section nav">
-					<div class="section">
-						<a class="title" href="{% url 'operate-index' %}">
-							<img src="{% static 'images/operate.png' %}" alt="operate.png">
-							<span>OPeraTE</span>
-						</a>
-					</div>
-					<div class="section">
-						<a class="btn {% if active == 'home' %}active{% endif %}" href="{% url 'operate-index' %}">
-							<i class="fa-solid fa-house"></i>
-							<span>Home</span>
-						</a>
-					</div>
-					
-					<div class="section">
-						<a class="btn facesearch {% if active == 'facesearch' %}active{% endif %}" href="{% url 'facesearch' %}">
-							<i class="fa-solid fa-image-portrait"></i>
-							<span>FaceSearch</span>
-						</a>
-					</div>
-	
-					<div class="section">
-						<h4>Profiles</h4>
-						
-						<a class="btn {% if active == 'profiles personnel' %}active{% endif %}" href="{% url 'profiles-all-personnel'%}">
-							<i class="fa-solid fa-user-shield"></i>
-							<span>Personnel</span>
-						</a>
-						<a class="btn {% if active == 'profiles inmate' %}active{% endif %}" href="{% url 'profiles-all-inmate'%}">
-							<i class="fa-solid fa-handcuffs"></i>
-							<span>Inmates</span>
-						</a>
-					</div>
-					
-					<div class="section">
-						<h4>Add new profile</h4>
-	
-						<a class="btn {% if active == 'add personnel' %}active{% endif %}" href="{% url 'profile-add' 'personnel' %}" title="Add new profile">
-							<i class="fa-solid fa-user-shield"></i>
-							<span>Personnel</span>
-						</a>
-						<a class="btn {% if active == 'add inmate' %}active{% endif %}" href="{% url 'profile-add' 'inmate' %}" title="Add new profile">
-							<i class="fa-solid fa-handcuffs"></i>
-							<span>Inmate</span>
-						</a>
-					</div>
+	<div class="body">
+		<div class="side-nav">
+			<div class="nav">
+				<div class="section">
+					<a class="title" href="{% url 'operate-index' %}">
+						<img src="{% static 'images/operate.png' %}" alt="operate.png">
+						<span>OPeraTE</span>
+					</a>
 				</div>
-				<div class="section user">
+				<div class="section">
+					<a class="btn {% if active == 'home' %}active{% endif %}" href="{% url 'operate-index' %}">
+						<i class="fa-solid fa-house"></i>
+						<span>Home</span>
+					</a>
+				</div>
+				<div class="section">
+					<a class="btn facesearch {% if active == 'facesearch' %}active{% endif %}" href="{% url 'facesearch' %}">
+						<i class="fa-solid fa-image-portrait"></i>
+						<span>FaceSearch</span>
+					</a>
+				</div>
+
+				<div class="section">
+					<h4>Profiles</h4>
+					
+					<a class="btn {% if active == 'profiles personnel' %}active{% endif %}" href="{% url 'profiles-all-personnel'%}">
+						<i class="fa-solid fa-user-shield"></i>
+						<span>Personnel</span>
+					</a>
+					<a class="btn {% if active == 'profiles inmate' %}active{% endif %}" href="{% url 'profiles-all-inmate'%}">
+						<i class="fa-solid fa-handcuffs"></i>
+						<span>Inmates</span>
+					</a>
+				</div>
+				
+				<div class="section">
+					<h4>Add new profile</h4>
+
+					<a class="btn {% if active == 'add personnel' %}active{% endif %}" href="{% url 'profile-add' 'personnel' %}" title="Add new profile">
+						<i class="fa-solid fa-user-shield"></i>
+						<span>Personnel</span>
+					</a>
+					<a class="btn {% if active == 'add inmate' %}active{% endif %}" href="{% url 'profile-add' 'inmate' %}" title="Add new profile">
+						<i class="fa-solid fa-handcuffs"></i>
+						<span>Inmate</span>
+					</a>
+				</div>
+			</div>
+
+			<div class="nav">
+				<div class="section">
 					<h4>User: {{ user.username }} </h4>
-					
-					<div class="nav">
-						<div class="section">
-							<a class="btn {% if active == 'setting' %}active{% endif %}" href="{% url 'operate-settings' %}">
-								<i class="fa-solid fa-gear"></i>
-								<span>Settings</span>
-							</a>
-							<a class="btn" href="/admin/">
-								<i class="fa-solid fa-user-tie"></i>
-								<span>Admin</span>
-							</a>
-							<form action="{% url 'user-logout' %}" method="POST">
-								{% csrf_token %}
-			
-								<button class="btn" type="submit">
-									<i class="fa-solid fa-right-from-bracket"></i>
-									<span>Logout</span>
-								</button>
-							</form>
-						</div>
-					</div>
+				
+					<a class="btn {% if active == 'setting' %}active{% endif %}" href="{% url 'operate-settings' %}">
+						<i class="fa-solid fa-gear"></i>
+						<span>Settings</span>
+					</a>
+					<a class="btn" href="/admin/">
+						<i class="fa-solid fa-user-tie"></i>
+						<span>Admin</span>
+					</a>
+					<form action="{% url 'user-logout' %}" method="POST">
+						{% csrf_token %}
+	
+						<button class="btn" type="submit">
+							<i class="fa-solid fa-right-from-bracket"></i>
+							<span>Logout</span>
+						</button>
+					</form>
 				</div>
-			</header>
+			</div>
 		</div>
-		<div class="right">
+
+		<div class="main">
 			<main>
 				{% block content %}
 				{% endblock content %}
 			</main>
 					
-					
 		
-			{% comment %} <footer>
+			<footer>
 				<div class="footer-wrapper">
 					<div class="header">
-						<img src="{% static 'images/operate.png' %}" alt="operate.png">
+						<img src="{% static 'images/operate.png' %}" alt="operate.png" style="height: 100px;">
 		
 						<div class="title">
 							<h2>OPeraTE</h2>
@@ -204,7 +200,7 @@
 						</div>
 					</div>
 				</div>
-			</footer> {% endcomment %}
+			</footer>
 		</div>
 	</div>
 </body>
