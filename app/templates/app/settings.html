@@ -1,32 +1,27 @@
 {% extends 'app/base_headered.html' %}
 
 {% block content %}
-    <form class="profile" method="POST" enctype="multipart/form-data">
+    <form class="settings" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="header personnel">
-			<a class="btn btn-outline-light" href="javascript:history.go(-1)">
-				<span class="material-symbols-outlined">arrow_back_ios</span>
-				<span>Back</span>
-			</a>
-            
+        <div class="header">
             <h2 class="title">Settings</h2>
             
-            <div class="buttons">
-                <button type="submit" class="btn btn-light">
-                    <span class="material-symbols-outlined">Save</span>
+            <div class="actions">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-solid fa-floppy-disk"></i>
                     Save Changes
                 </button>
             </div>
         </div>
 
-        <div class="body settings">
-            <div class="settings-section">
-                <div class="settings-header">
-                    <h3>Pagination</h3>
+        <div class="body">
+            <div class="section">
+                <div class="header">
+                    <h4>Pagination</h4>
                 </div>
 
-                <div class="settings-block">
+                <div class="block">
                     <div>
                         {% if form.profiles_per_page.errors %}
                             <div class="alert alert-danger">
@@ -36,9 +31,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.profiles_per_page.label_tag }}
-                            {{ form.profiles_per_page }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.profiles_per_page.label_tag }}
+                                {{ form.profiles_per_page }}
+                            </div>
         
                             <small>The number of profiles to be shown per page. The larger the amount will decrease the performance of the website.</small>
                         </div>
@@ -53,9 +50,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.thumbnail_size.label_tag }}
-                            {{ form.thumbnail_size }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.thumbnail_size.label_tag }}
+                                {{ form.thumbnail_size }}
+                            </div>
         
                             <small>Determines how small or big the thumbnail resolution will be. The smaller the thumbnail size will increase the performance of the website however makes the profile images look very pixelated.</small>
                         </div>
@@ -65,12 +64,12 @@
 
 
 
-            <div class="settings-section">
-                <div class="settings-header">
-                    <h3>Camera and Cropping</h3>
+            <div class="section">
+                <div class="header">
+                    <h4>Camera and Cropping</h4>
                 </div>
 
-                <div class="settings-block">
+                <div class="block">
                     <div>
                         {% if form.camera.errors %}
                             <div class="alert alert-danger">
@@ -80,9 +79,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.camera.label_tag }}
-                            {{ form.camera }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.camera.label_tag }}
+                                {{ form.camera }}
+                            </div>
 
                             <small>The default camera is determined by your device's camera setup, usually starting with the primary camera (0).</small>
                         </div>
@@ -97,9 +98,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.clip_camera.label_tag }}
-                            {{ form.clip_camera }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.clip_camera.label_tag }}
+                                {{ form.clip_camera }}
+                            </div>
 
                             <small>Whether to crop the camera or not. Used with the default_crop_size for saving.</small>
                         </div>
@@ -114,9 +117,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.clip_size.label_tag }}
-                            {{ form.clip_size }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.clip_size.label_tag }}
+                                {{ form.clip_size }}
+                            </div>
 
                             <small>The size of the the camera. May not work if values are too large or small and may depend on the webcam's resolution.</small>
                         </div>
@@ -126,12 +131,12 @@
             
 
 
-            <div class="settings-section">
-                <div class="settings-header">
-                    <h3>Search</h3>
+            <div class="section">
+                <div class="header">
+                    <h4>Search</h4>
                 </div>
 
-                <div class="settings-block">
+                <div class="block">
                     <div>
                         {% if form.threshold.errors %}
                             <div class="alert alert-danger">
@@ -141,9 +146,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.threshold.label_tag }}
-                            {{ form.threshold }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.threshold.label_tag }}
+                                {{ form.threshold }}
+                            </div>
                         
                             <small>The threshold is used to compare input images with stored ones. The smaller the threshold will see less profile as not match.</small>
                         </div>
@@ -158,9 +165,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            {{ form.search_mode.label_tag }}
-                            {{ form.search_mode }}
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.search_mode.label_tag }}
+                                {{ form.search_mode }}
+                            </div>
 
                             <small>Embedding is the simplified version of an image which makes recognition faster, unlike using raw images that need more processing. Embedding is generated once any profile image is saved.</small>
                         </div>
@@ -170,13 +179,12 @@
             
             
             
-            <div class="settings-section">
-                <div class="settings-header">
-                    <h3>Templates</h3>
-                    <p>The [[placeholder]] must stay accurate so the system places data correctly. Users can fix content (like typos) but can’t alter the layout (mainly the table), ensuring the template structure remains intact. You can download the template by clicking the link beside the input field.</p>
+            <div class="section">
+                <div class="header">
+                    <h4>Templates</h4>
                 </div>
 
-                <div class="settings-block">
+                <div class="block">
                     <div>
                         {% if form.template_personnel.errors %}
                             <div class="alert alert-danger">
@@ -186,9 +194,11 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            <label for="{{ form.template_personnel.id_for_label }}">Personnel</label>
-                            {{ form.template_personnel }}
+                        <div class="item">
+                            <div class="form-field">
+                                <label for="{{ form.template_personnel.id_for_label }}">Personnel</label>
+                                {{ form.template_personnel }}
+                            </div>
 
                             {% if defset.template_personnel %}
                                 <span>Current: <a class="link" href="{{ defset.template_personnel.url }}" target="_blank">{{ defset.template_personnel.name }}</a></span>
@@ -205,43 +215,52 @@
                             </div>
                         {% endif %}
 
-                        <div class="settings-item">
-                            <label for="{{ form.template_inmate.id_for_label }}">Inmate</label>
-                            {{ form.template_inmate }}
+                        <div class="item">
+                            <div class="form-field">
+                                <label for="{{ form.template_inmate.id_for_label }}">Inmate</label>
+                                {{ form.template_inmate }}
+                            </div>
 
                             {% if defset.template_inmate %}
                                 <span>Current: <a class="link" href="{{ defset.template_inmate.url }}" target="_blank">{{ defset.template_inmate.name }}</a></span>
                             {% endif %}
                         </div>
                     </div>
+                    
+                    <small>The [[placeholder]] must stay accurate so the system places data correctly. Users can fix content (like typos) but can’t alter the layout (mainly the table), ensuring the template structure remains intact. You can download the template by clicking the link beside the input field.</small>
                 </div>
             </div>
             
             
             
-            <div class="settings-section">
-                <div class="settings-header">
-                    <h3>Model</h3>
-                    <p>The AI Model used to recognize individuals.</p>
+            <div class="section">
+                <div class="header">
+                    <h4>Model</h4>
                 </div>
 
-                <div class="settings-block">
-                    {% if form.model.errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.model.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    <div class="settings-item">
-                        {{ form.model.label_tag }}
-                        {{ form.model }}
-
-                        {% if defset.model %}
-                            <span>Current: <a class="link" href="{{ defset.model.url }}" target="_blank">{{ defset.model.url }}</a> </span>
+                <div class="block">
+                        <div>
+                            {% if form.model.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.model.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
                         {% endif %}
+
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.model.label_tag }}
+                                {{ form.model }}
+                            </div>
+
+                            {% if defset.model %}
+                                <span>Current: <a class="link" href="{{ defset.model.url }}" target="_blank">{{ defset.model.name }}</a> </span>
+                            {% endif %}
+                        </div>
                     </div>
+
+                    <small>The AI Model used to recognize individuals.</small>
                 </div>
             </div>
         </div>

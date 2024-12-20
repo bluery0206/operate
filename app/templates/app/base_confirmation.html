@@ -30,7 +30,7 @@
                     <input type="hidden" name="prev" value="{{ prev }}">
                     
                     <div class="actions">
-                        <button class="btn btn-{% if danger %}danger{% endif %}" type="submit">Confirm</button>
+                        <button class="btn btn-{% if danger %}danger{%else%}warning{% endif %}" type="submit">Confirm</button>
                         <a class="btn btn-b btn-secondary" href="javascript:history.go(-1)">Cancel</a>
                     </div>
                 </form>

@@ -13,15 +13,7 @@ from .models import  (
 
 
 
-# Pagination
-# Camera and Cropping
-# Search
-# Templates
-# Model
-
-
-
-COMMON_CLASS = 'form-control form-control-primary'
+COMMON_CLASS = 'form-control'
 
 
 
@@ -111,6 +103,7 @@ class DefaultSettingsForm(forms.ModelForm):
 		]
 
 
+
 class SearchImageForm(forms.ModelForm):
 	image = forms.FileField(
 		validators	= [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])],
@@ -121,6 +114,7 @@ class SearchImageForm(forms.ModelForm):
 		model	= SearchImage
 		fields	= ['image']
 		
+
 
 class LoginForm(AuthenticationForm):
     password = PasswordEye(label='')
@@ -133,6 +127,8 @@ class LoginForm(AuthenticationForm):
                 'class': COMMON_CLASS,
             }),
         }
+
+
 
 class PasswordResetForm(SetPasswordForm):
     new_password1 = PasswordEye(label='')

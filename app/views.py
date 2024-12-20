@@ -200,7 +200,7 @@ def facesearch(request):
 		# Delete the image after use
 		instance = form_model.objects.filter(image__icontains=Path(input_path).stem).first()
 		instance.delete() if instance else Path(input_path).unlink()
-
+	
 	context = {
 		"page_title"	: "Facesearch",
 		'active'		: 'facesearch',

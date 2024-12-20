@@ -1,4 +1,5 @@
 {% extends 'app/base_headered.html' %}
+{% load custom_filters %}
 
 {% block content %}
 
@@ -11,7 +12,7 @@
 				<span>Back</span>
 			</a>
 
-			<h2 class="title">Edit {{ profile }}</h2>
+			<h2 class="title">Update Profile: {{ profile|full_name }}</h2>
 			
 			<div class="actions">
 				<button class="btn btn-success" type="submit" name="option_upload" value="1">
@@ -26,22 +27,19 @@
 			</div>
 		</div>
 
-
 		<div class="body">
 			<div class="picture">
 				<img src="{{ profile.thumbnail.url }}" alt="" id="imagePreview">
 
 				<div class="image-fields">
 					<div class="field">
-						{% comment %} 						
-							{% if form.raw_image.errors %}
-								<div class="alert alert-danger">
-									{% for error in for.raw_image.errors %}
-										{{ error }}
-									{% endfor %}
-								</div>
-							{% endif %}
-						{% endcomment %}
+						{% if form.raw_image.errors %}
+							<div class="alert alert-danger">
+								{% for error in for.raw_image.errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+						{% endif %}
 					</div>
 					<div class="field">
 						<h3>Upload image</h3>

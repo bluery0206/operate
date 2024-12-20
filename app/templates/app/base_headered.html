@@ -26,14 +26,14 @@
 				</div>
 				<div class="section">
 					<a class="btn {% if active == 'home' %}active{% endif %}" href="{% url 'operate-index' %}">
-						<i class="fa-solid fa-house"></i>
+						<i class="fa-solid fa-house {% if active == 'home' %}fa-fade{% endif %}"></i>
 						<span>Home</span>
 					</a>
 				</div>
 				<div class="section">
 					<a class="btn facesearch {% if active == 'facesearch' %}active{% endif %}" href="{% url 'facesearch' %}">
-						<i class="fa-solid fa-image-portrait"></i>
-						<span>FaceSearch</span>
+						<i class="fa-solid fa-image-portrait {% if active == 'facesearch' %}fa-fade{% endif %}"></i>
+						<span>Facesearch</span>
 					</a>
 				</div>
 
@@ -41,11 +41,11 @@
 					<h4>Profiles</h4>
 					
 					<a class="btn {% if active == 'profiles personnel' %}active{% endif %}" href="{% url 'profiles-all-personnel'%}">
-						<i class="fa-solid fa-user-shield"></i>
+						<i class="fa-solid fa-user-shield {% if active == 'profiles personnel' %}fa-fade{% endif %}"></i>
 						<span>Personnel</span>
 					</a>
 					<a class="btn {% if active == 'profiles inmate' %}active{% endif %}" href="{% url 'profiles-all-inmate'%}">
-						<i class="fa-solid fa-handcuffs"></i>
+						<i class="fa-solid fa-handcuffs {% if active == 'profiles inmate' %}fa-fade{% endif %}"></i>
 						<span>Inmates</span>
 					</a>
 				</div>
@@ -54,11 +54,11 @@
 					<h4>Add new profile</h4>
 
 					<a class="btn {% if active == 'add personnel' %}active{% endif %}" href="{% url 'profile-add' 'personnel' %}" title="Add new profile">
-						<i class="fa-solid fa-user-shield"></i>
+						<i class="fa-solid fa-user-shield {% if active == 'add personnel' %}fa-fade{% endif %}"></i>
 						<span>Personnel</span>
 					</a>
 					<a class="btn {% if active == 'add inmate' %}active{% endif %}" href="{% url 'profile-add' 'inmate' %}" title="Add new profile">
-						<i class="fa-solid fa-handcuffs"></i>
+						<i class="fa-solid fa-handcuffs {% if active == 'add inmate' %}fa-fade{% endif %}"></i>
 						<span>Inmate</span>
 					</a>
 				</div>
@@ -93,12 +93,11 @@
 				{% block content %}
 				{% endblock content %}
 			</main>
-					
 		
 			<footer>
 				<div class="footer-wrapper">
 					<div class="header">
-						<img src="{% static 'images/operate.png' %}" alt="operate.png" style="height: 100px;">
+						<img src="{% static 'images/operate.png' %}" alt="operate.png">
 		
 						<div class="title">
 							<h2>OPeraTE</h2>
@@ -108,80 +107,93 @@
 					</div>
 		
 					<div class="body">
-						<div class="section-1">
-							<h4>Hilario, Mark Ryan I.</h4>
+						<div class="section">
+							<h4 class="title">DEVELOPERS</h4>
 		
-							<div class="contact-list">
-								<div class="contact">
-									Poblacion Sur, Clarin, Bohol
+							<div class="people">
+								<div class="person">
+									<div class="name">Hilario, Mark Ryan I. et.al.</div>
+				
+									<div class="contact-list">
+										<div class="contact">
+											<i>Department of Computer Science, College of Science and Management</i>
+										</div>
+										<div class="contact">
+											<i>Bohol Island State University - Clarin Campus</i>
+										</div>
+										<div class="contact">
+											Bohol, Philippines
+										</div>
+										<div class="contact">
+											@hilariomarkryan3@gmail.com
+										</div>
+									</div>
 								</div>
-								<div class="contact">
-									@hilariomarkryan3@gmail.com
+								<div class="person">
+									<div class="name">Inferido, Eliezer C.</div>
+	
+									<div class="contact-list">
+										<div class="contact">
+											<i>Department of Computer Science, College of Science and Management</i>
+										</div>
+										<div class="contact">
+											<i>Bohol Island State University - Clarin Campus</i>
+										</div>
+										<div class="contact">
+											Bohol, Philippines
+										</div>
+										<div class="contact">
+											eliezer.inferido@bisu.edu.ph
+										</div>
+									</div>
 								</div>
-								<div class="contact">
-									markryan.hilario@bisu.edu.ph
-								</div>
-								<div class="contact">
-									09291231620
-								</div>
-								<div class="contact">
-									FB: Ryan Hilario
+								<div class="person">
+									<div class="name">Melecio, Jhonlie C.</div>
+	
+									<div class="contact-list">
+										<div class="contact">
+											<i>Department of Computer Science, College of Science and Management</i>
+										</div>
+										<div class="contact">
+											<i>Bohol Island State University - Clarin Campus</i>
+										</div>
+										<div class="contact">
+											Bohol, Philippines
+										</div>
+										<div class="contact">
+											jhonlie.melecio@bisu.edu.ph
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="section-2">
-							<h4>Inferido, Eliezer C.</h4>
-							<div class="contact-list">
-								<div class="contact">
-									<div class="contact">
-										Poblacion Sur, Clarin, Bohol
-									</div>
-									<div class="contact">
-										eliezer.inferido@bisu.edu.ph
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="section-3">
-							<h4>Melecio, Jhonlie C.</h4>
-							<div class="contact-list">
-								<div class="contact">
-									<div class="contact">
-										Villaflor, Clarin, Bohol
-									</div>
-									<div class="contact">
-										jhonlie.melecio@bisu.edu.ph
+						<div class="section">
+							<div class="people">
+								<div class="person">
+									<div class="name">PNP-Clarin</div>
+		
+									<div class="contact-list">
+										<div class="contact">
+											Poblacion Norte, Clarin, Bohol
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="section-4">
-							<h4>PNP-Clarin</h4>
-							<div class="contact-list">
-								<div class="contact">
-									<div class="contact">
-										Poblacion Norte, Clarin, Bohol
-									</div>
-									<div class="contact">
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="section-4">
-							<h4>BISU-Clarin</h4>
-							<div class="contact-list">
-								<div class="contact">
-									<div class="contact">
-										Poblacion Norte, Clarin, Bohol
-									</div>
-									<div class="contact">
+						<div class="section">
+							<div class="people">
+								<div class="person">
+									<div class="name">BISU-Clarin</div>
+		
+									<div class="contact-list">
+										<div class="contact">
+											Poblacion Norte, Clarin, Bohol
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					
-					
 					<div class="footer">
 						<!-- &copy; 2024, All right reserved. -->
 						<div class="title">
@@ -190,13 +202,11 @@
 		
 						<div class="link-list">
 							<a href="{% url 'operate-index' %}" class="link">Home</a>
-							<a href="" class="link">FaceSearch</a>
-							<a href="" class="link">Personnels</a>
-							<a href="" class="link">Inmates</a>
-							<a href="" class="link">Archived Personnels</a>
-							<a href="" class="link">Archived Inmates</a>
+							<a href="{% url 'facesearch' %}" class="link">Facesearch</a>
+							<a href="{% url 'profiles-all-personnel' %}" class="link">Personnels</a>
+							<a href="{% url 'profiles-all-inmate' %}" class="link">Inmates</a>
 							<a href="/admin/" class="link">Admin</a>
-							<a href="" class="link">Logout</a>
+							<a href="/logout/" class="link">Logout</a>
 						</div>
 					</div>
 				</div>

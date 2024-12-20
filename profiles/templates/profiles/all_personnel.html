@@ -5,7 +5,7 @@
 
 	<div class="profiles">
 		<div class="card-list-wrapper">
-			<div class="header">
+			<div class="header bg-gradient-personnel">
 				<h2>Personnel Profiles</h2>
 
 				<div class="actions">
@@ -39,27 +39,43 @@
 				<div class="pagination left">
 					<span class="page-list">
 						{% if personnels.has_previous %}
-							<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
-							<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+							<a class="btn" href="?page=1">
+								First
+							</a>
+							<a class="btn" href="?page={{ personnels.previous_page_number }}">
+								Previous
+							</a>
 						{% else %}
-							<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
-							<button class="btn btn-outline-secondary" disabled>Previous</button>
+							<button class="btn" disabled>
+								First
+							</button>
+							<button class="btn" disabled>
+								Previous
+							</button>
 						{% endif %}
 	
 						{% for num in personnels.paginator.page_range %}
 							{% if personnels.number == num %}
 								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
-							{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
-								<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+							{% elif num > personnels.number|add:"-5" and num < personnels.number|add:"5" %}
+								<a class="btn" href="?page={{ num }}">{{ num }}</a>
 							{% endif %}
 						{% endfor %}
 	
 						{% if personnels.has_next %}
-							<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
-							<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+							<a class="btn" href="?page={{ personnels.next_page_number }}">
+								Next
+							</a>
+							<a class="btn" href="?page={{ personnels.paginator.num_pages }}">
+								Last
+							</a>
 						{% else %}
-							<button class="btn btn-outline-secondary" disabled>Next</button>
-							<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+							<button class="btn" disabled>
+								Next
+							</button>
+							<button class="btn" disabled>
+								Last
+							</button>
 						{% endif %}
 					</span>
 				</div>
@@ -145,27 +161,43 @@
 				<div class="pagination right">
 					<span class="page-list">
 						{% if personnels.has_previous %}
-							<a class="btn btn-outline-primary" href="?page=1">&laquo; First</a>
-							<a class="btn btn-outline-primary" href="?page={{ personnels.previous_page_number }}">Previous</a>
+							<a class="btn" href="?page=1">
+								First
+							</a>
+							<a class="btn" href="?page={{ personnels.previous_page_number }}">
+								Previous
+							</a>
 						{% else %}
-							<button class="btn btn-outline-secondary" disabled>&laquo; First</button>
-							<button class="btn btn-outline-secondary" disabled>Previous</button>
+							<button class="btn" disabled>
+								First
+							</button>
+							<button class="btn" disabled>
+								Previous
+							</button>
 						{% endif %}
 	
 						{% for num in personnels.paginator.page_range %}
 							{% if personnels.number == num %}
 								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
-							{% elif num > personnels.number|add:"-3" and num < personnels.number|add:"3" %}
-								<a class="btn btn-outline-primary" href="?page={{ num }}">{{ num }}</a>
+							{% elif num > personnels.number|add:"-5" and num < personnels.number|add:"5" %}
+								<a class="btn" href="?page={{ num }}">{{ num }}</a>
 							{% endif %}
 						{% endfor %}
 	
 						{% if personnels.has_next %}
-							<a class="btn btn-outline-primary" href="?page={{ personnels.next_page_number }}">Next</a>
-							<a class="btn btn-outline-primary" href="?page={{ personnels.paginator.num_pages }}">Last &raquo;</a>
+							<a class="btn" href="?page={{ personnels.next_page_number }}">
+								Next
+							</a>
+							<a class="btn" href="?page={{ personnels.paginator.num_pages }}">
+								Last
+							</a>
 						{% else %}
-							<button class="btn btn-outline-secondary" disabled>Next</button>
-							<button class="btn btn-outline-secondary" disabled>Last &raquo;</button>
+							<button class="btn" disabled>
+								Next
+							</button>
+							<button class="btn" disabled>
+								Last
+							</button>
 						{% endif %}
 					</span>
 				</div>
@@ -173,7 +205,7 @@
 		</div>
 		
 		<div class="filter-bar">
-			<form method="GET" class="search-form">
+			<form method="GET">
 				<h4>Search</h4>
 
 				<!-- Keeps filter options because initiating a new search will reset the whole page -->
@@ -198,7 +230,7 @@
 				</div>
 			</form>
 	
-			<form method="GET" class="filter-form">
+			<form method="GET">
 				<h4>Filter</h4>
 				
 				<!-- Keeps the search value in here to preserve it when resetting filters -->
