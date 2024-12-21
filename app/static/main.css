@@ -291,9 +291,12 @@ body {
 
 .index {
     /* border  : 1px solid red; */
-    display : grid;
+    display : flex;
+    flex-direction: column;
+    justify-content: start;
     row-gap : 1em;
     padding : 1em;
+    min-height: 100dvh;
     
     /* Contains personnel and inmate profiles side-by-side */
     .new-profiles {
