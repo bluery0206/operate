@@ -126,6 +126,9 @@ class LoginForm(AuthenticationForm):
             'password': forms.PasswordInput(attrs={
                 'class': COMMON_CLASS,
             }),
+            'username': forms.TextInput(attrs={
+                'class': COMMON_CLASS,
+            }),
         }
 
 

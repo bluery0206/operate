@@ -650,10 +650,6 @@ body {
                         display: grid;
                         row-gap: 0.25em;
                     }
-
-                    .django_password_eye {
-                        display: flex;
-                    }
                 }
             }
             
@@ -662,6 +658,84 @@ body {
                 display: grid;
                 grid-template-columns: 20% 79%;
                 column-gap: 0.5em;
+            }
+        }
+    }
+}
+.auth {
+    /* border: 1px solid red; */
+
+    .dialog-wrapper {
+        /* border: 1px solid red; */
+
+        .dialog {
+            /* border: 1px solid red; */
+            width: 300px;
+
+            /* .header { */
+                /* border: 1px solid red; */
+        
+                /* .title { */
+                    /* border: 1px solid red; */
+            
+                    /* img { */
+                        /* border: 1px solid red; */
+                    /* } */
+
+                    /* h3 { */
+                        /* border: 1px solid red; */
+                    /* } */
+                /* } */
+            /* } */
+
+            .body {
+                /* border: 1px solid blue; */
+                padding: 0.5em 1em;
+                display: flex;
+                flex-direction: column;
+                
+                /* .warning { */
+                    /* border: 1px solid red; */
+                /* } */
+
+                form {
+                    /* border: 1px solid red; */
+                    display: flex;
+                    gap: 0.5em;
+                    flex-direction: column;
+                        
+                    .fields {
+                        /* border: 1px solid green; */
+                        display: grid;
+                        grid-template-columns: 100%;
+
+                        .field {
+                            /* border: 1px solid red; */
+                            
+                            .form-control {
+                                width: 100%;
+                            }
+                        }
+
+                        /* .django_password_eye { */
+                        /* } */
+                    }
+                }
+                
+                .actions {
+                    /* border: 1px solid red; */
+                    display: grid;
+                    grid-template-columns: auto auto;
+                }
+
+                .vertical {
+                    display: grid;
+                    grid-template-columns: 100%;
+
+                    .btn {
+                        justify-content: center;
+                    }
+                }
             }
         }
     }
@@ -924,16 +998,15 @@ h4 {
     transition: all 0.1s;
 }
 .form-control:hover{
-    /* border-left: 2px solid var(--secondary); */
-    /* border-bottom: 1px solid var(--secondary); */
     outline: 2px solid var(--secondary);
 }
 .form-control:focus{
-    /* border-left: 5px solid var(--primary); */
-    /* border-bottom: 3px solid var(--primary); */
     background: var(--white);
     outline: 3px solid var(--primary);
-} 
+}
+.django_password_eye {
+    display: flex;
+}
 
 
 

@@ -1,0 +1,57 @@
+{% extends 'app/base_empty.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+		
+
+	<div class="auth">
+		<div class="dialog-wrapper">
+			<div class="dialog">
+				<div class="header">
+					<img src="{% static 'images/operate.ico' %}" alt="operate.ico">
+					<h3>OPeraTE</h3>
+				</div>
+		
+				<form class="body" method="POST">
+					{% csrf_token %}
+
+					<h2 class="page-title">
+						{{ page_title }}
+					</h2>
+
+					<p class="warning">
+						{{ warning }}
+					</p>
+
+					{% if form %}
+						{% if form.non_field_errors %}
+							<div class="alert alert-danger">
+								{% for error in form.non_field_errors %}
+									{{ error }}
+								{% endfor %}
+							</div>
+						{% endif %}
+
+						<div class="fields">
+							{% for field in form %}
+								<div class="form-field">
+									{{ field.as_field_group }}
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+	
+					<div class="actions vertical">
+						<button class="btn btn-primary center" type="submit">
+							<i class="fa-solid fa-check"></i>
+							<span>{{ action }}</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock content %}

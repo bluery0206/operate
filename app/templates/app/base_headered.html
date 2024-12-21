@@ -68,8 +68,8 @@
 				<div class="section">
 					<h4>User: {{ user.username }} </h4>
 				
-					<a class="btn {% if active == 'setting' %}active{% endif %}" href="{% url 'operate-settings' %}">
-						<i class="fa-solid fa-gear"></i>
+					<a class="btn {% if active == 'settings' %}active{% endif %}" href="{% url 'operate-settings' %}">
+						<i class="fa-solid fa-gear  {% if active == 'settings' %}fa-fade{% endif %}"></i>
 						<span>Settings</span>
 					</a>
 					<a class="btn" href="/admin/">
