@@ -858,6 +858,25 @@ footer {
 
 
 
+.distance {
+    padding: 0.25em;
+    border-radius: 10px;
+}
+.distance-primary {
+    background: var(--primary);
+    color: var(--text-white);
+}
+.distance-secondary {
+    background: var(--secondary);
+    color: var(--text-white);
+}
+.distance-warning {
+    background: var(--warning);
+    color: var(--text-white);
+}
+
+
+
 .text-inmate {
     color: var(--inmate);
 }

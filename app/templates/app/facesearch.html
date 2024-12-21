@@ -17,7 +17,7 @@
 									<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
 								</div>
 							{% endcomment %}
-	
+
 							<div class="actions">
 								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
 									<i class="fa-solid fa-pen-to-square"></i>
@@ -61,7 +61,13 @@
 	
 								<div class="details">
 									<span class="name detail">
-										{{ profile.rank|upper }} {{ profile|full_name }}
+										<span class="distance 
+											{% if forloop.counter == 1 %}
+												distance-primary
+											{% elif dist > 89 and forloop.counter != 1 %}
+												distance-secondary
+											{%endif%}
+										">{{ dist|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
 									</span>
 									<span class="detail" title="{{ profile|full_name }}'s home address">
 										<i class="fa-solid fa-location-dot"></i>
