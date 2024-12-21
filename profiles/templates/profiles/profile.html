@@ -41,19 +41,9 @@
 							<i class="fa-solid fa-file-word"></i>
 							<span>as .docx</span>
 						</a>
-<<<<<<< HEAD
-						<a class="btn" href="{% url 'profile-pdf-download' profile.p_type profile.pk %}">
-							<span class="material-symbols-outlined">picture_as_pdf</span>
-							<span>Download (.pdf)</span>
-						</a>
-						<a class="btn" href="{% url 'profile-delete' profile.p_type profile.pk %}">
-							<span class="material-symbols-outlined">delete</span>
-							<span>Delete</span>
-=======
 						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
 							<i class="fa-solid fa-file-pdf"></i>
 							<span>as .pdf</span>
->>>>>>> centralization
 						</a>
 					</div>
 				</div>
