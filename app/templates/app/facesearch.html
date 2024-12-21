@@ -1,0 +1,208 @@
+{% extends 'app/base_headered.html' %}
+{% load custom_filters %}
+
+{% block content %}
+	<div class="profiles facesearch">
+		<div class="card-list-wrapper">
+			<div class="header">
+				<h2>Facesearch</h2>	
+			</div>
+				
+			<div class="card-list">
+				{% if profiles %}
+					{% for dist, profile in profiles %}
+						<div class="card {{ profile.p_type }}">
+							{% comment %}
+								<div class="{{ profile.p_type }} header">
+									<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
+								</div>
+							{% endcomment %}
+
+							<div class="actions">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</a>
+							
+								{% if profile.is_archived %}
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+										<span class="material-symbols-rounded">unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+										<span class="material-symbols-rounded">archive</span>
+									</a>
+								{% endif %}
+								
+								<div class="dropdown">
+									<button class="btn">
+										<i class="fa-solid fa-download"></i>
+									</button>
+				
+									<div class="content">
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
+											<i class="fa-solid fa-file-word"></i>
+											<span>as .docx</span>
+										</a>
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
+											<i class="fa-solid fa-file-pdf"></i>
+											<span>as .pdf</span>
+										</a>
+									</div>
+								</div>
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+									<i class="fa-solid fa-trash"></i>
+								</a>
+							</div>
+	
+							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}">
+								<div class="picture">
+									<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+								</div>
+	
+								<div class="details">
+									<span class="name detail">
+										<span class="distance 
+											{% if forloop.counter == 1 %}
+												distance-primary
+											{% elif dist > 89 and forloop.counter != 1 %}
+												distance-secondary
+											{%endif%}
+										">{{ dist|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s home address">
+										<i class="fa-solid fa-location-dot"></i>
+										Address: {{ profile.address|title }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s profiled date">
+										<!-- <i class="fa-solid fa-square-person-confined"></i> -->
+										<i class="fa-solid fa-clock"></i>
+										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s assigned date">
+										<i class="fa-solid fa-clipboard-check"></i>
+										Assigned: {{ profile.date_assigned|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s designation">
+										<i class="fa-solid fa-id-card"></i>
+										Designation: {{ profile.designation }}
+									</span>
+								</div>
+							</a>
+						</div>
+					{% endfor %}
+				{% else %}
+					<h3 class="muted">There are no similar faces found.</h3>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="filter-bar">
+			<!-- <img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;"> -->
+
+			<!-- 
+				<div class="form">
+					<div class="fields">
+						<div class="field">
+							<label for="threshold">Threshold: </label>
+							<input class="form-control form-control-secondary" type="number" id="threshold_input" value="{{ threshold }}" min="0.1" max="100" step="0.1">
+							<small class="muted"><em>The Confidence Level (CL) is relative to the threshold.</em></small>
+						</div>
+						<div class="field">
+							<label for="embedding">Search method: </label>
+							<select name="search_method_input" id="search_method_input" class="form-control form-control-secondary">
+								<option value="1" {% if search_method == 1 %}selected{% endif %}>Embedding (Faster)</option>
+								<option value="0" {% if search_method == 0 %}selected{% endif %}>Images</option>
+							</select>
+						</div>
+					</div>
+				</div> 
+			-->
+
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+
+				<h4>Upload an image</h4>
+		
+				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
+				<input type="hidden" name="search_method" id="search_method1" value="{{ search_method }}">
+				
+
+				{{ form.image }}
+		
+				<div class="actions">
+					<button class="btn btn-secondary" type="submit" name="option_upload" id="option_upload" value="1">
+						<i class="fa-solid fa-upload"></i>
+						<span>Search Using Uploaded Image</span>
+					</button>
+				</div>
+			</form>
+	
+			<form method="POST">
+				{% csrf_token %}
+	
+				<h4>Capture image</h4>
+	
+				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
+				<input type="hidden" name="search_method" id="search_method2" value="{{ search_method }}">
+	
+				<button class="btn btn-secondary" name="option_camera" value="1" type="submit">
+						<i class="fa-solid fa-camera"></i>
+					<span>Take a Picture and Search</span>
+				</button>
+	
+				<div class="fields">
+					<div class="form-field">
+						<label for="camera">Camera: </label>
+						<input class="form-control" type="number" name="camera" id="camera" value="{{ camera }}" min="0" max="10" step="1">
+					</div>
+					<small>(Try to change if doesn't work)</small>
+				</div>
+			</form>
+		</div>
+	</div>
+
+    <script>
+		// Change the value of hidden threshol on change
+        document.addEventListener("DOMContentLoaded", function() {
+            const threshold_input	= document.getElementById("threshold_input");
+            const threshold1		= document.getElementById("threshold1");
+            const threshold2		= document.getElementById("threshold2");
+
+            const search_method_input	= document.getElementById("search_method_input");
+            const search_method1		= document.getElementById("search_method1");
+            const search_method2		= document.getElementById("search_method2");
+
+            threshold_input.addEventListener("change", function(event) {
+				threshold1.value = threshold_input.value;
+				threshold2.value = threshold_input.value;
+            });
+
+            search_method_input.addEventListener("change", function(event) {
+				search_method1.value = search_method_input.value;
+				search_method2.value = search_method_input.value;
+            });
+        });
+
+		
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const fileInput = document.getElementById("{{ form.image.id_for_label }}"); // Use the form field's ID
+            const imagePreview = document.getElementById("imagePreview");
+
+            fileInput.addEventListener("change", function(event) {
+                // Check if a file is selected
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result; // Set preview image source
+                        imagePreview.style.display = 'block'; // Make the image visible
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
+                }
+            });
+        });
+    </script>
+
+{% endblock content %}

@@ -1,83 +1,79 @@
-from django.contrib.auth.models import User
 from django import forms
-from home.utils import get_full_name
 from django.core.validators import FileExtensionValidator
 
-from .models import (
-	Personnel, 
-	Inmate,
-	Template
-)
+from . import models
 
+
+COMMON_CLASS = 'form-control'
 WIDGETS = {
 	'date_profiled'	: forms.DateInput(
 		attrs	= {
 			'type': 'datetime-local',
-			'class': 'form-control form-control-primary',
+			'class': COMMON_CLASS,
 			}, 
 		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'date_arrested'	: forms.DateInput(
 		attrs	= {
 			'type': 'datetime-local',
-			'class': 'form-control form-control-primary',
+			'class': COMMON_CLASS,
 			}, 
 		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'date_committed': forms.DateInput(
 		attrs	= {
 			'type': 'datetime-local',
-			'class': 'form-control form-control-primary',
+			'class': COMMON_CLASS,
 			}, 
 		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'date_assigned'	: forms.DateInput(
 		attrs	= {
 			'type': 'datetime-local',
-			'class': 'form-control form-control-primary',
+			'class': COMMON_CLASS,
 			}, 
 		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'date_relieved'	: forms.DateInput(
 		attrs	= {
 			'type': 'datetime-local',
-			'class': 'form-control form-control-primary',
+			'class': COMMON_CLASS,
 			}, 
 		format 	= '%Y-%m-%dT%H:%M'
 	),
 	'f_name': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 		'placeholder': 'First Name',
 	}),
 	'l_name': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 		'placeholder': 'Last Name',
 	}),
 	'm_name': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 		'placeholder': 'Middle Name',
 	}),
 	'suffix': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 		'placeholder': 'Suffix (e.g.: II, Sr., Jr.)',
 	}),
 	'age': forms.NumberInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 	'address': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 	'civil_status': forms.Select(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 	'rank': forms.Select(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 	'designation': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 	'crime_violated': forms.TextInput(attrs={
-		'class': 'form-control form-control-primary',
+		'class': COMMON_CLASS,
 	}),
 }
 
@@ -104,54 +100,32 @@ I_FIELDS = COMMON_FIELDS + [
 	'crime_violated',
 ]
 
-VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
+IMG_VALIDATOR = [FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'jfif', 'PNG', 'JPG'])]
 
-class CreatePersonnel(forms.ModelForm):
+
+
+class PersonnelForm(forms.ModelForm):
 	raw_image = forms.FileField(
-		validators			= VALIDATOR,
+		validators=IMG_VALIDATOR,
 		allow_empty_file	= True,
 		required			= False
-	)
+		)
 
 	class Meta:
-		model 	= Personnel
+		model 	= models.Personnel
 		fields 	= P_FIELDS
 		widgets = WIDGETS
 
-class UpdatePersonnel(forms.ModelForm):
-	raw_image = forms.FileField(validators=VALIDATOR)
-	
-	class Meta:
-		model 	= Personnel
-		fields 	= P_FIELDS
-		widgets = WIDGETS
-
-class CreateInmate(forms.ModelForm):
+class InmateForm(forms.ModelForm):
 	raw_image = forms.FileField(
-		validators 			= VALIDATOR,
+		validators 			= IMG_VALIDATOR,
 		allow_empty_file	= True,
-		required			=False
+		required			= False,
 	)
 
 	class Meta:
-		model 	= Inmate
+		model 	= models.Inmate
 		fields	= I_FIELDS
 		widgets = WIDGETS
 
-class UpdateInmate(forms.ModelForm):
-	raw_image = forms.FileField(validators=VALIDATOR)
-	
-	class Meta:
-		model 	= Inmate
-		fields 	= I_FIELDS
-		widgets = WIDGETS
 
-class TemplateUploadForm(forms.ModelForm):
-	template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['docx'])])
-
-	class Meta:
-		model = Template
-		fields = [
-			'template_name',
-			'template',
-		]

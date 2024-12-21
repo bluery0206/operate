@@ -1,0 +1,40 @@
+{% extends 'app/base_headered.html' %}
+{% load static %}
+
+{% block content %}
+	<div class="dialog-wrapper">
+        <div class="dialog">
+            <div class="header {% if danger %}danger{% endif %}">
+                <div class="title">
+                    <img src="{% static 'images/operate.png' %}" alt="">
+                    <h3>{{ title }}</h3>
+                </div>
+            </div>
+
+            <div class="body">
+                {% if warning %}
+                    <div class="warning">
+                        {{ warning }}
+                    </div>
+                {% endif %}
+    
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {% if form %}
+                        <div class="fields">
+                            {{ form }}
+                        </div>
+                    {% endif %}
+
+                    <input type="hidden" name="prev" value="{{ prev }}">
+                    
+                    <div class="actions">
+                        <button class="btn btn-{% if danger %}danger{%else%}warning{% endif %}" type="submit">Confirm</button>
+                        <a class="btn btn-b btn-secondary" href="javascript:history.go(-1)">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

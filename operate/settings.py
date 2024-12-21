@@ -38,12 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'home',
-    'user',
+    'app',
     'profiles',
-    'archives',
-    'facesearch',
-    'settings',
 
     'django_password_eye',
     'django_cleanup.apps.CleanupConfig',
@@ -135,7 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Unauthorized Accesses Redirect Path
-LOGIN_REDIRECT_URL  = 'operate-home'
+LOGIN_REDIRECT_URL  = 'operate-index'
 LOGIN_URL           = 'user-login'
 
 
@@ -143,20 +139,24 @@ LOGIN_URL           = 'user-login'
 MEDIA_ROOT  = BASE_DIR.joinpath('media')
 MEDIA_URL   = '/media/'
 
-DIRS = {
-    'embeddings_dir'    : MEDIA_ROOT.joinpath("embeddings"),
-    'models_dir'        : MEDIA_ROOT.joinpath("models"),
-    'outputs_dir'       : MEDIA_ROOT.joinpath("outputs"),
-    'raw_images_dir'    : MEDIA_ROOT.joinpath("raw_images"),
-    'searches_dir'      : MEDIA_ROOT.joinpath("searches"),
-    'templates_dir'     : MEDIA_ROOT.joinpath("templates"),
-    'thumbnails_dir'    : MEDIA_ROOT.joinpath("thumbnails"),
-}
+EMBEDDING_ROOT  = MEDIA_ROOT.joinpath("embeddings")
+MODEL_ROOT      = MEDIA_ROOT.joinpath("models")
+RAW_IMG_ROOT    = MEDIA_ROOT.joinpath("raw_images")
+TEMPLATE_ROOT   = MEDIA_ROOT.joinpath("templates")
+THUMBNAIL_ROOT  = MEDIA_ROOT.joinpath("thumbnails")
 
-for dir in DIRS.values():
+directories = [
+    MEDIA_ROOT,
+    EMBEDDING_ROOT,
+    MODEL_ROOT,
+    RAW_IMG_ROOT,
+    TEMPLATE_ROOT,
+    THUMBNAIL_ROOT,
+]
+
+for dir in directories:
     if not dir.exists():
         dir.mkdir()
-
 
 # Send Email
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'

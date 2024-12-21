@@ -1,0 +1,296 @@
+{% extends 'app/base_headered.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+	<div class="profiles">
+		<div class="card-list-wrapper">
+			<div class="header bg-gradient-personnel">
+				<h2>Personnel Profiles</h2>
+
+				<div class="actions">
+					<a class="btn" href="{% url 'profile-add' 'personnel' %}?prev=request.get_full_path|urlencode" title="Add new profile">
+						<i class="fa-solid fa-plus"></i>
+						<span>Add new profile</span>
+					</a>
+				
+					{% if personnels %}
+						{% if filters.state == "archived" %}
+							<a class="btn" href="{% url 'archive-remove-all' 'personnel' %}" title="Unarchive all profiles">
+								<span class="material-symbols-rounded">unarchive</span>
+								<span>Unarchive all</span>
+							</a>
+						{% elif filters.state == "open" %}
+							<a class="btn" href="{% url 'archive-add-all' 'personnel' %}" title="Add all profiles to archive">
+								<span class="material-symbols-rounded">archive</span>
+								<span>Archive all</span>
+							</a>
+						{% endif %}
+		
+						<a class="btn btn-danger" href="{% url 'profile-delete-all' 'personnel' %}?prev={{ request.path }}" title="Delete all profiles">
+							<i class="fa-solid fa-trash"></i>
+							<span>Delete all</span>
+						</a>
+					{% endif %}
+				</div>
+			</div>
+			
+			{% if is_paginated %}
+				<div class="pagination left">
+					<span class="page-list">
+						{% if personnels.has_previous %}
+							<a class="btn" href="?page=1">
+								First
+							</a>
+							<a class="btn" href="?page={{ personnels.previous_page_number }}">
+								Previous
+							</a>
+						{% else %}
+							<button class="btn" disabled>
+								First
+							</button>
+							<button class="btn" disabled>
+								Previous
+							</button>
+						{% endif %}
+	
+						{% for num in personnels.paginator.page_range %}
+							{% if personnels.number == num %}
+								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+							{% elif num > personnels.number|add:"-5" and num < personnels.number|add:"5" %}
+								<a class="btn" href="?page={{ num }}">{{ num }}</a>
+							{% endif %}
+						{% endfor %}
+	
+						{% if personnels.has_next %}
+							<a class="btn" href="?page={{ personnels.next_page_number }}">
+								Next
+							</a>
+							<a class="btn" href="?page={{ personnels.paginator.num_pages }}">
+								Last
+							</a>
+						{% else %}
+							<button class="btn" disabled>
+								Next
+							</button>
+							<button class="btn" disabled>
+								Last
+							</button>
+						{% endif %}
+					</span>
+				</div>
+			{% endif %}		<!-- request.get_full_path|urlencode -->
+	
+			<div class="card-list">
+				{% if personnels %}
+					{% for profile in personnels %}
+						<div class="card personnel">
+							<div class="actions">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</a>
+							
+								{% if profile.is_archived %}
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+										<span class="material-symbols-rounded">unarchive</span>
+									</a>
+								{% else %}
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+										<span class="material-symbols-rounded">archive</span>
+									</a>
+								{% endif %}
+								
+								<div class="dropdown">
+									<button class="btn">
+										<i class="fa-solid fa-download"></i>
+									</button>
+				
+									<div class="content">
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
+											<i class="fa-solid fa-file-word"></i>
+											<span>as .docx</span>
+										</a>
+										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
+											<i class="fa-solid fa-file-pdf"></i>
+											<span>as .pdf</span>
+										</a>
+									</div>
+								</div>
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+									<i class="fa-solid fa-trash"></i>
+								</a>
+							</div>
+
+							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}">
+								<div class="picture">
+									<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
+								</div>
+	
+								<div class="details">
+									<span class="name detail">
+										{{ profile.rank|upper }} {{ profile|full_name }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s home address">
+										<i class="fa-solid fa-location-dot"></i>
+										Address: {{ profile.address|title }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s profiled date">
+										<!-- <i class="fa-solid fa-square-person-confined"></i> -->
+										<i class="fa-solid fa-clock"></i>
+										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s assigned date">
+										<i class="fa-solid fa-clipboard-check"></i>
+										Assigned: {{ profile.date_assigned|date:"M j, Y" }}
+									</span>
+									<span class="detail" title="{{ profile|full_name }}'s designation">
+										<i class="fa-solid fa-id-card"></i>
+										Designation: {{ profile.designation }}
+									</span>
+								</div>
+							</a>
+						</div>
+					{% endfor %}
+				{% else %}
+					<h2>There are no personnel profiled.</h2>
+				{% endif %}
+			</div>
+	
+			<!-- Pagination -->
+			{% if is_paginated %}
+				<div class="pagination right">
+					<span class="page-list">
+						{% if personnels.has_previous %}
+							<a class="btn" href="?page=1">
+								First
+							</a>
+							<a class="btn" href="?page={{ personnels.previous_page_number }}">
+								Previous
+							</a>
+						{% else %}
+							<button class="btn" disabled>
+								First
+							</button>
+							<button class="btn" disabled>
+								Previous
+							</button>
+						{% endif %}
+	
+						{% for num in personnels.paginator.page_range %}
+							{% if personnels.number == num %}
+								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+							{% elif num > personnels.number|add:"-5" and num < personnels.number|add:"5" %}
+								<a class="btn" href="?page={{ num }}">{{ num }}</a>
+							{% endif %}
+						{% endfor %}
+	
+						{% if personnels.has_next %}
+							<a class="btn" href="?page={{ personnels.next_page_number }}">
+								Next
+							</a>
+							<a class="btn" href="?page={{ personnels.paginator.num_pages }}">
+								Last
+							</a>
+						{% else %}
+							<button class="btn" disabled>
+								Next
+							</button>
+							<button class="btn" disabled>
+								Last
+							</button>
+						{% endif %}
+					</span>
+				</div>
+			{% endif %}
+		</div>
+		
+		<div class="filter-bar">
+			<form method="GET">
+				<h4>Search</h4>
+
+				<!-- Keeps filter options because initiating a new search will reset the whole page -->
+				<input type="hidden" name="designation" value="{{ filters.designation }}">
+				<input type="hidden" name="rank" 		value="{{ filters.rank }}">
+				<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+				<input type="hidden" name="sort_by" 	value="{{ filters.sort_by }}">
+				<input type="hidden" name="sort_order" 	value="{{ filters.sort_order }}">
+				<input type="hidden" name="state" 		value="{{ filters.state }}">
+	
+				<input class="form-control" type="search" name="search" placeholder="Search by name" value="{% if filters.search %}{{ filters.search }}{% endif %}" title="Search">
+				
+				<div class="actions">
+					<button class="btn btn-secondary" type="submit" title="Search">
+						<i class="fa-solid fa-magnifying-glass"></i>
+						<span>Search</span>
+					</button>
+					<button class="btn" type="submit" name="reset_search" title="Reset search" value="reset_search">
+						<i class="fa-solid fa-rotate-left"></i>
+						<span>Reset Search</span>
+					</button>
+				</div>
+			</form>
+	
+			<form method="GET">
+				<h4>Filter</h4>
+				
+				<!-- Keeps the search value in here to preserve it when resetting filters -->
+				<input type="hidden" name="search" value="{{ filters.search }}">
+				
+				<div class="form-field">
+					<label for="state">State</label>
+					<select class="form-control" name="state" id="state" title="Filter by state">
+						<option class="option_title"  value="">All</option>
+						<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
+						<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
+					</select>
+				</div>
+	
+				<div class="form-field">
+					<label for="designation">Designation</label>
+					<input class="form-control" type="search" name="designation" id="designation" placeholder="Designation" value="{{ filters.designation }}">
+				</div>
+				
+				<div class="form-field">
+					<label for="rank">Rank</label>
+					<select class="form-control" name="rank" id="rank" title="Filter by rank">
+						<option class="option_title" value="">Ranks</option>
+						
+						{% for rank in ranks%}
+							<option value="{{ rank }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				
+				<div class="form-field">
+					<label for="sort_by">Sort by</label>
+					<select class="form-control" name="sort_by" id="sort_by" title="Sort by">
+						{% for pair in sort_choices %}
+							<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_by %}selected{% endif %}>{{ pair.1 }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				
+				<div class="form-field">
+					<label for="sort_order">Order</label>
+					<select class="form-control" name="sort_order" id="sort_order" title="Sort order">
+						{% for pair in order_choices %}
+							<option class="option_title" value="{{ pair.0 }}" {% if pair.0 in filters.sort_order %}selected{% endif %}>{{ pair.1 }}</option>
+						{% endfor %}
+					</select>
+				</div>
+	
+				<div class="actions">
+					<button class="btn btn-secondary" type="submit" title="Apply filter">
+						<i class="fa-solid fa-filter"></i>
+						<span>Apply Filter</span>
+					</button>
+		
+					<button class="btn" type="submit" name="reset_filter"  title="Reset filter" value="reset_filter">
+							<i class="fa-solid fa-filter-circle-xmark"></i>
+							<span>Reset Filter</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	
+{% endblock content %}
