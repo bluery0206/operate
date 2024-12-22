@@ -20,8 +20,6 @@ from profiles import models as profiles_model
 DJANGO_SETTINGS 	= settings
 OPERATE_SETTINGS 	= app_model.Setting
 
-INP_SIZE = 105
-
 
 
 def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bool, np.ndarray]:
@@ -119,36 +117,34 @@ def resize_image(image_array, new_size) :
 
 
 
-def save_embedding(inp_path:str|Path):
-	is_saved = False
-
-	if type(inp_path) == str:
-		inp_path = Path(inp_path) 
+def save_embedding(image_path:str|Path) -> bool:
+	defset 		= OPERATE_SETTINGS.objects.first()
 	
-	inp_image = open_image(
-		image_path 	= inp_path, 
+	image_path 	= Path(image_path) if (type(image_path) == str) else image_path
+	
+	image = open_image(
+		image_path 	= image_path, 
 		as_gray		= True
 	)
 
-	inp_image = preprocess_image(
-		image		= inp_image, 
-		img_size	= INP_SIZE
+	preprocessed_image = preprocess_image(
+		image		= image, 
+		img_size	= defset.input_size
 	)
 
-	inp_emb = get_image_embedding(inp_image)
+	embedding = get_image_embedding(preprocessed_image)
 
-	inp_name = str(inp_path).split("\\")[-1].split(".")[0]
-	emb_name = f'{inp_name}.npy'
+	output_name = f'{image_path.stem}.npy'
+	output_path = DJANGO_SETTINGS.EMBEDDING_ROOT.joinpath(output_name)
 
-	np.save(DJANGO_SETTINGS.EMBEDDING_ROOT.joinpath(emb_name), inp_emb)
+	np.save(output_path, embedding)
 
-	exists = True if len(list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob(emb_name))) > 0 else False
-
-	if exists:
-		is_saved = True
-		print(f"Array saved: {str(list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob(emb_name))[0])}")
-
-	return [is_saved, emb_name, inp_emb]
+	if output_path.exists():
+		print(f"Embedding, { str(output_path) } was saved \bSuccessfully\b.")
+		return True
+	else:
+		print(f"Embedding, { str(output_path) } was \bnot saved\b.")
+		return False
 
 
 	
@@ -163,7 +159,7 @@ def preprocess_image(image:np.ndarray, img_size:int):
 
 
 
-def get_image_embedding(image:np.ndarray):
+def get_model():
 	model = OPERATE_SETTINGS.objects.first().model
 	
 	if not model:
@@ -172,11 +168,18 @@ def get_image_embedding(image:np.ndarray):
 	session_options = ort.SessionOptions()
 	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
 	session = ort.InferenceSession(model.path)
-	
-	input_name	= session.get_inputs()[0].name
-	output_name = session.get_outputs()[0].name
 
-	return session.run([output_name], {input_name: image})[0]
+	return session
+
+
+
+def get_image_embedding(image:np.ndarray):
+	model = get_model()
+	
+	input_name	= model.get_inputs()[0].name
+	output_name = model.get_outputs()[0].name
+	
+	return model.run([output_name], {input_name: image})[0]
 
 
 
@@ -215,13 +218,15 @@ def format_image_name(image_name):
 
 
 def search(input_path:Path, threshold:float, search_mode:str):
+	defset 		= OPERATE_SETTINGS.objects.first()
+
 	print(f"\nInitiating Facesearch...")
 	print(f"Search mode: " + search_mode)
 
 	input = open_image(input_path, True)
 	print("Input shape: " + str(input.shape))
 
-	input = preprocess_image(input, img_size=INP_SIZE)
+	input = preprocess_image(input, img_size=defset.input_size)
 	print("Preprocessed input shape: " + str(input.shape))
 
 	if search_mode == "embedding":
@@ -230,7 +235,7 @@ def search(input_path:Path, threshold:float, search_mode:str):
 	else:
 		database = list(DJANGO_SETTINGS.RAW_IMG_ROOT.glob("*"))
 		database = [open_image(image_path, True) for image_path in database]
-		database = [preprocess_image(image, img_size=INP_SIZE) for image in database]
+		database = [preprocess_image(image, img_size=defset.input_size) for image in database]
 
 	print(f"Searching...")
 	result = search_face(
@@ -299,33 +304,6 @@ def get_profiles(cand_list:list[np.ndarray], reverse:bool=True, search_mode:str=
 
 	return result
 
-
-
-def update_image_embeddings():
-	personnels 	= profiles_model.Personnel.objects.all()
-	inmates 	= profiles_model.Inmate.objects.all()
-
-	data = list(personnels) + list(inmates)
-
-	if not data:
-		return False
-
-	print(f"Creating embedding from image using model: {OPERATE_SETTINGS.objects.first().model.name}")
-
-	for profile in data:
-		is_image_saved, emb_name, _ = save_embedding(profile.raw_image.path)
-
-		if not is_image_saved:
-			print(f"Personnel: {profile} embedding was not generated.")
-			continue
-		
-		profile.embedding = f"embeddings/{emb_name}"
-
-		profile.save()
-
-	return True
-
-
 def generate_docx(template_path:str, image_path:str, fields:list[str], data:list[str]):
 	doc = Document(template_path)
 
@@ -377,3 +355,15 @@ def save_file(file_name:str, save_path:Path):
 	return response
 
 
+
+def update_embeddings():
+	personnel 	= profiles_model.Personnel.objects.all()
+	inmate 		= profiles_model.Inmate.objects.all()
+
+	profiles = list(personnel) + list(inmate)
+
+	
+	for profile in profiles:
+		print(profile.raw_image.path)
+		save_embedding(profile.raw_image.path)
+		

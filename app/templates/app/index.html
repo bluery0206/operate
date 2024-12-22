@@ -2,6 +2,7 @@
 {% load custom_filters %}
 
 {% block content %}
+	
 	<div class="index">
 		<h2>Home</h2>
 
@@ -21,7 +22,7 @@
 					<h5 class="title">RECENTLY ADDED PERSONNELS</h5>
 
 					<div class="actions">
-						<a class="btn btn-empty-personnel" href="{% url 'profile-add' 'personnel' %}" title="Add new personnel profile">
+						<a class="btn btn-empty-personnel" href="{% url 'profile-add' 'personnel' %}?next={{ request.path }}" title="Add new personnel profile">
 							<i class="fa-solid fa-square-plus"></i>
 							<span>Add New Profile</span>
 						</a>
@@ -32,16 +33,16 @@
 					{% for profile in personnels %}
 						<div class="card personnel">
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}" title="Edit {{ profile }}">
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							
 								{% if profile.is_archived %}
-									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}?next={{ request.path }}" title="Unarchive {{ profile }}">
 										<span class="material-symbols-rounded">unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?next={{ request.path }}" title="Archive {{ profile }}">
 										<span class="material-symbols-rounded">archive</span>
 									</a>
 								{% endif %}
@@ -62,7 +63,7 @@
 										</a>
 									</div>
 								</div>
-								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?next={{ request.path }}" title="Delete {{ profile }}">
 									<i class="fa-solid fa-trash"></i>
 								</a>
 							</div>
@@ -109,7 +110,7 @@
 					<h5 class="title">RECENTLY ADDED INMATES</h5>
 
 					<div class="actions">
-						<a class="btn btn-empty-inmate" href="{% url 'profile-add' 'inmate' %}" title="Add new inmate profile">
+						<a class="btn btn-empty-inmate" href="{% url 'profile-add' 'inmate' %}?next={{ request.path }}" title="Add new inmate profile">
 							<i class="fa-solid fa-square-plus"></i>
 							<span>Add New Profile</span>
 						</a>
@@ -120,16 +121,16 @@
 					{% for profile in inmates %}
 						<div class="card inmate">
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}" title="Edit {{ profile }}">
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							
 								{% if profile.is_archived %}
-									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}?next={{ request.path }}" title="Unarchive {{ profile }}">
 										<span class="material-symbols-rounded">unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?next={{ request.path }}" title="Archive {{ profile }}">
 										<span class="material-symbols-rounded">archive</span>
 									</a>
 								{% endif %}
@@ -150,7 +151,7 @@
 										</a>
 									</div>
 								</div>
-								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?next={{ request.path }}" title="Delete {{ profile }}">
 									<i class="fa-solid fa-trash"></i>
 								</a>
 							</div>

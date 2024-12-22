@@ -4,6 +4,7 @@ from django.core.validators import FileExtensionValidator
 from django.conf import settings as DJANGO_SETTINGS
 from django import forms
 
+from django_password_eye.widgets import PasswordEyeWidget
 from django_password_eye.fields import PasswordEye
 
 from .models import  (
@@ -17,7 +18,7 @@ COMMON_CLASS = 'form-control'
 
 
 
-class DefaultSettingsForm(forms.ModelForm):
+class OperateSettingsForm(forms.ModelForm):
 	docx_validator	= [FileExtensionValidator(allowed_extensions=['docx'])]
 	
 	template_personnel = forms.FileField(
@@ -117,7 +118,7 @@ class SearchImageForm(forms.ModelForm):
 
 
 class LoginForm(AuthenticationForm):
-    password = PasswordEye(label='')
+    password = PasswordEye(label='', widget=PasswordEyeWidget(independent=True))
 
     class Meta: 
         model 	= User
@@ -134,8 +135,8 @@ class LoginForm(AuthenticationForm):
 
 
 class PasswordResetForm(SetPasswordForm):
-    new_password1 = PasswordEye(label='')
-    new_password2 = PasswordEye(label='')
+    new_password1 = PasswordEye(label='', widget=PasswordEyeWidget(independent=True))
+    new_password2 = PasswordEye(label='', widget=PasswordEyeWidget(independent=True))
 
     class Meta: 
         model 	= User

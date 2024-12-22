@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.utils.http import urlsafe_base64_decode
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
 
@@ -21,10 +22,9 @@ from profiles.models import (
 
 
 
-OPERATE_SETTINGS = app_models.Setting
+OPERATE_SETTINGS_FORM 	= app_forms.OperateSettingsForm
+OPERATE_SETTINGS 		= app_models.Setting
 
-DEFAULT_SETTINGS_FORM 	= app_forms.DefaultSettingsForm
-DEFAULT_SETTINGS 		= app_models.Setting
 
 
 @login_required
@@ -45,11 +45,11 @@ def index(request):
 
 @login_required
 def settings(request):
-	defset 	= DEFAULT_SETTINGS.objects.first()
-	form	= DEFAULT_SETTINGS_FORM(instance=defset)
+	defset 	= OPERATE_SETTINGS.objects.first()
+	form	= OPERATE_SETTINGS_FORM(instance=defset)
 
 	if request.method == "POST":
-		form = DEFAULT_SETTINGS_FORM(request.POST, request.FILES, instance=defset)
+		form = OPERATE_SETTINGS_FORM(request.POST, request.FILES, instance=defset)
 
 		if form.is_valid():
 			if not request.FILES.get('template_inmate'):
@@ -63,8 +63,15 @@ def settings(request):
 
 			form.save()
 
-			# if request.FILES.get('model'):
-			# 	update_image_embeddings()
+			if request.FILES.get('model'):
+				model = app_utils.get_model()
+				print(type(model.get_inputs()[0].shape[1]))
+				defset.input_size = model.get_inputs()[0].shape[1]
+				defset.save()
+
+				app_utils.update_embeddings()
+
+			messages.success(request, f"Settings updated.")
 
 			return redirect('operate-settings')
 
@@ -141,8 +148,7 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def facesearch(request):
-	prev_page 	= request.GET.get("prev", "/")
-	curr_page	= request.build_absolute_uri()
+	curr	= request.build_absolute_uri()
 
 	defset = OPERATE_SETTINGS.objects.first()
 
@@ -156,7 +162,7 @@ def facesearch(request):
 
 	if request.method == "POST":
 		is_option_camera	= int(request.POST.get("option_camera", 0))
-		is_option_upload	= int(request.POST.get("option_upload", 0))
+		is_option_upload	= 'image' in request.FILES
 
 		curr_time	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
 		image_name	= curr_time + ".png"
@@ -173,16 +179,21 @@ def facesearch(request):
 			)
 
 			if not is_image_taken:
-				return render(curr_page)
+				return redirect(curr)
 			
 			app_utils.save_image(Path(input_path), input_image)
 
-		elif is_option_upload and 'image' in request.FILES: 
+		elif is_option_upload: 
 			form = form_class(request.POST, request.FILES)
 			
 			if form.is_valid():
-				instance	= form.save()
-				input_path	= instance.image.path
+				current_time 	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
+				image_name 		= current_time + ".png"
+
+				instance = form.save(commit=False)
+				instance.image.name = image_name
+				instance.save()
+				input_path = instance.image.path
 
 		# get profiles from images
 		cand_list	= app_utils.search(
@@ -190,16 +201,20 @@ def facesearch(request):
 			threshold	= threshold, 
 			search_mode	= search_mode
 		)
-		# search_mode			
+		# search_mode
 		profiles = app_utils.get_profiles(
 			cand_list	= cand_list,
 			reverse		= True,							 
 			search_mode	= search_mode					 
-		) if cand_list else None
+		) if cand_list else []
 
 		# Delete the image after use
 		instance = form_model.objects.filter(image__icontains=Path(input_path).stem).first()
 		instance.delete() if instance else Path(input_path).unlink()
+
+		messages.error(request, f"Facesearch done. Found {len(profiles)} similar faces.")
+
+		print(f"Facesearch done. Found {len(profiles)} similar faces")
 	
 	context = {
 		"page_title"	: "Facesearch",

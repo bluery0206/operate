@@ -31,7 +31,7 @@
                     
                     <div class="actions">
                         <button class="btn btn-{% if danger %}danger{%else%}warning{% endif %}" type="submit">Confirm</button>
-                        <a class="btn btn-b btn-secondary" href="javascript:history.go(-1)">Cancel</a>
+                        <a class="btn btn-b btn-secondary" href="{% if prev %}{{ prev }}{% else %}javascript:history.go(-1){% endif %}">Cancel</a>
                     </div>
                 </form>
             </div>

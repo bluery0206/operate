@@ -7,11 +7,40 @@
 			<div class="header">
 				<h2>Facesearch</h2>	
 			</div>
+
+			{% if messages %}
+				<div class="messages-list">
+					{% for message in messages %}
+						<div class="message message-{{ message.tags }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+			
+			<div class="pagination left">
+				<div></div>
 				
-			<div class="card-list">
-				{% if profiles %}
+				<div class="color-legend">
+					<h4>Legend</h4>
+	
+					<div class="legend">
+						<i class="dot dot-personnel"></i>
+						<i class="dot dot-inmate"></i>
+						<span>Open</span>
+					</div>
+					<div class="legend">
+						<i class="dot dot-personnel-muted"></i>
+						<i class="dot dot-inmate-muted"></i>
+						<span>Archived</span>
+					</div>
+				</div>
+			</div>
+
+			{% if profiles %}
+				<div class="card-list">
 					{% for dist, profile in profiles %}
-						<div class="card {{ profile.p_type }}">
+						<div class="card {{ profile.p_type }}{% if profile.is_archived %}-archived{% endif %}">
 							{% comment %}
 								<div class="{{ profile.p_type }} header">
 									<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
@@ -19,16 +48,16 @@
 							{% endcomment %}
 
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}" title="Edit {{ profile }}">
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							
 								{% if profile.is_archived %}
-									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}?next={{ request.path }}" title="Unarchive {{ profile }}">
 										<span class="material-symbols-rounded">unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?next={{ request.path }}" title="Archive {{ profile }}">
 										<span class="material-symbols-rounded">archive</span>
 									</a>
 								{% endif %}
@@ -49,7 +78,7 @@
 										</a>
 									</div>
 								</div>
-								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?next={{ request.path }}" title="Delete {{ profile }}">
 									<i class="fa-solid fa-trash"></i>
 								</a>
 							</div>
@@ -62,7 +91,7 @@
 								<div class="details">
 									<span class="name detail">
 										<span class="distance 
-											{% if forloop.counter == 1 %}
+											{% if forloop.counter == 1 and dist > 89 %}
 												distance-primary
 											{% elif dist > 89 and forloop.counter != 1 %}
 												distance-secondary
@@ -90,10 +119,8 @@
 							</a>
 						</div>
 					{% endfor %}
-				{% else %}
-					<h3 class="muted">There are no similar faces found.</h3>
-				{% endif %}
-			</div>
+				</div>
+			{% endif %}
 		</div>
 
 		<div class="filter-bar">

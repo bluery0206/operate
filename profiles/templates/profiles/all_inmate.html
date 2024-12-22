@@ -9,25 +9,25 @@
 				<h2>Inmate Profiles</h2>
 
 				<div class="actions">
-					<a class="btn" href="{% url 'profile-add' 'inmate' %}?prev={{request.get_full_path|urlencode}}" title="Add new profile">
+					<a class="btn" href="{% url 'profile-add' 'inmate' %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Add new profile">
 						<i class="fa-solid fa-plus"></i>
 						<span>Add new profile</span>
 					</a>
 				
 					{% if inmates %}
 						{% if filters.state == "archived" %}
-							<a class="btn" href="{% url 'archive-remove-all' 'inmate' %}" title="Unarchive all profiles">
+							<a class="btn" href="{% url 'archive-remove-all' 'inmate' %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Unarchive all profiles">
 								<span class="material-symbols-rounded">unarchive</span>
 								<span>Unarchive all</span>
 							</a>
 						{% elif filters.state == "open" %}
-							<a class="btn" href="{% url 'archive-add-all' 'inmate' %}" title="Add all profiles to archive">
+							<a class="btn" href="{% url 'archive-add-all' 'inmate' %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Add all profiles to archive">
 								<span class="material-symbols-rounded">archive</span>
 								<span>Archive all</span>
 							</a>
 						{% endif %}
 		
-						<a class="btn btn-danger" href="{% url 'profile-delete-all' 'inmate' %}?prev={{ request.path }}" title="Delete all profiles">
+						<a class="btn btn-danger" href="{% url 'profile-delete-all' 'inmate' %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Delete all profiles">
 							<i class="fa-solid fa-trash"></i>
 							<span>Delete all</span>
 						</a>
@@ -35,14 +35,25 @@
 				</div>
 			</div>
 			
-			{% if is_paginated %}
-				<div class="pagination left">
-					<span class="page-list">
+
+			{% if messages %}
+				<div class="messages-list">
+					{% for message in messages %}
+						<div class="message message-{{ message.tags }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+			
+			<div class="pagination left">
+				<span class="page-list">
+					{% if is_paginated %}
 						{% if inmates.has_previous %}
-							<a class="btn" href="?page=1">
+							<a class="btn" href="?page=1&{{ query_params }}">
 								First
 							</a>
-							<a class="btn" href="?page={{ inmates.previous_page_number }}">
+							<a class="btn" href="?page={{ inmates.previous_page_number }}&{{ query_params }}">
 								Previous
 							</a>
 						{% else %}
@@ -56,17 +67,17 @@
 	
 						{% for num in inmates.paginator.page_range %}
 							{% if inmates.number == num %}
-								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+								<a class="btn btn-primary" href="?page={{ num }}&{{ query_params }}">{{ num }}</a>
 							{% elif num > inmates.number|add:"-5" and num < inmates.number|add:"5" %}
-								<a class="btn" href="?page={{ num }}">{{ num }}</a>
+								<a class="btn" href="?page={{ num }}&{{ query_params }}">{{ num }}</a>
 							{% endif %}
 						{% endfor %}
 	
 						{% if inmates.has_next %}
-							<a class="btn" href="?page={{ inmates.next_page_number }}">
+							<a class="btn" href="?page={{ inmates.next_page_number }}&{{ query_params }}">
 								Next
 							</a>
-							<a class="btn" href="?page={{ inmates.paginator.num_pages }}">
+							<a class="btn" href="?page={{ inmates.paginator.num_pages }}&{{ query_params }}">
 								Last
 							</a>
 						{% else %}
@@ -77,25 +88,40 @@
 								Last
 							</button>
 						{% endif %}
-					</span>
-				</div>
-			{% endif %}		<!-- request.get_full_path|urlencode -->
+					{% endif %}		<!-- request.get_full_path|urlencode -->
+				</span>
+					
+				{% if filters.state == "all" %}
+					<div class="color-legend">
+						<h4>Legend</h4>
+
+						<div class="legend">
+							<i class="dot dot-inmate"></i>
+							<span>Open</span>
+						</div>
+						<div class="legend">
+							<i class="dot dot-inmate-muted"></i>
+							<span>Archived</span>
+						</div>
+					</div>
+				{% endif %}
+			</div>
 	
 			<div class="card-list">
 				{% if inmates %}
 					{% for profile in inmates %}
-						<div class="card inmate">
+						<div class="card inmate{% if filters.state == 'all' %}{% if profile.is_archived %}-archived{% endif %}{% endif %}">
 							<div class="actions">
-								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
+								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Edit {{ profile }}">
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							
 								{% if profile.is_archived %}
-									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
+									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Unarchive {{ profile }}">
 										<span class="material-symbols-rounded">unarchive</span>
 									</a>
 								{% else %}
-									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
+									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Archive {{ profile }}">
 										<span class="material-symbols-rounded">archive</span>
 									</a>
 								{% endif %}
@@ -116,12 +142,12 @@
 										</a>
 									</div>
 								</div>
-								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
+								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?next={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}" title="Delete {{ profile }}">
 									<i class="fa-solid fa-trash"></i>
 								</a>
 							</div>
 
-							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={{ request.path }}">
+							<a href="{% url 'profile' profile.p_type profile.pk %}?prev={% if '%3F' in request.get_full_path|urlencode %}{{ request.get_full_path|urlencode }}{% else %}{{ request.path }}{% endif %}">
 								<div class="picture">
 									<img src="{{ profile.thumbnail.url }}" alt="{{ profile|full_name }}'s profile picture">
 								</div>
@@ -161,10 +187,10 @@
 				<div class="pagination right">
 					<span class="page-list">
 						{% if inmates.has_previous %}
-							<a class="btn" href="?page=1">
+							<a class="btn" href="?page=1&{{ query_params }}">
 								First
 							</a>
-							<a class="btn" href="?page={{ inmates.previous_page_number }}">
+							<a class="btn" href="?page={{ inmates.previous_page_number }}&{{ query_params }}">
 								Previous
 							</a>
 						{% else %}
@@ -178,17 +204,17 @@
 	
 						{% for num in inmates.paginator.page_range %}
 							{% if inmates.number == num %}
-								<a class="btn btn-primary" href="?page={{ num }}">{{ num }}</a>
+								<a class="btn btn-primary" href="?page={{ num }}&{{ query_params }}">{{ num }}</a>
 							{% elif num > inmates.number|add:"-5" and num < inmates.number|add:"5" %}
-								<a class="btn" href="?page={{ num }}">{{ num }}</a>
+								<a class="btn" href="?page={{ num }}&{{ query_params }}">{{ num }}</a>
 							{% endif %}
 						{% endfor %}
 	
 						{% if inmates.has_next %}
-							<a class="btn" href="?page={{ inmates.next_page_number }}">
+							<a class="btn" href="?page={{ inmates.next_page_number }}&{{ query_params }}">
 								Next
 							</a>
-							<a class="btn" href="?page={{ inmates.paginator.num_pages }}">
+							<a class="btn" href="?page={{ inmates.paginator.num_pages }}&{{ query_params }}">
 								Last
 							</a>
 						{% else %}
@@ -238,7 +264,7 @@
 				<div class="form-field">
 					<label for="state">State</label>
 					<select class="form-control" name="state" id="state" title="Filter by state">
-						<option class="option_title"  value="">All</option>
+						<option value="all" {% if filters.state == "all" %}selected{% endif %}>All</option>
 						<option value="open" {% if filters.state == "open" %}selected{% endif %}>Open</option>
 						<option value="archived" {% if filters.state == "archived" %}selected{% endif %}>Archived</option>
 					</select>

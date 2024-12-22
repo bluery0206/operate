@@ -35,7 +35,7 @@
 				<div class="field">
 					{% if form.raw_image.errors %}
 						<div class="alert alert-danger">
-							{% for error in for.raw_image.errors %}
+							{% for error in form.raw_image.errors %}
 								{{ error }}
 							{% endfor %}
 						</div>

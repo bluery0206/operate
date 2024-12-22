@@ -20,10 +20,11 @@ class Setting(models.Model):
     thumbnail_size      = models.IntegerField(default = 200)
 
     camera              = models.IntegerField(default = 0)
-    clip_camera         = models.BooleanField(default = False)
-    clip_size           = models.IntegerField(default = 200)
+    clip_camera         = models.BooleanField(default = True)
+    clip_size           = models.IntegerField(default = 400)
 
     threshold           = models.FloatField(default = 1.0)
+    input_size          = models.IntegerField(default = 105)
     search_mode         = models.CharField(
         default='embedding',
         choices=[

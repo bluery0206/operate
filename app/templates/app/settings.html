@@ -15,6 +15,16 @@
             </div>
         </div>
 
+		{% if messages %}
+            <div class="messages-list">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="body">
             <div class="section">
                 <div class="header">
