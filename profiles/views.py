@@ -56,14 +56,10 @@ def all_personnel(request):
 	ranks			= [rank[0] for rank in profiles_models.RANKS]
 	sort_choices	= PERSONNEL_SORT_CHOICES
 	order_choices	= ORDER_CHOICES
-	filters			= {}
 
-	reset_filter		= request.GET.get("reset_filter", None)
-	reset_search		= request.GET.get("reset_search", None)
-	search				= request.GET.get("search", "").strip()
-
-	# The initialized variable, `personnels`, fetches all personnel objects from the database.
-	# The following filters removes data from the `personnel` variable that doesn't fit the filter criteria.
+	reset_filter	= bool(request.GET.get("reset_filter", 0))
+	reset_search	= bool(request.GET.get("reset_search", 0))
+	search			= request.GET.get("search", "").strip()
 
 	if not reset_search and search:
 		# Looks for `f_name`, `m_name`, or `l_name` that contains the `search`
@@ -76,7 +72,7 @@ def all_personnel(request):
 		search = ""
 
 	if reset_filter:
-		designation, rank, sort_by, sort_order = None, None, None, None
+		designation, rank, sort_by, sort_order, state = "", "", "", "descending", "open"
 	else:
 		designation	= request.GET.get("designation", "")
 		rank		= request.GET.get("rank", "")
@@ -86,33 +82,30 @@ def all_personnel(request):
 
 		designation = designation.strip()
 
-		match state:
-			case "open":
-				personnels = personnels.filter(is_archived=False)
-			case "archived":
-				personnels = personnels.filter(is_archived=True)
-			case "all":
-				personnels = personnels
+	match state:
+		case "open":
+			personnels = personnels.filter(is_archived=False)
+		case "archived":
+			personnels = personnels.filter(is_archived=True)
 
-		if designation:
-			personnels = personnels.filter(designation__icontains=designation)
+	if designation:
+		personnels = personnels.filter(designation__icontains=designation)
 
-		if rank: 		
-			personnels = personnels.filter(rank=rank)
+	if rank: 		
+		personnels = personnels.filter(rank=rank)
 
-		if sort_by:
-			sort		= "-" + sort_by if sort_order == "descending" else sort_by
-			personnels 	= personnels.order_by(sort)
+	if sort_by:
+		sort		= "-" + sort_by if sort_order == "descending" else sort_by
+		personnels 	= personnels.order_by(sort)
 
-		filters = {
-			'state'			: state,
-			'designation'	: designation,
-			'rank'			: rank,
-			'sort_by'		: sort_by,
-			'sort_order'	: sort_order,
-		}
-
-	filters.update({"search": search})
+	filters = {
+		'designation'	: designation,
+		'rank'			: rank,
+		'sort_by'		: sort_by,
+		'sort_order'	: sort_order,
+		'state'			: state,
+		"search"		: search
+	}
 	
 	page		= request.GET.get('page', 1)
 	paginator	= Paginator(personnels, OPERATE_SETTINGS.objects.first().profiles_per_page)
@@ -150,8 +143,8 @@ def all_inmate(request):
 	order_choices	= ORDER_CHOICES
 	filters			= {}
 
-	reset_filter		= request.GET.get("reset_filter", "")
-	reset_search		= request.GET.get("reset_search", "")
+	reset_filter		= bool(request.GET.get("reset_filter", 0))
+	reset_search		= bool(request.GET.get("reset_search", 0))
 	search				= request.GET.get("search", "").strip()
 
 	# The initialized variable, `personnels`, fetches all personnel objects from the database.
@@ -168,7 +161,7 @@ def all_inmate(request):
 		search = ""
 
 	if reset_filter:
-		crime_violated, sort_by, sort_order	= None, None, None
+		crime_violated, sort_by, sort_order, state	= "", "", "", "open"
 	else:
 		crime_violated	= request.GET.get("crime_violated", "")
 		sort_by			= request.GET.get("sort_by", "")
@@ -177,28 +170,26 @@ def all_inmate(request):
 
 		crime_violated = crime_violated.strip()
 
-		match state:
-			case "open":
-				inmates = inmates.filter(is_archived=False)
-			case "archived":
-				inmates = inmates.filter(is_archived=True)
-			case "all":
-				inmates = inmates
+	match state:
+		case "open":
+			inmates = inmates.filter(is_archived=False)
+		case "archived":
+			inmates = inmates.filter(is_archived=True)
 
-		if crime_violated: 
-			inmates = inmates.filter(crime_violated__icontains=crime_violated)
-		if sort_by:
-			sort 	= "-" + sort_by if sort_order == "descending" else sort_by
-			inmates = inmates.order_by(sort)
+	if crime_violated: 
+		inmates = inmates.filter(crime_violated__icontains=crime_violated)
 
-		filters = {
-			'state'			: state,
-			'crime_violated': crime_violated,
-			'sort_by'		: sort_by,
-			'sort_order'	: sort_order,
-		}
+	if sort_by:
+		sort 	= "-" + sort_by if sort_order == "descending" else sort_by
+		inmates = inmates.order_by(sort)
 
-	filters.update({"search": search})
+	filters = {
+		'state'			: state,
+		'crime_violated': crime_violated,
+		'sort_by'		: sort_by,
+		'sort_order'	: sort_order,
+		"search"		: search
+	}
 
 	page		= request.GET.get('page', 1)
 	paginator	= Paginator(inmates, OPERATE_SETTINGS.objects.first().profiles_per_page)

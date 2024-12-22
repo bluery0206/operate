@@ -247,7 +247,7 @@
 						<i class="fa-solid fa-magnifying-glass"></i>
 						<span>Search</span>
 					</button>
-					<button class="btn" type="submit" name="reset_search" title="Reset search" value="reset_search">
+					<button class="btn" type="submit" name="reset_search" title="Reset search" value="1">
 						<i class="fa-solid fa-rotate-left"></i>
 						<span>Reset Search</span>
 					</button>
@@ -277,7 +277,7 @@
 				<div class="form-field">
 					<label for="rank">Rank</label>
 					<select class="form-control" name="rank" id="rank" title="Filter by rank">
-						<option class="option_title" value="">Ranks</option>
+						<option class="option_title" value="">All</option>
 						
 						{% for rank in ranks%}
 							<option value="{{ rank }}" {% if filters.rank == rank %}selected{% endif %}>{{ rank }}</option>
@@ -309,9 +309,9 @@
 						<span>Apply Filter</span>
 					</button>
 		
-					<button class="btn" type="submit" name="reset_filter"  title="Reset filter" value="reset_filter">
-							<i class="fa-solid fa-filter-circle-xmark"></i>
-							<span>Reset Filter</span>
+					<button class="btn" type="submit" name="reset_filter"  title="Reset filter" value="1">
+						<i class="fa-solid fa-filter-circle-xmark"></i>
+						<span>Reset Filter</span>
 					</button>
 				</div>
 			</form>

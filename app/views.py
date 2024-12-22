@@ -212,7 +212,7 @@ def facesearch(request):
 		instance = form_model.objects.filter(image__icontains=Path(input_path).stem).first()
 		instance.delete() if instance else Path(input_path).unlink()
 
-		messages.error(request, f"Facesearch done. Found {len(profiles)} similar faces.")
+		messages.success(request, f"Facesearch done. Found {len(profiles)} similar faces.")
 
 		print(f"Facesearch done. Found {len(profiles)} similar faces")
 	
