@@ -272,9 +272,11 @@ def profile_add(request, p_type):
 				image_name 		= current_time + ".png"
 				
 				# We saving the image_names first to hopefully counter opencv errors when
-				# 	dealing with spaces or symbols in image names.
+				# 	dealing with spaces or symbols in image names then changing their names
+				#	so when we access the image, it will be opened properly by opencv assuming
+				#	it was in fact because of that.
 				instance = form.save(commit=False)
-				instance.raw_image.name = image_name
+				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
 
 				# These fields below somehow needed their save folders to be specified
 				# 	though assuming that if we didn't use the django field for these fields,
@@ -399,7 +401,7 @@ def profile_update(request, p_type, pk):
 				image_name 		= current_time + ".png"
 
 				instance = form.save(commit=False)
-				instance.raw_image.name = image_name
+				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
 				instance.embedding.name = "embeddings/" + current_time + ".npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
 				instance.save()
