@@ -21,7 +21,7 @@ class Setting(models.Model):
 
     camera              = models.IntegerField(default = 0)
     clip_camera         = models.BooleanField(default = True)
-    clip_size           = models.IntegerField(default = 400)
+    clip_size           = models.IntegerField(default = 200)
 
     threshold           = models.FloatField(default = 1.0)
     input_size          = models.IntegerField(default = 105)
