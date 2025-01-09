@@ -17,7 +17,7 @@ _Note_: This release is labeled as "Pre-centralized" to indicate that while the 
 * Python 3.12.3
 * Dependencies listed in `requirements.txt`
 
-## Installation Guide [click here](INSTALL_GUIDE.md)
+[Installation Guide](INSTALL_GUIDE.md)
 
 
 
