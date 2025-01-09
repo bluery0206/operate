@@ -291,21 +291,27 @@ def profile_add(request, p_type):
 				if is_option_camera:
 					camera = int(request.POST.get("camera", camera))
 
-					is_image_taken, raw_image = app_utils.take_image(
+					is_image_taken, raw_image, is_cancelled = app_utils.take_image(
 						camera		= camera, 
 						clip_camera	= defset.clip_camera, 
 						clip_size	= defset.clip_size
 					)
 
-					if not is_image_taken:
+					if is_cancelled:
+						return this_page()
+					elif is_image_taken:
+						app_utils.save_image(instance.raw_image.path, raw_image)
+					else:
+						instance.delete()
+
+						error = "No profile picture found. Please upload one to complete your profile"
 						form.add_error(
 							field = "raw_image",
-							error = "No profile picture found. Please upload one to complete your profile"
+							error = error
 						)
+						print(error)
 				
 						return this_page()
-					else:
-						app_utils.save_image(instance.raw_image.path, raw_image)
 				
 				resized_image = app_utils.create_thumbnail(
 					raw_image_path	= raw_image_path,
@@ -320,12 +326,12 @@ def profile_add(request, p_type):
 				if not is_thumbail_saved:
 					instance.delete()
 
+					error = "There was an error saving the thumbnail."
 					form.add_error(
 						field = "raw_image",
-						error = "There was an error saving the thumbnail."
+						error = error
 					)
-
-					print(f"There was an error saving the thumbnail.")
+					print(error)
 
 					return this_page()
 
@@ -334,9 +340,10 @@ def profile_add(request, p_type):
 				if not is_embedding_saved:
 					instance.delete()
 			
+					error = "There was an error saving the embedding."
 					form.add_error(
 						field = "raw_image",
-						error = "There was an error saving the embedding."
+						error = error
 					)
 			
 					print(f"There was an error saving the embedding.")
@@ -344,17 +351,20 @@ def profile_add(request, p_type):
 					return this_page()
 				
 			if not is_option_camera and not is_option_upload:
+				instance.delete()
+			
+				error = "No profile picture found. Please upload one to complete your profile"
 				form.add_error(
 					field = "raw_image",
-					error = "No profile picture found. Please upload one to complete your profile"
+					error = error
 				)
-			
-				print(f"No profile picture found. Please upload one to complete your profile")
+				print(error)
 			
 				return this_page()
 			else:
-				messages.success(request, f"Profile successfully created: {instance}.")
-				print(f"Profile successfully created: {instance}.")
+				message = f"Profile successfully created: {instance}."
+				messages.success(request, message)
+				print(message)
 
 				return redirect(next) if next else redirect('profile', p_type, instance.pk)
 				
@@ -412,23 +422,27 @@ def profile_update(request, p_type, pk):
 				if is_option_camera:
 					camera = int(request.POST.get("camera", camera))
 
-					is_image_taken, raw_image = app_utils.take_image(
+					is_image_taken, raw_image, is_cancelled = app_utils.take_image(
 						camera		= camera, 
 						clip_camera	= defset.clip_camera, 
 						clip_size	= defset.clip_size
 					)
 
-					if not is_image_taken:
+					if is_cancelled:
+						return this_page()
+					elif is_image_taken:
+						app_utils.save_image(instance.raw_image.path, raw_image)
+					else:
+						instance.delete()
+
+						error = "No profile picture found. Please upload one to complete your profile."
 						form.add_error(
 							field = "raw_image",
-							error = "No profile picture found. Please upload one to complete your profile."
+							error = error
 						)
-				
-						print(f"No profile picture found. Please upload one to complete your profile")
-				
+						print(error)
+
 						return this_page()
-					else:
-						app_utils.save_image(instance.raw_image.path, raw_image)
 				
 				resized_image = app_utils.create_thumbnail(
 					raw_image_path	= raw_image_path,
@@ -442,14 +456,14 @@ def profile_update(request, p_type, pk):
 				
 				if not is_thumbail_saved:
 					instance.delete()
-				
+
+					error = "There was an error saving the thumbnail."
 					form.add_error(
 						field = "raw_image",
-						error = "There was an error saving the thumbnail."
+						error = error
 					)
-				
-					print(f"There was an error saving the thumbnail.")
-				
+					print(error)
+
 					return this_page()
 
 				is_embedding_saved  = app_utils.save_embedding(raw_image_path)
@@ -457,20 +471,20 @@ def profile_update(request, p_type, pk):
 				if not is_embedding_saved:
 					instance.delete()
 
+					error = "There was an error saving the embedding."
 					form.add_error(
 						field = "raw_image",
-						error = "There was an error saving the embedding."
+						error = error
 					)
-				
-					print(f"There was an error saving the embedding.")
+					print(error)
 
 					return this_page()
 			else:
 				instance = form.save()
 
-			messages.success(request, f"Profile successfully updated: {instance}")
-
-			print(f"Profile successfully updated: {instance}")
+			message = f"Profile successfully updated: {instance}"
+			messages.success(request, message)
+			print(message)
 
 			return redirect(next) if next else redirect('profile', p_type, instance.pk)
 

@@ -171,8 +171,8 @@ def facesearch(request):
 
 		if is_option_camera:
 			camera = int(request.POST.get("camera", defset.camera))
-
-			is_image_taken, input_image = app_utils.take_image(
+			
+			is_image_taken, input_image, is_cancelled = app_utils.take_image(
 				camera		= camera, 
 				clip_camera = defset.clip_camera, 
 				clip_size	= defset.clip_size

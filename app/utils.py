@@ -25,6 +25,7 @@ OPERATE_SETTINGS 	= app_model.Setting
 def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bool, np.ndarray]:
 	is_image_taken	= False
 	image 			= None
+	is_cancelled 	= False
 
 	try:
 		cap	= cv2.VideoCapture(camera)
@@ -46,11 +47,12 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 
 			# Quit
 			if (cv2.waitKey(1) & 0XFF == ord('q')):
+				is_cancelled = True
 				break
 			
 			# Capture
 			if (cv2.waitKey(1) & 0XFF == ord('c')):
-				image = frame
+				image 			= frame
 				is_image_taken 	= True
 				break
 
@@ -60,7 +62,7 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 	cap.release()
 	cv2.destroyAllWindows()
 
-	return [is_image_taken, image]
+	return [is_image_taken, image, is_cancelled]
 
 
 
