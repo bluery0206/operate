@@ -192,7 +192,7 @@ def get_full_name(profile:object, m_initial:bool=True) -> str:
 		full_name += f", {profile.f_name.title()}"
 
 	if profile.m_name and m_initial:
-		full_name += f" {profile.m_name[0]}."
+		full_name += f" {profile.m_name[0].upper()}."
 	elif profile.m_name:
 		full_name += f" {profile.m_name.title()}"
 
