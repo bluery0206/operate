@@ -111,7 +111,7 @@ body {
 
 
 .side-nav {
-    outline: 1px solid red;
+    /* outline: 1px solid red; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -141,7 +141,7 @@ body {
 
 
 .main {
-    border: 3px solid blue;
+    /* border: 3px solid blue; */
     width: auto;
     display: flex;
     flex-direction: column;
@@ -321,7 +321,8 @@ body {
     
     /* Contains personnel and inmate profiles side-by-side */
     .new-profiles {
-        display                 : flex;
+        display : grid;
+        grid-template-columns: 49% 49%;
         justify-content         : space-between;
 
         .card-list {
