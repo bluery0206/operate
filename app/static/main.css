@@ -96,6 +96,7 @@ body {
     background: var(--white-1);
     font-family: var(--font-regular);
     height: 100dvh;
+    width: 100dvw;
 }
 
 
@@ -110,7 +111,7 @@ body {
 
 
 .side-nav {
-    /* outline: 1px solid red; */
+    outline: 1px solid red;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -120,6 +121,7 @@ body {
     background: var(--white-2);
     height: 100dvh;
     width: 200px;
+    min-width: 200px;
     
     > .nav {
         /* border: 1px solid red; */
@@ -139,8 +141,8 @@ body {
 
 
 .main {
-    /* border: 3px solid blue; */
-    width: 100%;
+    border: 3px solid blue;
+    width: auto;
     display: flex;
     flex-direction: column;
     gap: 2em;
@@ -319,8 +321,7 @@ body {
     
     /* Contains personnel and inmate profiles side-by-side */
     .new-profiles {
-        display                 : grid;
-        grid-template-columns   : 49% 49%;
+        display                 : flex;
         justify-content         : space-between;
 
         .card-list {
@@ -816,6 +817,7 @@ footer {
                     /* border: 1px solid red; */
                     gap: 2em;
                     display: flex;
+                    flex-wrap: wrap;
                     justify-content: space-evenly;
 
                     .person {
@@ -1171,4 +1173,13 @@ h4 {
 .message-error {
     background: var(--danger);
     color: var(--text-white);
+}
+
+@media only screen and (max-width: 800px) {
+    .index {
+        .new-profiles {
+            display                 : grid;
+            grid-template-columns   : 100%;
+        }
+    }
 }
