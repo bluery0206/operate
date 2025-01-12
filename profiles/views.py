@@ -298,6 +298,7 @@ def profile_add(request, p_type):
 					)
 
 					if is_cancelled:
+						instance.delete()
 						return this_page()
 					elif is_image_taken:
 						app_utils.save_image(instance.raw_image.path, raw_image)
@@ -351,8 +352,6 @@ def profile_add(request, p_type):
 					return this_page()
 				
 			if not is_option_camera and not is_option_upload:
-				instance.delete()
-			
 				error = "No profile picture found. Please upload one to complete your profile"
 				form.add_error(
 					field = "raw_image",
@@ -429,6 +428,7 @@ def profile_update(request, p_type, pk):
 					)
 
 					if is_cancelled:
+						instance.delete()
 						return this_page()
 					elif is_image_taken:
 						app_utils.save_image(instance.raw_image.path, raw_image)
