@@ -49,7 +49,7 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 			if (cv2.waitKey(1) & 0XFF == ord('q')):
 				is_cancelled = True
 				break
-			
+
 			# Capture
 			if (cv2.waitKey(1) & 0XFF == ord('c')):
 				image 			= frame
@@ -57,6 +57,7 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 				break
 
 		except BrokenPipeError:
+			is_cancelled = True
 			break
 
 	cap.release()
@@ -161,17 +162,24 @@ def preprocess_image(image:np.ndarray, img_size:int):
 
 
 
-def get_model():
-	model = OPERATE_SETTINGS.objects.first().model
-	
-	if not model:
-		raise FileNotFoundError("There is no model found.")
-	
-	session_options = ort.SessionOptions()
-	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(model.path)
+def get_model(type:str|None=None) -> ort.InferenceSession|None:
+	match type:
+		case "detection":
+			pass
 
-	return session
+		case _:
+			model_recognition = OPERATE_SETTINGS.objects.first().model_recognition
+			
+			if not model_recognition: raise FileNotFoundError("There is no model for recognition found.")
+			
+			session_options = ort.SessionOptions()
+			session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+			session = ort.InferenceSession(model_recognition.path)
+		
+			return session
+		
+	return None
+
 
 
 

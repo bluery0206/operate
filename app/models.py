@@ -45,7 +45,13 @@ class Setting(models.Model):
         upload_to   = "templates"
     )
 
-    model               = models.FileField(
+    model_recognition = models.FileField(
+        blank       = True,
+        null        = True,
+        upload_to   = "models"
+    )
+
+    model_detection = models.FileField(
         blank       = True,
         null        = True,
         upload_to   = "models"

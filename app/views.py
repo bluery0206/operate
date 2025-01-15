@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
+from uuid import uuid3
 
 from . import (
     models 	as app_models,
@@ -61,15 +62,26 @@ def settings(request):
 			if not request.FILES.get('model'):
 				form.instance.model = defset.model
 
-			form.save()
-
 			if request.FILES.get('model'):
+				form.save()
+
+				# instance = form.save(commit=False)
+				
+				# instance.model_recognition.name = f"rec_{uuid3}."
+
+				# Setting up `input_size` from models'
 				model = app_utils.get_model()
+
 				print(type(model.get_inputs()[0].shape[1]))
+
 				defset.input_size = model.get_inputs()[0].shape[1]
 				defset.save()
 
+
 				app_utils.update_embeddings()
+			else:
+				form.save()
+
 
 			messages.success(request, f"Settings updated.")
 
