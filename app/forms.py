@@ -33,7 +33,13 @@ class OperateSettingsForm(forms.ModelForm):
 		allow_empty_file	= True,
 		required			= False
     )
-	model = forms.FileField(
+	model_detection = forms.FileField(
+		validators 			= [FileExtensionValidator(allowed_extensions=['onnx'])],
+		widget				= forms.FileInput(attrs={'class': COMMON_CLASS}),
+		allow_empty_file	= True,
+		required			= False
+    )
+	model_recognition = forms.FileField(
 		validators 			= [FileExtensionValidator(allowed_extensions=['onnx'])],
 		widget				= forms.FileInput(attrs={'class': COMMON_CLASS}),
 		allow_empty_file	= True,
@@ -76,17 +82,32 @@ class OperateSettingsForm(forms.ModelForm):
 					'max'   : 2000,
 					'step'  : "any",
 			}),
-			'search_mode': forms.Select(attrs={
-					'class': COMMON_CLASS,
-				},
-			),
+			'input_size': forms.NumberInput(attrs={
+					'class' : COMMON_CLASS,
+					'min'   : 0,
+					'max'   : 1000,
+					'step'  : "any",
+			}),
+			'bbox_size': forms.NumberInput(attrs={
+					'class' : COMMON_CLASS,
+					'min'   : 0,
+					'max'   : 1000,
+					'step'  : "any",
+			}),
+			# 'search_mode': forms.Select(attrs={
+			# 		'class': COMMON_CLASS,
+			# 	},
+			# ),
 			'template_personnel' : forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
 			'template_inmate': forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
-			'model': forms.FileInput(attrs={
+			'model_detection': forms.FileInput(attrs={
+				'class': COMMON_CLASS,
+			}),
+			'model_recognition': forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
 		}
@@ -97,10 +118,13 @@ class OperateSettingsForm(forms.ModelForm):
 			"clip_camera",
 			"clip_size",
 			"threshold",
+			"input_size",
+			"bbox_size",
 			"search_mode",
 			"template_personnel",
 			"template_inmate",
-			"model",
+			"model_detection",
+			"model_recognition",
 		]
 
 

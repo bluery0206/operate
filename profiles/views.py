@@ -279,8 +279,8 @@ def profile_add(request, p_type):
 				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
 
 				# These fields below somehow needed their save folders to be specified
-				# 	though assuming that if we didn't use the django field for these fields,
-				# 	then django will just save these in the `MEDIA_ROOT` (as observed as well).
+				# 	assuming that if we didn't use the django fields for these... fields,
+				# 	then django just saves these in the `MEDIA_ROOT` (as observed as well).
 				instance.embedding.name = "embeddings/" + current_time + ".npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
 				instance.save()

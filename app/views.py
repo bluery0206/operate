@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
-from uuid import uuid3
 
 from . import (
     models 	as app_models,
@@ -59,29 +58,44 @@ def settings(request):
 			if not request.FILES.get('template_personnel'):
 				form.instance.template_personnel = defset.template_personnel
 
-			if not request.FILES.get('model'):
-				form.instance.model = defset.model
+			if not request.FILES.get('model_recognition'):
+				form.instance.model_recognition = defset.model_recognition
 
-			if request.FILES.get('model'):
-				form.save()
+			if not request.FILES.get('model_detection'):
+				form.instance.model_detection = defset.model_detection
 
-				# instance = form.save(commit=False)
-				
-				# instance.model_recognition.name = f"rec_{uuid3}."
+			if request.FILES.get('model_detection') or request.FILES.get('model_recognition'):
+				instance = form.save(commit=False)
 
-				# Setting up `input_size` from models'
-				model = app_utils.get_model()
+				if request.FILES.get('model_recognition'):
+					instance.model_recognition.name = f"emb_gen.onnx"
 
-				print(type(model.get_inputs()[0].shape[1]))
+				if request.FILES.get('model_detection'):
+					instance.model_detection.name = f"face_detection.onnx"
 
-				defset.input_size = model.get_inputs()[0].shape[1]
-				defset.save()
+				instance.save()
 
+				if request.FILES.get('model_detection'):
+					# Setting up `input_size` from models'
+					model = app_utils.get_model(instance.model_detection.path)
 
-				app_utils.update_embeddings()
+					print(type(model.get_inputs()[0].shape[1]))
+
+					defset.input_size = model.get_inputs()[0].shape[1]
+					defset.save()
+
+				if request.FILES.get('model_recognition'):
+					# Setting up `input_size` from models'
+					model = app_utils.get_model(instance.model_recognition.path)
+
+					print(type(model.get_inputs()[0].shape[1]))
+
+					defset.input_size = model.get_inputs()[0].shape[1]
+					defset.save()
+
+					app_utils.update_embeddings()
 			else:
 				form.save()
-
 
 			messages.success(request, f"Settings updated.")
 
