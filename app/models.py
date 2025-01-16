@@ -25,6 +25,7 @@ class Setting(models.Model):
 
     threshold           = models.FloatField(default = 1.0)
     input_size          = models.IntegerField(default = 105)
+    bbox_size           = models.IntegerField(default = 400)
     search_mode         = models.CharField(
         default='embedding',
         choices=[
@@ -45,7 +46,12 @@ class Setting(models.Model):
         upload_to   = "templates"
     )
 
-    model               = models.FileField(
+    model_detection = models.FileField(
+        blank       = True,
+        null        = True,
+        upload_to   = "models"
+    )
+    model_recognition = models.FileField(
         blank       = True,
         null        = True,
         upload_to   = "models"

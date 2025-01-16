@@ -8,10 +8,17 @@ import string
 
 from django.utils import timezone
 import onnxruntime as ort
+import onnx
 from pathlib import Path 
 import numpy as np
 from django.db.models import Q
 import cv2 
+
+
+
+from matplotlib import pyplot as plt
+
+
 
 # from profiles.models import Personnel, Inmate
 from app import models as app_model
@@ -49,7 +56,7 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 			if (cv2.waitKey(1) & 0XFF == ord('q')):
 				is_cancelled = True
 				break
-			
+
 			# Capture
 			if (cv2.waitKey(1) & 0XFF == ord('c')):
 				image 			= frame
@@ -57,6 +64,7 @@ def take_image(camera:int, clip_camera:bool, clip_size:int|None=None) -> list[bo
 				break
 
 		except BrokenPipeError:
+			is_cancelled = True
 			break
 
 	cap.release()
@@ -71,9 +79,11 @@ def crop_frame_from_center(frame, new_size):
 
 
 
-def open_image(image_path:str|Path, as_gray:bool=False) -> np.ndarray:
+def open_image(image_path:str|Path, as_gray:bool=False, as_rgb:bool=False) -> np.ndarray:
 	if as_gray:
 		return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+	elif as_rgb:
+		return cv2.imread(str(image_path), cv2.COLOR_BGR2RGB)
 	else:
 		return cv2.imread(str(image_path))
 
@@ -115,7 +125,7 @@ def crop_image_from_center(image, is_gray=False):
 
 
 def resize_image(image_array, new_size) :
-        return cv2.resize(image_array, dsize=(new_size, new_size))
+	return cv2.resize(image_array, dsize=(new_size, new_size))
 
 
 
@@ -126,11 +136,42 @@ def save_embedding(image_path:str|Path) -> bool:
 	
 	image = open_image(
 		image_path 	= image_path, 
-		as_gray		= True
+		as_rgb 		= True
 	)
 
+	image = crop_image_from_center(image)
+	image = resize_image(image, defset.bbox_size)
+
+	model = cv2.FaceDetectorYN.create(
+		model=defset.model_detection.path,
+		config="",
+		input_size=(defset.bbox_size, defset.bbox_size)
+	)
+
+	result = model.detect(image)
+
+	x, y, w, h = result[1][0][:4].astype(np.int32)
+
+	face = image[x:x+h, y:y+w]
+	face = crop_image_from_center(face)
+	face = face[:, :, 0]
+
+
+
+
+
+	plt.imshow(face)
+	plt.show()
+
+
+
+
+
+	print(f"{face.shape}")
+	print(f"{x}, {y}, {w}, {h}")
+
 	preprocessed_image = preprocess_image(
-		image		= image, 
+		image		= face, 
 		img_size	= defset.input_size
 	)
 
@@ -161,22 +202,34 @@ def preprocess_image(image:np.ndarray, img_size:int):
 
 
 
-def get_model():
-	model = OPERATE_SETTINGS.objects.first().model
-	
-	if not model:
-		raise FileNotFoundError("There is no model found.")
-	
-	session_options = ort.SessionOptions()
-	session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-	session = ort.InferenceSession(model.path)
+def get_model(path:str|None=None, inOnnx:bool=True):
+	defset 		= OPERATE_SETTINGS.objects.first()
 
-	return session
+	if inOnnx:
+		session_options = ort.SessionOptions()
+		session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+		model = ort.InferenceSession(path)
+	else:
+		if "det" in path:
+			size = defset.bbox_size
+		else:
+			size = defset.input_size
+
+		model = cv2.FaceDetectorYN.create(
+			model=path,
+			config="",
+			input_size=(size, size)
+		)
+		
+	return model
+
 
 
 
 def get_image_embedding(image:np.ndarray):
-	model = get_model()
+	defset 		= OPERATE_SETTINGS.objects.first()
+
+	model = get_model(defset.model_recognition.path)
 	
 	input_name	= model.get_inputs()[0].name
 	output_name = model.get_outputs()[0].name
@@ -225,10 +278,32 @@ def search(input_path:Path, threshold:float, search_mode:str):
 	print(f"\nInitiating Facesearch...")
 	print(f"Search mode: " + search_mode)
 
-	input = open_image(input_path, True)
+	input = open_image(
+		image_path 	= input_path, 
+		as_rgb 		= True
+	)
 	print("Input shape: " + str(input.shape))
 
-	input = preprocess_image(input, img_size=defset.input_size)
+	input = crop_image_from_center(input)
+	input = resize_image(input, defset.bbox_size)
+
+	model = cv2.FaceDetectorYN.create(
+		model=defset.model_detection.path,
+		config="",
+		input_size=(defset.bbox_size, defset.bbox_size)
+	)
+
+	result = model.detect(input)
+
+	x, y, w, h = result[1][0][:4].astype(np.int32)
+
+	face = input[x:x+h, y:y+w]
+	face = crop_image_from_center(face)
+	face = face[:, :, 0]
+
+	print(f"{x}, {y}, {w}, {h}")
+
+	input = preprocess_image(face, img_size=defset.input_size)
 	print("Preprocessed input shape: " + str(input.shape))
 
 	if search_mode == "embedding":
@@ -261,6 +336,9 @@ def search_face(inp_image:np.ndarray, val_images:list[np.ndarray], threshold:flo
 			val = get_image_embedding(val)
 
 		dist = np.sum(np.square(inp_emb - val), axis=-1)[0]
+		
+		# print(f"{dist <= threshold = }")
+		# print(f"{dist}, {threshold}")
 
 		if dist <= threshold:
 			percentage = get_percentage(threshold, dist)

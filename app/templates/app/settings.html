@@ -165,11 +165,10 @@
                             <small>The threshold is used to compare input images with stored ones. The smaller the threshold will see less profile as not match.</small>
                         </div>
                     </div>
-
                     <div>
-                        {% if form.search_mode.errors %}
+                        {% if form.input_size.errors %}
                             <div class="alert alert-danger">
-                                {% for error in form.search_mode.errors %}
+                                {% for error in form.input_size.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
@@ -177,13 +176,50 @@
 
                         <div class="item">
                             <div class="form-field">
-                                {{ form.search_mode.label_tag }}
-                                {{ form.search_mode }}
+                                {{ form.input_size.label_tag }}
+                                {{ form.input_size }}
                             </div>
-
-                            <small>Embedding is the simplified version of an image which makes recognition faster, unlike using raw images that need more processing. Embedding is generated once any profile image is saved.</small>
                         </div>
                     </div>
+                    <div>
+                        {% if form.bbox_size.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.bbox_size.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.bbox_size.label_tag }}
+                                {{ form.bbox_size }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="search_mode" value="embedding">
+                    
+                    {% comment %}
+                        <div>
+                            {% if form.search_mode.errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.search_mode.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="item">
+                                <div class="form-field">
+                                    {{ form.search_mode.label_tag }}
+                                    {{ form.search_mode }}
+                                </div>
+
+                                <small>Embedding is the simplified version of an image which makes recognition faster, unlike using raw images that need more processing. Embedding is generated once any profile image is saved.</small>
+                            </div>
+                        </div>
+                    {% endcomment %}
                 </div>
             </div>
             
@@ -249,10 +285,10 @@
                 </div>
 
                 <div class="block">
-                        <div>
-                            {% if form.model.errors %}
+                    <div>
+                        {% if form.model_detection.errors %}
                             <div class="alert alert-danger">
-                                {% for error in form.model.errors %}
+                                {% for error in form.model_detection.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
@@ -260,17 +296,39 @@
 
                         <div class="item">
                             <div class="form-field">
-                                {{ form.model.label_tag }}
-                                {{ form.model }}
+                                {{ form.model_detection.label_tag }}
+                                {{ form.model_detection }}
                             </div>
 
-                            {% if defset.model %}
-                                <span>Current: <a class="link" href="{{ defset.model.url }}" target="_blank">{{ defset.model.name }}</a> </span>
+                            {% if defset.model_detection %}
+                                <span>Current: <a class="link" href="{{ defset.model_detection.url }}" target="_blank">{{ defset.model_detection.name }}</a> </span>
                             {% endif %}
                         </div>
-                    </div>
 
-                    <small>The AI Model used to recognize individuals.</small>
+                        <small>The AI Model used to detect faces in images.</small>
+                    </div>
+                    <div>
+                        {% if form.model_recognition.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.model_recognition.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.model_recognition.label_tag }}
+                                {{ form.model_recognition }}
+                            </div>
+
+                            {% if defset.model_recognition %}
+                                <span>Current: <a class="link" href="{{ defset.model_recognition.url }}" target="_blank">{{ defset.model_recognition.name }}</a> </span>
+                            {% endif %}
+                        </div>
+
+                        <small>The AI Model used to recognize individuals.</small>
+                    </div>
                 </div>
             </div>
         </div>
