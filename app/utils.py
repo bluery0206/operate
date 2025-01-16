@@ -16,7 +16,7 @@ import cv2
 
 
 
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 
 
@@ -160,8 +160,8 @@ def save_embedding(image_path:str|Path) -> bool:
 
 
 
-	plt.imshow(face)
-	plt.show()
+	# plt.imshow(face)
+	# plt.show()
 
 
 
