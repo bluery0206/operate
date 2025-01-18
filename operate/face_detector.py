@@ -24,11 +24,11 @@ def get_face(image:np.ndarray) -> np.ndarray:
 		n_faces = len(result[1:])
 		if n_faces == 0: 
 			error_message = "No face was detected."
-			logger.error(error_message, exc_info=True)
+			logger.exception(error_message)
 			raise MissingFaceError(error_message)
 		elif n_faces > 1: 
 			error_message = "Too many faces in an image detected."
-			logger.error(error_message, exc_info=True)
+			logger.exception(error_message)
 			raise TooManyFacesError(error_message)
 
 		# Extracting bounding box and crop face
@@ -44,7 +44,7 @@ def get_face(image:np.ndarray) -> np.ndarray:
 def extract_face_bbox(image:np.ndarray, bbox:np.ndarray|list) -> np.ndarray:
 	if len(bbox) != 4: 
 		error_message = f"Bounding box must contain exactly 4 values (x, y, w, h)."
-		logger.error(error_message, exc_info=True)
+		logger.exception(error_message)
 		raise InvalidBoundingBoxError(error_message)
 	
 	x, y, w, h = bbox

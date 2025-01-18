@@ -2,7 +2,9 @@ class UnrecognizedModelError(Exception): pass
 class UnrecognizedColorMode(Exception): pass
 class MissingFaceError(Exception): pass
 class InvalidInputSizeError(Exception): pass
+class NoSimilarFaceException(Exception): pass 
 class TooManyFacesError(Exception): pass
 class InvalidBoundingBoxError(Exception): pass 
 class EmbeddingNotSavedException(Exception): pass 
 class InvalidImageFormatError(Exception): pass 
+class ProfileNotFoundError(Exception): pass 

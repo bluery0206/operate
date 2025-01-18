@@ -16,7 +16,7 @@ class ModelType(Enum):
 def get_model(type:ModelType):
 	defset = OPERATE_SETTINGS.objects.first()
 	logger.debug(f"Getting {type} model...", exc_info=True)
-	
+
 	try:
 		match type:
 			case 0:
@@ -31,10 +31,10 @@ def get_model(type:ModelType):
 				)
 			case _:
 				error_message = f"No model represents \"{type}\"."
-				logger.error(error_message, exc_info=True)
+				logger.exception(error_message)
 				raise UnrecognizedModelError(error_message)
 	except FileNotFoundError as e:
-		logger.error(str(e), exc_info=True)
+		logger.exception(str(e))
 		raise e
 	else:
 		logger.debug(f"{type.capitalize()} model retrieved successfuly.", exc_info=True)
