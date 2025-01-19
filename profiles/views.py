@@ -255,13 +255,13 @@ def profile_add(request, p_type):
 			'active'		: "add " + p_type,
 			'p_type'		: p_type,
 			'form'			: form,
-			'camera'		: camera,
+			'camera'		: cam_id,
 		}
 		return render(request, "profiles/profile_add.html", context)
 	
 	next 	= request.GET.get("next", None)
 	defset	= OPERATE_SETTINGS.objects.first()
-	camera	= defset.camera
+	cam_id	= defset.camera
 	f_class	= profiles_forms.PersonnelForm if p_type == "personnel" else  profiles_forms.InmateForm
 	form	= f_class()
 
@@ -296,8 +296,8 @@ def profile_add(request, p_type):
 				if is_option_camera:
 					try:
 						cam_id = int(request.POST.get("camera", defset.camera))
-						cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
-						_, raw_image = cam.live_feed()
+						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
+						raw_image = cam.live_feed()
 						imhand.save_image(raw_image_path, raw_image)
 					except CameraShutdownException:
 						messages.warning(request, "Camera shutdown.")
@@ -308,10 +308,10 @@ def profile_add(request, p_type):
 						messages.error(request, "Image save operation failed.")
 						instance.delete()
 						return this_page()
-					except Exception as e:
-						messages.error(request, f"An error occured: {e}")
-						instance.delete()
-						return this_page()
+					# except Exception as e:
+					# 	messages.error(request, f"An error occured: {e}")
+					# 	instance.delete()
+					# 	return this_page()
 				
 				try:
 					# Thumbnail create and save
@@ -329,10 +329,15 @@ def profile_add(request, p_type):
 					messages.error(request, e)
 					instance.delete()
 					return this_page()
-				except Exception as e:
-					messages.error(request, f"An error occured: {e}")
+				except MissingFaceError as e:
+					messages.error(request, "No face was detected")
+					messages.info(request, "Ensure the image includes a clear face.")
 					instance.delete()
 					return this_page()
+				# except Exception as e:
+				# 	messages.error(request, f"An error occured: {e}")
+				# 	instance.delete()
+				# 	return this_page()
 
 			if not is_option_camera and not is_option_upload:
 				messages.error(request, "No profile picture found.")
@@ -376,13 +381,15 @@ def profile_update(request, p_type, pk):
 	if request.method == "POST":
 		form = f_class(request.POST, request.FILES, instance=profile)
 
-		# Check if profile already exists
-		if p_class.objects.filter(
+		existing_profile = p_class.objects.filter(
 			f_name=request.POST.get("f_name"), 
 			m_name=request.POST.get("m_name"), 
 			l_name=request.POST.get("l_name"),
 			suffix=request.POST.get("suffix"),
-		).exclude(pk=request.POST.get("pk")).exists():
+		).exclude(pk=request.POST.get("pk")).first()
+
+		# Check if profile already exists
+		if existing_profile.pk != profile.pk:
 			error_message = "A record with the same first, middle, and last name already exists."
 			messages.error(request, error_message)
 			return this_page()
@@ -397,6 +404,7 @@ def profile_update(request, p_type, pk):
 				image_name = uuid_name + ".png"
 
 				instance = form.save(commit=False)
+				# instance.new_profile.name = "raw_images/" + image_name if is_option_camera else image_name
 				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
 				instance.embedding.name = "embeddings/" + uuid_name + ".npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
@@ -409,20 +417,14 @@ def profile_update(request, p_type, pk):
 					try:
 						cam_id = int(request.POST.get("camera", defset.camera))
 						cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
-						_, raw_image = cam.live_feed()
+						raw_image = cam.live_feed()
 						imhand.save_image(raw_image_path, raw_image)
 					except CameraShutdownException:
 						messages.warning(request, "Camera shutdown.")
 						messages.warning(request, "Reminder: You need a profile picture to create profile.")
-						instance.delete()
-						return this_page()
-					except ImageNotSavedException:
-						messages.error(request, "Image save operation failed.")
-						instance.delete()
 						return this_page()
 					except Exception as e:
 						messages.error(request, f"An error occured: {e}")
-						instance.delete()
 						return this_page()
 				
 				try:
@@ -433,18 +435,18 @@ def profile_update(request, p_type, pk):
 					# Embedding create and save
 					embedding = emb_gen.get_image_embedding(raw_image_path)
 					emb_gen.save_embedding(embedding, uuid_name)
-				except ImageNotSavedException:
-					messages.error(request, "Image save operation failed.")
-					instance.delete()
-					return this_page()
-				except EmbeddingNotSavedException as e:
-					messages.error(request, e)
-					instance.delete()
+				except MissingFaceError as e:
+					messages.error(request, "No face was detected")
+					messages.info(request, "Ensure the image includes a clear face.")
+					# instance.new_profile = profile.new_profile
+					# instance.save()
 					return this_page()
 				except Exception as e:
 					messages.error(request, f"An error occured: {e}")
-					instance.delete()
 					return this_page()
+				# else:
+				# 	instance.raw_image = profile.new_profile
+				# 	instance.save()
 			else:
 				instance = form.save()
 				

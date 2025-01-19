@@ -60,6 +60,11 @@ class Profile(models.Model):
 		blank		= True,
 		null		= True,
 	)
+	new_profile = models.FileField(
+		upload_to	= "temp",
+		blank		= True,
+		null		= True,
+	)
 
 	# Common details
 	f_name			= models.CharField(max_length=30)
