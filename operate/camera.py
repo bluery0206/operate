@@ -61,9 +61,6 @@ class Camera:
 		dummy_img = np.array([0.0, 0.0, 0.0])
 		cv2.imshow(self.wnd_title, dummy_img)
 
-		output 		= None
-		has_output 	= False
-
 		while cv2.getWindowProperty(self.wnd_title, cv2.WND_PROP_VISIBLE) > 0.0: 
 			_, frame = self.cap.read()
 			
@@ -78,10 +75,8 @@ class Camera:
 
 			# Capture
 			if (cv2.waitKey(1) & 0XFF == ord('c')):
-				output 		= frame
-				has_output 	= True
 				self.close_camera()
-				return [has_output, output]
+				return frame
 
 		exception_message = "Closing Camera..."
 		logger.exception(exception_message)
