@@ -67,10 +67,6 @@ def preprocess_input_image(image:np.ndarray) -> np.ndarray:
 		logger.error(exception_message)
 		raise InvalidImageFormatError(exception_message)
 	
-	if image.shape[:1] is not (defset.input_size, defset.input_size):
-		image = crop_image_from_center(image, is_gray=True)
-		image = resize_image(image, defset.input_size)
-	
 	image = crop_image_from_center(image, is_gray=True)
 	image = resize_image(image, defset.input_size)
 	image = normalize_image(image)
