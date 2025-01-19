@@ -1,3 +1,15 @@
+# For the detection model
+# @article{wu2023yunet,
+#  title={Yunet: A tiny millisecond-level face detector},
+#  author={Wu, Wei and Peng, Hanyang and Yu, Shiqi},
+#  journal={Machine Intelligence Research},
+#  volume={20},
+#  number={5},
+#  pages={656--665},
+#  year={2023},
+#  publisher={Springer}
+# }
+
 import logging
 import numpy as np
 
