@@ -13,6 +13,7 @@
 import logging
 import numpy as np
 
+from app.models import Setting as OPERATE_SETTINGS
 from .excepts import *
 from . import (
 	model_loader as mload,
@@ -22,6 +23,8 @@ from . import (
 logger = logging.getLogger(__name__)
 
 def get_face(image:np.ndarray) -> np.ndarray:
+	defset = OPERATE_SETTINGS.objects.first()
+	
 	try:
 		model = mload.get_model(mload.ModelType.DETECTION)
 		logger.debug(f"Model input: {model.getInputSize()}")
@@ -29,7 +32,7 @@ def get_face(image:np.ndarray) -> np.ndarray:
 		# Checking if image is within min and max input shape of the face detector, YuNet
 		if image.shape <= (10, 10, 3) or image.shape >= (300, 300, 3) :
 			image = imhand.crop_image_from_center(image)
-			image = imhand.resize_image(image, 300)
+			image = imhand.resize_image(image, defset.bbox_size)
 
 		# Detection
 		result = model.detect(image)[1:]
