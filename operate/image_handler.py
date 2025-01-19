@@ -16,14 +16,17 @@ class ColorMode(Enum):
 	GRAY = 0
 	RGB = 1
 
-def open_image(image_path:str, color_mode:ColorMode|None=None) -> np.ndarray:
+def open_image(image_path:str, color_mode:ColorMode=ColorMode.RGB) -> np.ndarray:
+	logger.debug(f"Reading image: {image_path}...")
+	image = None
+
 	try:
-		if color_mode == ColorMode.RGB or color_mode == None:
+		if color_mode == ColorMode.RGB:
 			image = cv2.imread(image_path, cv2.COLOR_BGR2RGB)
 		elif color_mode == ColorMode.GRAY:
 			image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 		else:
-			exception_message = "Color mode unrecognized. Only \"gray\", \"rgb\" and \"bgr\"."
+			exception_message = "Color mode unrecognized. Only \"ColorMode.GRAY\" and \"ColorMode.RGB\"."
 			logger.error(exception_message)
 			raise UnrecognizedColorMode(exception_message)
 	except FileNotFoundError as e:
@@ -74,14 +77,17 @@ def preprocess_input_image(image:np.ndarray) -> np.ndarray:
 	image = np.reshape(image, (1, defset.input_size, defset.input_size, 1))
 	return image.astype(np.float32)
 
-def create_thumbnail(image_path:Path) -> np.ndarray:
+def create_thumbnail(image_path:str) -> np.ndarray:
 	defset = OPERATE_SETTINGS.objects.first()
 	logger.debug("Creating thumbnail...")
 
 	try:
-		image = open_image(image_path)
+		image = open_image(image_path, ColorMode.RGB)
+		logger.debug(f"Raw image shape: {image.shape}...")
 		image = crop_image_from_center(image)
+		logger.debug(f"Thumbnail shape: {image.shape}...")
 		thumbnail = resize_image(image, defset.thumbnail_size)
+		logger.debug(f"Thumbnail new shape: {image.shape}...")
 	except (UnrecognizedColorMode, FileNotFoundError) as e:
 		raise e
 	else:
