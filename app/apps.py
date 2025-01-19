@@ -20,8 +20,8 @@ class AppConfig(AppConfig):
                     # Load default templates and models
                     template_inmate     = str(list(settings.MEDIA_ROOT.glob("templates/profile_inmate_templa*.docx"))[0])
                     template_personnel  = str(list(settings.MEDIA_ROOT.glob("templates/profile_personnel_templa*.docx"))[0])
-                    model_recognition   = str(list(settings.MEDIA_ROOT.glob("models/*rec*.onnx"))[0])
-                    model_detection     = str(list(settings.MEDIA_ROOT.glob("models/*det*.onnx"))[0])
+                    model_recognition   = str(list(settings.MEDIA_ROOT.glob("models/*emb_gen*.onnx"))[0])
+                    model_detection     = str(list(settings.MEDIA_ROOT.glob("models/*face_det*.onnx"))[0])
 
                     operate_setting.objects.create(
                         template_personnel  = template_personnel if template_personnel else None,
