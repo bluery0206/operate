@@ -16,16 +16,16 @@ class ColorMode(Enum):
 	GRAY = 0
 	RGB = 1
 
-def open_image(image_path:str, color_mode:Enum|None=None) -> np.ndarray:
+def open_image(image_path:str, color_mode:ColorMode|None=None) -> np.ndarray:
 	try:
 		if color_mode == ColorMode.RGB or color_mode == None:
 			image = cv2.imread(image_path, cv2.COLOR_BGR2RGB)
 		elif color_mode == ColorMode.GRAY:
 			image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 		else:
-			error_message = "Color mode unrecognized. Only \"gray\", \"rgb\" and \"bgr\"."
-			logger.error(error_message, exc_info=True)
-			raise UnrecognizedColorMode(error_message)
+			exception_message = "Color mode unrecognized. Only \"gray\", \"rgb\" and \"bgr\"."
+			logger.error(exception_message)
+			raise UnrecognizedColorMode(exception_message)
 	except FileNotFoundError as e:
 		raise e
 	else:
@@ -59,10 +59,10 @@ def normalize_image(image:np.ndarray) -> np.ndarray:
 def preprocess_input_image(image:np.ndarray) -> np.ndarray:
 	defset = OPERATE_SETTINGS.objects.first()
 	
-	if image.shape[2] is not 1:
-		error_message = f"Invalid image format: expected a grayscale image."
-		logger.error(error_message, exc_info=True)
-		raise InvalidImageFormatError(error_message)
+	if len(image.shape) >= 3 and image.shape[2] != 1:
+		exception_message = f"Invalid image format: expected a grayscale image."
+		logger.error(exception_message)
+		raise InvalidImageFormatError(exception_message)
 	
 	if image.shape[:1] is not (defset.input_size, defset.input_size):
 		image = crop_image_from_center(image, is_gray=True)
@@ -76,7 +76,7 @@ def preprocess_input_image(image:np.ndarray) -> np.ndarray:
 
 def create_thumbnail(image_path:Path) -> np.ndarray:
 	defset = OPERATE_SETTINGS.objects.first()
-	logger.debug("Creating thumbnail...", exc_info=True)
+	logger.debug("Creating thumbnail...")
 
 	try:
 		image = open_image(image_path)
@@ -85,10 +85,19 @@ def create_thumbnail(image_path:Path) -> np.ndarray:
 	except (UnrecognizedColorMode, FileNotFoundError) as e:
 		raise e
 	else:
-		logger.debug("Thumbnail created successfully.", exc_info=True)
+		logger.debug("Thumbnail created successfully.")
 		return thumbnail
 
 def save_image(image_path:str|Path, image:np.ndarray) -> bool:
-	return cv2.imwrite(str(image_path), image)
+	is_saved = cv2.imwrite(str(image_path), image)
+
+	if is_saved:
+		logger.debug(f"Saved {image_path.name}...")
+		return True
+	else:
+		exception_message = "Image save operation failed."
+		logger.error(exception_message)
+		raise ImageNotSavedException(exception_message)
+
 
 

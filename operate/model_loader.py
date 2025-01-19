@@ -10,32 +10,45 @@ from .excepts import *
 logger = logging.getLogger(__name__)
 
 class ModelType(Enum):
-	RECOGNITION = 0
+	EMBEDDING_GENERATOR = 0
 	DETECTION = 1
+	DETECTION_AS_ONNX = 2
 
 def get_model(type:ModelType):
 	defset = OPERATE_SETTINGS.objects.first()
-	logger.debug(f"Getting {type} model...", exc_info=True)
+	logger.debug(f"Getting {type}...")
 
+	
 	try:
-		match type:
-			case 0:
-				session_options = ort.SessionOptions()
-				session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-				model = ort.InferenceSession(defset.model_recognition.path, sess_options=session_options)
-			case 1:
-				model = cv2.FaceDetectorYN.create(
-					model = defset.model_detection.path,
-					config = "",
-					input_size = (defset.clip_size, defset.clip_size)
-				)
-			case _:
-				error_message = f"No model represents \"{type}\"."
-				logger.exception(error_message)
-				raise UnrecognizedModelError(error_message)
+		if type == ModelType.EMBEDDING_GENERATOR:
+			if not defset.model_embedding_generator: 
+				raise ModelNotFoundError("Embedding Generator model not found.")
+			
+			session_options = ort.SessionOptions()
+			session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+			model = ort.InferenceSession(defset.model_embedding_generator.path, sess_options=session_options)
+		elif type == ModelType.DETECTION:
+			if not defset.model_detection: 
+				raise ModelNotFoundError("Face Detection model not found.")
+			
+			model = cv2.FaceDetectorYN.create(
+				model = defset.model_detection.path,
+				config = "",
+				input_size = (defset.clip_size, defset.clip_size)
+			)
+		elif type == ModelType.DETECTION_AS_ONNX:
+			if not defset.model_detection: 
+				raise ModelNotFoundError("Face Detection model not found.")
+			
+			session_options = ort.SessionOptions()
+			session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+			model = ort.InferenceSession(defset.model_detection.path, sess_options=session_options)
+		else:
+			exception_message = f"No model represents \"{type}\"."
+			logger.exception(exception_message)
+			raise UnrecognizedModelError(exception_message)
 	except FileNotFoundError as e:
-		logger.exception(str(e))
 		raise e
 	else:
-		logger.debug(f"{type.capitalize()} model retrieved successfuly.", exc_info=True)
+		logger.debug(f"{type} model retrieved successfuly.")
 		return model

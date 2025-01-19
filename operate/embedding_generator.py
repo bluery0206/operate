@@ -8,9 +8,6 @@ import numpy as np
 from app.models import Setting as OPERATE_SETTINGS
 
 from .excepts import *
-from .image_handler import open_image, preprocess_input_image
-from .model_loader import get_model
-from .face_detector import get_face
 from operate import (
     model_loader as mload,
     image_handler as imhand,
@@ -27,7 +24,7 @@ def get_image_embedding(image:Path) -> np.ndarray:
         image = imhand.open_image(image, imhand.ColorMode.RGB)
         
         if image.shape[:1] is not (defset.bbox_size, defset.bbox_size):
-            image = imhand.crop_image_from_center(image, is_gray=True)
+            image = imhand.crop_image_from_center(image)
             image = imhand.resize_image(image, defset.bbox_size)
                     
         image = facedet.get_face(image)
@@ -41,7 +38,7 @@ def get_image_embedding(image:Path) -> np.ndarray:
 
 def generate_embedding(image:np.ndarray) -> np.ndarray:
     try: 
-        model = get_model("recognition")
+        model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
         input_name = model.get_inputs()[0].name
         output_name = model.get_outputs()[0].name
     except Exception as e:
@@ -54,18 +51,29 @@ def save_embedding(embedding:np.ndarray, name:str) -> bool:
     np.save(output_path, embedding)
 
     if output_path.exists():
-        logger.debug("Embedding saved successfully.", exc_info=True)
+        logger.debug("Embedding saved successfully.")
         return True
     else:
-        error_message = "Failed to save the embedding to the specified location."
-        logger.exception(error_message)
-        raise EmbeddingNotSavedException(error_message)
+        exception_message = "Failed to save the embedding to the specified location."
+        logger.exception(exception_message)
+        raise EmbeddingNotSavedException(exception_message)
     
 def update_embeddings() -> None:
-	personnel = profiles.Personnel.objects.all()
-	inmate = profiles.Inmate.objects.all()
-	profiles = list(personnel) + list(inmate)
+    from profiles.models import Personnel, Inmate
+    
+    logger.debug("Updating embeddings...")
+    personnel = Personnel.objects.all()
+    inmate = Inmate.objects.all()
+    profiles = list(personnel) + list(inmate)
 
-	for profile in profiles:
-		save_embedding(profile.raw_image.path)
-		
+    for profile in profiles:
+        image_path = Path(profile.raw_image.path)
+
+        try:
+            embedding = get_image_embedding(image_path)
+            save_embedding(embedding, image_path.stem)
+            logger.debug(f"Image: {image_path.name} successfully saved.")
+        except MissingFaceError as e:
+            raise MissingFaceError(e, profile_id=profile.pk, profile_type=profile.p_type)
+        except Exception as e:
+            raise e
