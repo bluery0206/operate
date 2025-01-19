@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
+from uuid import uuid4
 
 from . import (
     models 	as app_models,
@@ -20,7 +21,19 @@ from profiles.models import (
     Inmate
 )
 
+import logging
 
+from operate.excepts import *
+from operate.facesearch import Facesearch
+from operate.embedding_generator import update_embeddings
+from operate import (
+	camera,
+	model_loader as mload,
+	image_handler as imhand,
+)
+
+logging.basicConfig(level=logging.DEBUG) 
+logger = logging.getLogger(__name__)
 
 OPERATE_SETTINGS_FORM 	= app_forms.OperateSettingsForm
 OPERATE_SETTINGS 		= app_models.Setting
@@ -30,9 +43,8 @@ OPERATE_SETTINGS 		= app_models.Setting
 @login_required
 def index(request):
 	# Get five (5) recently created profiles that are not archived
-	personnels 	= Personnel.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
-	inmates 	= Inmate.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
-
+	personnels = Personnel.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
+	inmates = Inmate.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
 	context = {
 		'page_title'	: "Home",
 		'active'		: "home",
@@ -46,60 +58,50 @@ def index(request):
 @login_required
 def settings(request):
 	defset 	= OPERATE_SETTINGS.objects.first()
-	form	= OPERATE_SETTINGS_FORM(instance=defset)
 
 	if request.method == "POST":
 		form = OPERATE_SETTINGS_FORM(request.POST, request.FILES, instance=defset)
 
 		if form.is_valid():
-			if not request.FILES.get('template_inmate'):
-				form.instance.template_inmate = defset.template_inmate
-
-			if not request.FILES.get('template_personnel'):
-				form.instance.template_personnel = defset.template_personnel
-
-			if not request.FILES.get('model_recognition'):
-				form.instance.model_recognition = defset.model_recognition
-
-			if not request.FILES.get('model_detection'):
-				form.instance.model_detection = defset.model_detection
-
-			if request.FILES.get('model_detection') or request.FILES.get('model_recognition'):
+			if request.FILES.get('model_detection') or request.FILES.get('model_embedding_generator'):
 				instance = form.save(commit=False)
 
-				if request.FILES.get('model_recognition'):
-					instance.model_recognition.name = f"emb_gen.onnx"
+				if request.FILES.get('model_detection'): 
+					logger.debug("Setting new detection model.")
+					instance.model_detection.name = "face_detection.onnx"
+					instance.save()
 
-				if request.FILES.get('model_detection'):
-					instance.model_detection.name = f"face_detection.onnx"
-
-				instance.save()
-
-				if request.FILES.get('model_detection'):
-					# Setting up `input_size` from models'
-					model = app_utils.get_model(instance.model_detection.path)
-
-					print(type(model.get_inputs()[0].shape[1]))
-
+					try:
+						model = mload.get_model(mload.ModelType.DETECTION_AS_ONNX)
+					except (UnrecognizedModelError, FileNotFoundError) as e:
+						messages.error(request, e)
+						return redirect('operate-settings')
 					defset.input_size = model.get_inputs()[0].shape[1]
 					defset.save()
+				
+				# Update fields with files only if there are files uploaded.
+				if request.FILES.get('model_embedding_generator'): 
+					logger.debug("Setting new embedding generator model.")
+					instance.save()
 
-				if request.FILES.get('model_recognition'):
-					# Setting up `input_size` from models'
-					model = app_utils.get_model(instance.model_recognition.path)
-
-					print(type(model.get_inputs()[0].shape[1]))
-
-					defset.input_size = model.get_inputs()[0].shape[1]
-					defset.save()
-
-					app_utils.update_embeddings()
+					try:
+						model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
+						defset.input_size = model.get_inputs()[0].shape[1]
+						defset.save()
+						update_embeddings()
+					except MissingFaceError as e:
+						messages.warning(request, "No face was detected. Please update the profile and reupload the model in the settings.")
+						return redirect('profile-update', e.profile_type, e.profile_id)
+					except (UnrecognizedModelError, FileNotFoundError, EmbeddingNotSavedException) as e:
+						messages.error(request, e)
+						return redirect('operate-settings')
 			else:
 				form.save()
 
-			messages.success(request, f"Settings updated.")
-
+			messages.success(request, "Settings updated.")
 			return redirect('operate-settings')
+	else:
+		form = OPERATE_SETTINGS_FORM(instance=defset)
 
 	context = {
 		'page_title'	: 'Settings',
@@ -120,7 +122,6 @@ def user_login(request):
 		if form.is_valid():
 			username = form.cleaned_data.get('username')
 			password = form.cleaned_data.get('password')
-
 			user = authenticate(request, username=username, password=password)
 
 			if user is not None:
@@ -158,7 +159,6 @@ def password_reset_confirm(request, uidb64, token):
 
 		if form.is_valid():
 			form.save()
-
 			return redirect('password_reset_complete')
 	else:
 		form = login_form(user)
@@ -174,81 +174,76 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def facesearch(request):
-	curr	= request.build_absolute_uri()
-
 	defset = OPERATE_SETTINGS.objects.first()
-
-	form_class	= app_forms.SearchImageForm
-	form_model	= app_models.SearchImage
-	form 		= form_class()
-	threshold	= defset.threshold
-	search_mode = defset.search_mode
-	camera		= defset.camera
-	profiles	= []
+	curr = request.build_absolute_uri()
+	form = app_forms.SearchImageForm()
+	threshold = defset.threshold
+	cam_id = defset.camera
+	search_result = []
+	instance = None
 
 	if request.method == "POST":
-		is_option_camera	= int(request.POST.get("option_camera", 0))
-		is_option_upload	= 'image' in request.FILES
-
-		curr_time	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
-		image_name	= curr_time + ".png"
-
+		image_name	= str(uuid4()) + ".png"
 		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(image_name)
 
-		if is_option_camera:
-			camera = int(request.POST.get("camera", defset.camera))
-			
-			is_image_taken, input_image, is_cancelled = app_utils.take_image(
-				camera		= camera, 
-				clip_camera = defset.clip_camera, 
-				clip_size	= defset.clip_size
-			)
-
-			if not is_image_taken:
+		# Camera option
+		if int(request.POST.get("option_camera", 0)):
+			try:
+				cam_id = int(request.POST.get("camera", defset.camera))
+				cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
+				_, input_image = cam.live_feed()
+				imhand.save_image(input_path, input_image)
+			except CameraShutdownException:
+				messages.info(request, "Camera shutdown. Search cancelled.")
 				return redirect(curr)
-			
-			app_utils.save_image(Path(input_path), input_image)
+			except ImageNotSavedException:
+				messages.error(request, "Image save operation failed. Search cancelled.")
+				return redirect(curr)
+			except Exception as e:
+				messages.error(request, "An error occured. Search cancelled.")
+				return redirect(curr)
 
-		elif is_option_upload: 
-			form = form_class(request.POST, request.FILES)
+		# Upload option
+		elif 'image' in request.FILES: 
+			form = app_forms.SearchImageForm(request.POST, request.FILES)
 			
 			if form.is_valid():
-				current_time 	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
-				image_name 		= current_time + ".png"
-
 				instance = form.save(commit=False)
 				instance.image.name = image_name
 				instance.save()
-				input_path = instance.image.path
+				input_path = Path(instance.image.path)
 
-		# get profiles from images
-		cand_list	= app_utils.search(
-			input_path	= input_path, 
-			threshold	= threshold, 
-			search_mode	= search_mode
-		)
-		# search_mode
-		profiles = app_utils.get_profiles(
-			cand_list	= cand_list,
-			reverse		= True,							 
-			search_mode	= search_mode					 
-		) if cand_list else []
-
-		# Delete the image after use
-		instance = form_model.objects.filter(image__icontains=Path(input_path).stem).first()
-		instance.delete() if instance else Path(input_path).unlink()
-
-		messages.success(request, f"Facesearch done. Found {len(profiles)} similar faces.")
-
-		print(f"Facesearch done. Found {len(profiles)} similar faces")
+		try:
+			fsearch = Facesearch(input_path, defset.threshold)
+			search_result = fsearch.search()
+			messages.success(request, f"Facesearch done. Found {len(search_result)} similar faces.")
+		except MissingFaceError:
+			messages.error(request, "No face was detected. Ensure the image includes a clear face.")
+			return redirect(curr)
+		except NoSimilarFaceException:
+			messages.success(request, "No matching face detected during the search.")
+			return redirect(curr)
+		except ProfileNotFoundError:
+			messages.success(request, "Search profile does not exist in the system.")
+			return redirect(curr)
+		except (UnrecognizedModelError, FileNotFoundError, ModelNotFoundError) as e:
+			messages.error(request, e)
+			return redirect(curr)
+		except Exception as e:
+			messages.error(request, "An error occured. Search cancelled.")
+			return redirect(curr)
+		finally:
+			# Delete the image after use
+			logger.debug("Deleting input image...")
+			instance.delete() if instance else Path(input_path).unlink()
 	
 	context = {
 		"page_title"	: "Facesearch",
 		'active'		: 'facesearch',
 		"form"			: form,
 		"threshold"		: threshold,
-		"camera"		: camera,
-		"profiles"		: profiles,
+		"camera"		: cam_id,
+		"search_result"	: search_result,
 	}
 	return render(request, "app/facesearch.html", context)
 
