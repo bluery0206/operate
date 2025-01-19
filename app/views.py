@@ -54,7 +54,6 @@ def index(request):
 	return render(request, "app/index.html", context)
 
 
-
 @login_required
 def settings(request):
 	defset 	= OPERATE_SETTINGS.objects.first()
@@ -112,7 +111,6 @@ def settings(request):
 	return render(request, "app/settings.html", context)
 
 
-
 def user_login(request):
 	login_form = app_forms.LoginForm
 
@@ -138,7 +136,6 @@ def user_login(request):
 		'form'			: form,
 	}
 	return render(request, "app/user/login.html", context)
-
 
 
 def password_reset_confirm(request, uidb64, token):
@@ -171,7 +168,6 @@ def password_reset_confirm(request, uidb64, token):
 	return render(request, "app/user/password_reset_confirm.html", context)
 
 
-
 @login_required
 def facesearch(request):
 	defset = OPERATE_SETTINGS.objects.first()
@@ -183,15 +179,15 @@ def facesearch(request):
 	instance = None
 
 	if request.method == "POST":
-		image_name	= str(uuid4()) + ".png"
-		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(image_name)
+		uuid_name = str(uuid4())
+		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(uuid_name)
 
 		# Camera option
 		if int(request.POST.get("option_camera", 0)):
 			try:
 				cam_id = int(request.POST.get("camera", defset.camera))
 				cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
-				_, input_image = cam.live_feed()
+				input_image = cam.live_feed()
 				imhand.save_image(input_path, input_image)
 			except CameraShutdownException:
 				messages.info(request, "Camera shutdown. Search cancelled.")
@@ -209,7 +205,7 @@ def facesearch(request):
 			
 			if form.is_valid():
 				instance = form.save(commit=False)
-				instance.image.name = image_name
+				instance.image.name = uuid_name
 				instance.save()
 				input_path = Path(instance.image.path)
 
