@@ -69,14 +69,6 @@ def settings(request):
 					logger.debug("Setting new detection model.")
 					instance.model_detection.name = "face_detection.onnx"
 					instance.save()
-
-					try:
-						model = mload.get_model(mload.ModelType.DETECTION_AS_ONNX)
-					except (UnrecognizedModelError, FileNotFoundError) as e:
-						messages.error(request, e)
-						return redirect('operate-settings')
-					defset.input_size = model.get_inputs()[0].shape[1]
-					defset.save()
 				
 				# Update fields with files only if there are files uploaded.
 				if request.FILES.get('model_embedding_generator'): 
@@ -214,7 +206,8 @@ def facesearch(request):
 			search_result = fsearch.search()
 			messages.success(request, f"Facesearch done. Found {len(search_result)} similar faces.")
 		except MissingFaceError:
-			messages.error(request, "No face was detected. Ensure the image includes a clear face.")
+			messages.error(request, "No face was detected.")
+			messages.info(request, "Ensure the image includes a clear face.")
 			return redirect(curr)
 		except NoSimilarFaceException:
 			messages.success(request, "No matching face detected during the search.")
