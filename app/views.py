@@ -26,8 +26,8 @@ import logging
 from operate.excepts import *
 from operate.facesearch import Facesearch
 from operate.embedding_generator import update_embeddings
+from operate.camera import Camera 
 from operate import (
-	camera,
 	model_loader as mload,
 	image_handler as imhand,
 )
@@ -172,13 +172,13 @@ def facesearch(request):
 
 	if request.method == "POST":
 		uuid_name = str(uuid4())
-		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(uuid_name)
+		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(uuid_name + ".png")
 
 		# Camera option
 		if int(request.POST.get("option_camera", 0)):
 			try:
 				cam_id = int(request.POST.get("camera", defset.camera))
-				cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
+				cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
 				input_image = cam.live_feed()
 				imhand.save_image(input_path, input_image)
 			except CameraShutdownException:
@@ -187,9 +187,10 @@ def facesearch(request):
 			except ImageNotSavedException:
 				messages.error(request, "Image save operation failed. Search cancelled.")
 				return redirect(curr)
-			except Exception as e:
-				messages.error(request, "An error occured. Search cancelled.")
-				return redirect(curr)
+			# except Exception as e:
+			# 	messages.error(request, "An error occured. Search cancelled.")
+			# 	messages.error(request, e)
+			# 	return redirect(curr)
 
 		# Upload option
 		elif 'image' in request.FILES: 
@@ -218,9 +219,10 @@ def facesearch(request):
 		except (UnrecognizedModelError, FileNotFoundError, ModelNotFoundError) as e:
 			messages.error(request, e)
 			return redirect(curr)
-		except Exception as e:
-			messages.error(request, "An error occured. Search cancelled.")
-			return redirect(curr)
+		# except Exception as e:
+		# 	messages.error(request, "An error occured. Search cancelled.")
+		# 	messages.error(request, e)
+		# 	return redirect(curr)
 		finally:
 			# Delete the image after use
 			logger.debug("Deleting input image...")

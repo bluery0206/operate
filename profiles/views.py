@@ -359,14 +359,14 @@ def profile_update(request, p_type, pk):
 			'page_title'	: "Update " + str(profile),
 			'p_type'		: p_type,
 			'form'			: form,
-			'camera'		: camera,
+			'camera'		: cam_id,
 			'profile'		: profile
 		}
 		return render(request, "profiles/profile_update.html", context)
 	
 	next 	= request.GET.get("next", None)
 	defset	= OPERATE_SETTINGS.objects.first()
-	camera	= defset.camera
+	cam_id	= defset.camera
 
 	if p_type == "personnel":
 		p_class 	= profiles_models.Personnel
@@ -389,7 +389,7 @@ def profile_update(request, p_type, pk):
 		).exclude(pk=request.POST.get("pk")).first()
 
 		# Check if profile already exists
-		if existing_profile.pk != profile.pk:
+		if existing_profile and existing_profile.pk != profile.pk:
 			error_message = "A record with the same first, middle, and last name already exists."
 			messages.error(request, error_message)
 			return this_page()
@@ -416,7 +416,7 @@ def profile_update(request, p_type, pk):
 				if is_option_camera:
 					try:
 						cam_id = int(request.POST.get("camera", defset.camera))
-						cam = camera.Camera(cam_id, defset.cam_clipping, defset.clip_size)
+						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
 						raw_image = cam.live_feed()
 						imhand.save_image(raw_image_path, raw_image)
 					except CameraShutdownException:
