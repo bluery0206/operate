@@ -37,13 +37,13 @@
 				</div>
 			</div>
 
-			{% if profiles %}
+			{% if search_result %}
 				<div class="card-list">
-					{% for dist, profile in profiles %}
+					{% for profile, distance, percentage in search_result %}
 						<div class="card {{ profile.p_type }}{% if profile.is_archived %}-archived{% endif %}">
 							{% comment %}
 								<div class="{{ profile.p_type }} header">
-									<span class="title">Top {{ forloop.counter }}, Confidence: {{ dist|floatformat:0 }}%</span>
+									<span class="title">Top {{ forloop.counter }}, Confidence: {{ percentage|floatformat:0 }}%</span>
 								</div>
 							{% endcomment %}
 
@@ -96,7 +96,7 @@
 											{% elif dist > 89 and forloop.counter != 1 %}
 												distance-secondary
 											{%endif%}
-										">{{ dist|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
+										">{{ percentage|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
 									</span>
 									<span class="detail" title="{{ profile|full_name }}'s home address">
 										<i class="fa-solid fa-location-dot"></i>
@@ -150,10 +150,6 @@
 
 				<h4>Upload an image</h4>
 		
-				<input type="hidden" name="threshold" id="threshold1" value="{{ threshold }}" step="any">
-				<input type="hidden" name="search_method" id="search_method1" value="{{ search_method }}">
-				
-
 				{{ form.image }}
 		
 				<div class="actions">
@@ -168,9 +164,6 @@
 				{% csrf_token %}
 	
 				<h4>Capture image</h4>
-	
-				<input type="hidden" name="threshold" id="threshold2" step="any" value="{{ threshold }}">
-				<input type="hidden" name="search_method" id="search_method2" value="{{ search_method }}">
 	
 				<button class="btn btn-secondary" name="option_camera" value="1" type="submit">
 						<i class="fa-solid fa-camera"></i>
@@ -187,49 +180,4 @@
 			</form>
 		</div>
 	</div>
-
-    <script>
-		// Change the value of hidden threshol on change
-        document.addEventListener("DOMContentLoaded", function() {
-            const threshold_input	= document.getElementById("threshold_input");
-            const threshold1		= document.getElementById("threshold1");
-            const threshold2		= document.getElementById("threshold2");
-
-            const search_method_input	= document.getElementById("search_method_input");
-            const search_method1		= document.getElementById("search_method1");
-            const search_method2		= document.getElementById("search_method2");
-
-            threshold_input.addEventListener("change", function(event) {
-				threshold1.value = threshold_input.value;
-				threshold2.value = threshold_input.value;
-            });
-
-            search_method_input.addEventListener("change", function(event) {
-				search_method1.value = search_method_input.value;
-				search_method2.value = search_method_input.value;
-            });
-        });
-
-		
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the file input element from the form
-            const fileInput = document.getElementById("{{ form.image.id_for_label }}"); // Use the form field's ID
-            const imagePreview = document.getElementById("imagePreview");
-
-            fileInput.addEventListener("change", function(event) {
-                // Check if a file is selected
-                if (fileInput.files && fileInput.files[0]) {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result; // Set preview image source
-                        imagePreview.style.display = 'block'; // Make the image visible
-                    };
-
-                    reader.readAsDataURL(fileInput.files[0]); // Read the image file as a data URL
-                }
-            });
-        });
-    </script>
-
 {% endblock content %}
