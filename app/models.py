@@ -25,7 +25,7 @@ class Setting(models.Model):
 
     threshold           = models.FloatField(default = 1.0)
     input_size          = models.IntegerField(default = 105)
-    bbox_size           = models.IntegerField(default = 400)
+    bbox_size           = models.IntegerField(default = 300)
 
     template_personnel  = models.FileField(
         blank       = True,
