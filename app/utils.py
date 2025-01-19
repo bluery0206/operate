@@ -27,7 +27,6 @@ from operate import (
 from operate.excepts import *
 
 # Dont really need
-from matplotlib import pyplot as plt
 
 DJANGO_SETTINGS 	= settings
 OPERATE_SETTINGS 	= app_model.Setting
