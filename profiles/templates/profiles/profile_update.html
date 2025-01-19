@@ -26,10 +26,20 @@
 				</a>
 			</div>
 		</div>
+		
+		{% if messages %}
+			<div class="messages-list">
+				{% for message in messages %}
+					<div class="message message-{{ message.tags }}">
+						{{ message }}
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
 
 		<div class="body">
 			<div class="picture">
-				<img src="{{ profile.thumbnail.url }}" alt="" id="imagePreview">
+				<img src="{% if profile.thumbnail.url %}{{ profile.thumbnail.url }}{% else %}../../app/static/images/default.png{% endif %}" alt="" id="imagePreview">
 
 				<div class="image-fields">
 					<div class="field">
