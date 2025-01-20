@@ -114,26 +114,7 @@
                                 {{ form.cam_clipping }}
                             </div>
 
-                            <small>Whether to crop the camera or not. Used with the default_crop_size for saving.</small>
-                        </div>
-                    </div>
-
-                    <div>
-                        {% if form.clip_size.errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.clip_size.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="item">
-                            <div class="form-field">
-                                {{ form.clip_size.label_tag }}
-                                {{ form.clip_size }}
-                            </div>
-
-                            <small>The size of the the camera. May not work if values are too large or small and may depend on the webcam's resolution.</small>
+                            <small>Whether to crop the camera or not.</small>
                         </div>
                     </div>
                 </div>
