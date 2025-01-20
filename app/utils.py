@@ -8,7 +8,6 @@ from docx import Document
 from pathlib import Path
 import onnxruntime as ort
 import numpy as np
-import onnx
 import string
 import cv2 
 import logging
