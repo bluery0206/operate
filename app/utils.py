@@ -3,6 +3,7 @@ from django.conf import settings
 from docx.shared import Inches
 from docx import Document
 from pathlib import Path
+<<<<<<< HEAD
 
 import string
 import logging
