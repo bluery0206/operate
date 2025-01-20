@@ -39,7 +39,7 @@ class OperateSettingsForm(forms.ModelForm):
 		allow_empty_file	= True,
 		required			= False
     )
-	model_recognition = forms.FileField(
+	model_embedding_generator = forms.FileField(
 		validators 			= [FileExtensionValidator(allowed_extensions=['onnx'])],
 		widget				= forms.FileInput(attrs={'class': COMMON_CLASS}),
 		allow_empty_file	= True,
@@ -66,7 +66,7 @@ class OperateSettingsForm(forms.ModelForm):
 					'max'   : 10,
 					'step'  : 1,
 			}),
-			'clip_camera': forms.Select(attrs={
+			'cam_clipping': forms.Select(attrs={
 					'class': COMMON_CLASS,
 				},
 				choices=[(False, 'Use camera size'), (True, 'Clip camera')]
@@ -107,7 +107,7 @@ class OperateSettingsForm(forms.ModelForm):
 			'model_detection': forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
-			'model_recognition': forms.FileInput(attrs={
+			'model_embedding_generator': forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
 		}
@@ -115,16 +115,13 @@ class OperateSettingsForm(forms.ModelForm):
 			"profiles_per_page",
 			"thumbnail_size",
 			"camera",
-			"clip_camera",
+			"cam_clipping",
 			"clip_size",
 			"threshold",
-			"input_size",
-			"bbox_size",
-			"search_mode",
 			"template_personnel",
 			"template_inmate",
 			"model_detection",
-			"model_recognition",
+			"model_embedding_generator",
 		]
 
 

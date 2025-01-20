@@ -20,20 +20,12 @@ class Setting(models.Model):
     thumbnail_size      = models.IntegerField(default = 200)
 
     camera              = models.IntegerField(default = 0)
-    clip_camera         = models.BooleanField(default = True)
+    cam_clipping        = models.BooleanField(default = True)
     clip_size           = models.IntegerField(default = 200)
 
     threshold           = models.FloatField(default = 1.0)
     input_size          = models.IntegerField(default = 105)
-    bbox_size           = models.IntegerField(default = 400)
-    search_mode         = models.CharField(
-        default='embedding',
-        choices=[
-            ('embedding', 'Embedding (Faster)'),
-            ('image', 'Image'),
-        ],
-        max_length=9,
-    )
+    bbox_size           = models.IntegerField(default = 300)
 
     template_personnel  = models.FileField(
         blank       = True,
@@ -51,7 +43,7 @@ class Setting(models.Model):
         null        = True,
         upload_to   = "models"
     )
-    model_recognition = models.FileField(
+    model_embedding_generator = models.FileField(
         blank       = True,
         null        = True,
         upload_to   = "models"

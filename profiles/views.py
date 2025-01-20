@@ -14,17 +14,31 @@ from datetime import datetime
 from pathlib import Path
 from docx2pdf import convert
 
+import logging
+
 from app import (
     utils as app_utils,
     models as app_model,
 )
+
+from uuid import uuid4
 
 from . import (
     models as profiles_models,
 	forms as profiles_forms
 )
 
+from operate.camera import Camera
+from operate.excepts import *
+from operate import (
+	embedding_generator as emb_gen,
+	facesearch as fsearch,
+	model_loader as mload,
+	image_handler as imhand,
+	face_detector as facedet,
+)
 
+logger = logging.getLogger(__name__)
 
 DJANGO_SETTINGS		= settings
 OPERATE_SETTINGS 	= app_model.Setting
@@ -135,7 +149,6 @@ def all_personnel(request):
 	return render(request, "profiles/all_personnel.html", context)
 
 
-
 @login_required
 def all_inmate(request):
 	inmates			= profiles_models.Inmate.objects.all().order_by("-date_profiled")
@@ -218,7 +231,6 @@ def all_inmate(request):
 	return render(request, "profiles/all_inmate.html", context)
 
 
-
 @login_required
 def profile(request, p_type, pk):
 	prev = request.GET.get("prev", None)
@@ -235,7 +247,6 @@ def profile(request, p_type, pk):
 	return render(request, "profiles/profile.html", context)
 
 
-
 @login_required
 def profile_add(request, p_type):
 	def this_page():
@@ -244,21 +255,15 @@ def profile_add(request, p_type):
 			'active'		: "add " + p_type,
 			'p_type'		: p_type,
 			'form'			: form,
-			'camera'		: camera,
+			'camera'		: cam_id,
 		}
 		return render(request, "profiles/profile_add.html", context)
 	
 	next 	= request.GET.get("next", None)
-	curr 	= request.build_absolute_uri()
 	defset	= OPERATE_SETTINGS.objects.first()
-	camera	= defset.camera
-
-	if p_type == "personnel":
-		f_class 	= profiles_forms.PersonnelForm
-	elif p_type == "inmate":
-		f_class 	= profiles_forms.InmateForm
-
-	form = f_class()
+	cam_id	= defset.camera
+	f_class	= profiles_forms.PersonnelForm if p_type == "personnel" else  profiles_forms.InmateForm
+	form	= f_class()
 
 	if request.method == "POST":
 		form = f_class(request.POST, request.FILES)
@@ -268,8 +273,8 @@ def profile_add(request, p_type):
 			is_option_upload = 'raw_image' in request.FILES
 
 			if is_option_camera or is_option_upload:
-				current_time 	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
-				image_name 		= current_time + ".png"
+				uuid_name = str(uuid4())
+				image_name = uuid_name + ".png"
 				
 				# We saving the image_names first to hopefully counter opencv errors when
 				# 	dealing with spaces or symbols in image names then changing their names
@@ -281,7 +286,7 @@ def profile_add(request, p_type):
 				# These fields below somehow needed their save folders to be specified
 				# 	assuming that if we didn't use the django fields for these... fields,
 				# 	then django just saves these in the `MEDIA_ROOT` (as observed as well).
-				instance.embedding.name = "embeddings/" + current_time + ".npy"
+				instance.embedding.name = "embeddings/" + uuid_name + ".npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
 				instance.save()
 	
@@ -289,84 +294,60 @@ def profile_add(request, p_type):
 				thumbnail_path = DJANGO_SETTINGS.THUMBNAIL_ROOT.joinpath(image_name)
 
 				if is_option_camera:
-					camera = int(request.POST.get("camera", camera))
-
-					is_image_taken, raw_image, is_cancelled = app_utils.take_image(
-						camera		= camera, 
-						clip_camera	= defset.clip_camera, 
-						clip_size	= defset.clip_size
-					)
-
-					if is_cancelled:
+					try:
+						cam_id = int(request.POST.get("camera", defset.camera))
+						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
+						raw_image = cam.live_feed()
+						imhand.save_image(raw_image_path, raw_image)
+					except CameraShutdownException:
+						messages.warning(request, "Camera shutdown.")
+						messages.warning(request, "Reminder: You need a profile picture to create profile.")
 						instance.delete()
 						return this_page()
-					elif is_image_taken:
-						app_utils.save_image(instance.raw_image.path, raw_image)
-					else:
+					except ImageNotSavedException:
+						messages.error(request, "Image save operation failed.")
 						instance.delete()
-
-						error = "No profile picture found. Please upload one to complete your profile"
-						form.add_error(
-							field = "raw_image",
-							error = error
-						)
-						print(error)
-				
 						return this_page()
+					# except Exception as e:
+					# 	messages.error(request, f"An error occured: {e}")
+					# 	instance.delete()
+					# 	return this_page()
 				
-				resized_image = app_utils.create_thumbnail(
-					raw_image_path	= raw_image_path,
-					thumbnail_size	= defset.thumbnail_size
-				)
+				try:
+					# Thumbnail create and save
+					thumbnail = imhand.create_thumbnail(str(raw_image_path))
+					imhand.save_image(thumbnail_path, thumbnail)
 
-				is_thumbail_saved = app_utils.save_image(
-					image_path	= thumbnail_path, 
-					image		= resized_image
-				)	
-				
-				if not is_thumbail_saved:
+					# Embedding create and save
+					embedding = emb_gen.get_image_embedding(raw_image_path)
+					emb_gen.save_embedding(embedding, uuid_name)
+				except ImageNotSavedException:
+					messages.error(request, "Image save operation failed.")
 					instance.delete()
-
-					error = "There was an error saving the thumbnail."
-					form.add_error(
-						field = "raw_image",
-						error = error
-					)
-					print(error)
-
 					return this_page()
-
-				is_embedding_saved  = app_utils.save_embedding(raw_image_path)
-
-				if not is_embedding_saved:
+				except EmbeddingNotSavedException as e:
+					messages.error(request, e)
 					instance.delete()
-			
-					error = "There was an error saving the embedding."
-					form.add_error(
-						field = "raw_image",
-						error = error
-					)
-			
-					print(f"There was an error saving the embedding.")
-
 					return this_page()
-				
+				except MissingFaceError as e:
+					messages.error(request, "No face was detected")
+					messages.info(request, "Ensure the image includes a clear face.")
+					instance.delete()
+					return this_page()
+				# except Exception as e:
+				# 	messages.error(request, f"An error occured: {e}")
+				# 	instance.delete()
+				# 	return this_page()
+
 			if not is_option_camera and not is_option_upload:
-				error = "No profile picture found. Please upload one to complete your profile"
-				form.add_error(
-					field = "raw_image",
-					error = error
-				)
-				print(error)
-			
+				messages.error(request, "No profile picture found.")
+				messages.warning(request, "Reminder: You need a profile picture to create profile.")
 				return this_page()
 			else:
 				message = f"Profile successfully created: {instance}."
 				messages.success(request, message)
-				print(message)
 
 				return redirect(next) if next else redirect('profile', p_type, instance.pk)
-				
 	return this_page()
 
 
@@ -378,15 +359,14 @@ def profile_update(request, p_type, pk):
 			'page_title'	: "Update " + str(profile),
 			'p_type'		: p_type,
 			'form'			: form,
-			'camera'		: camera,
+			'camera'		: cam_id,
 			'profile'		: profile
 		}
 		return render(request, "profiles/profile_update.html", context)
 	
-	
 	next 	= request.GET.get("next", None)
 	defset	= OPERATE_SETTINGS.objects.first()
-	camera	= defset.camera
+	cam_id	= defset.camera
 
 	if p_type == "personnel":
 		p_class 	= profiles_models.Personnel
@@ -401,17 +381,32 @@ def profile_update(request, p_type, pk):
 	if request.method == "POST":
 		form = f_class(request.POST, request.FILES, instance=profile)
 
+		existing_profile = p_class.objects.filter(
+			f_name=request.POST.get("f_name"), 
+			m_name=request.POST.get("m_name"), 
+			l_name=request.POST.get("l_name"),
+			suffix=request.POST.get("suffix"),
+		).exclude(pk=request.POST.get("pk")).first()
+
+		# Check if profile already exists
+		if existing_profile and existing_profile.pk != profile.pk:
+			error_message = "A record with the same first, middle, and last name already exists."
+			messages.error(request, error_message)
+			return this_page()
+
 		if form.is_valid():
 			is_option_camera = bool(request.POST.get("option_camera", 0))
 			is_option_upload = 'raw_image' in request.FILES
 
+
 			if is_option_camera or is_option_upload:
-				current_time 	= str(timezone.now().strftime("%Y%m%d%H%M%S"))
-				image_name 		= current_time + ".png"
+				uuid_name = str(uuid4())
+				image_name = uuid_name + ".png"
 
 				instance = form.save(commit=False)
+				# instance.new_profile.name = "raw_images/" + image_name if is_option_camera else image_name
 				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
-				instance.embedding.name = "embeddings/" + current_time + ".npy"
+				instance.embedding.name = "embeddings/" + uuid_name + ".npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
 				instance.save()
 	
@@ -419,72 +414,45 @@ def profile_update(request, p_type, pk):
 				thumbnail_path = DJANGO_SETTINGS.THUMBNAIL_ROOT.joinpath(image_name)
 
 				if is_option_camera:
-					camera = int(request.POST.get("camera", camera))
-
-					is_image_taken, raw_image, is_cancelled = app_utils.take_image(
-						camera		= camera, 
-						clip_camera	= defset.clip_camera, 
-						clip_size	= defset.clip_size
-					)
-
-					if is_cancelled:
-						instance.delete()
+					try:
+						cam_id = int(request.POST.get("camera", defset.camera))
+						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
+						raw_image = cam.live_feed()
+						imhand.save_image(raw_image_path, raw_image)
+					except CameraShutdownException:
+						messages.warning(request, "Camera shutdown.")
+						messages.warning(request, "Reminder: You need a profile picture to create profile.")
 						return this_page()
-					elif is_image_taken:
-						app_utils.save_image(instance.raw_image.path, raw_image)
-					else:
-						instance.delete()
-
-						error = "No profile picture found. Please upload one to complete your profile."
-						form.add_error(
-							field = "raw_image",
-							error = error
-						)
-						print(error)
-
+					except Exception as e:
+						messages.error(request, f"An error occured: {e}")
 						return this_page()
 				
-				resized_image = app_utils.create_thumbnail(
-					raw_image_path	= raw_image_path,
-					thumbnail_size	= defset.thumbnail_size
-				)
+				try:
+					# Thumbnail create and save
+					thumbnail = imhand.create_thumbnail(str(raw_image_path))
+					imhand.save_image(thumbnail_path, thumbnail)
 
-				is_thumbail_saved = app_utils.save_image(
-					image_path	= thumbnail_path, 
-					image		= resized_image
-				)	
-				
-				if not is_thumbail_saved:
-					instance.delete()
-
-					error = "There was an error saving the thumbnail."
-					form.add_error(
-						field = "raw_image",
-						error = error
-					)
-					print(error)
-
+					# Embedding create and save
+					embedding = emb_gen.get_image_embedding(raw_image_path)
+					emb_gen.save_embedding(embedding, uuid_name)
+				except MissingFaceError as e:
+					messages.error(request, "No face was detected")
+					messages.info(request, "Ensure the image includes a clear face.")
+					# instance.new_profile = profile.new_profile
+					# instance.save()
 					return this_page()
-
-				is_embedding_saved  = app_utils.save_embedding(raw_image_path)
-
-				if not is_embedding_saved:
-					instance.delete()
-
-					error = "There was an error saving the embedding."
-					form.add_error(
-						field = "raw_image",
-						error = error
-					)
-					print(error)
-
+				except Exception as e:
+					messages.error(request, f"An error occured: {e}")
 					return this_page()
+				# else:
+				# 	instance.raw_image = profile.new_profile
+				# 	instance.save()
 			else:
 				instance = form.save()
-
+				
 			message = f"Profile successfully updated: {instance}"
 			messages.success(request, message)
-			print(message)
+			logger.debug(message)
 
 			return redirect(next) if next else redirect('profile', p_type, instance.pk)
 
@@ -502,7 +470,7 @@ def profile_delete(request, p_type, pk):
 	if request.method == "POST":
 		profile.delete()
 
-		messages.error(request, f"Profile successfully deleted: {profile}.")
+		messages.success(request, f"Profile successfully deleted: {profile}.")
 
 		print(f"Profile successfully deleted: {profile}.")
 

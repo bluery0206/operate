@@ -100,9 +100,9 @@
                     </div>
 
                     <div>
-                        {% if form.clip_camera.errors %}
+                        {% if form.cam_clipping.errors %}
                             <div class="alert alert-danger">
-                                {% for error in form.clip_camera.errors %}
+                                {% for error in form.cam_clipping.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
@@ -110,8 +110,8 @@
 
                         <div class="item">
                             <div class="form-field">
-                                {{ form.clip_camera.label_tag }}
-                                {{ form.clip_camera }}
+                                {{ form.cam_clipping.label_tag }}
+                                {{ form.cam_clipping }}
                             </div>
 
                             <small>Whether to crop the camera or not. Used with the default_crop_size for saving.</small>
@@ -165,61 +165,6 @@
                             <small>The threshold is used to compare input images with stored ones. The smaller the threshold will see less profile as not match.</small>
                         </div>
                     </div>
-                    <div>
-                        {% if form.input_size.errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.input_size.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="item">
-                            <div class="form-field">
-                                {{ form.input_size.label_tag }}
-                                {{ form.input_size }}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        {% if form.bbox_size.errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.bbox_size.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="item">
-                            <div class="form-field">
-                                {{ form.bbox_size.label_tag }}
-                                {{ form.bbox_size }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="search_mode" value="embedding">
-                    
-                    {% comment %}
-                        <div>
-                            {% if form.search_mode.errors %}
-                                <div class="alert alert-danger">
-                                    {% for error in form.search_mode.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                            <div class="item">
-                                <div class="form-field">
-                                    {{ form.search_mode.label_tag }}
-                                    {{ form.search_mode }}
-                                </div>
-
-                                <small>Embedding is the simplified version of an image which makes recognition faster, unlike using raw images that need more processing. Embedding is generated once any profile image is saved.</small>
-                            </div>
-                        </div>
-                    {% endcomment %}
                 </div>
             </div>
             
@@ -308,22 +253,22 @@
                         <small>The AI Model used to detect faces in images.</small>
                     </div>
                     <div>
-                        {% if form.model_recognition.errors %}
+                        {% if form.model_embedding_generator.errors %}
                             <div class="alert alert-danger">
-                                {% for error in form.model_recognition.errors %}
+                                {% for error in form.model_embedding_generator.errors %}
                                     {{ error }}
                                 {% endfor %}
                             </div>
                         {% endif %}
-
+ 
                         <div class="item">
                             <div class="form-field">
-                                {{ form.model_recognition.label_tag }}
-                                {{ form.model_recognition }}
+                                {{ form.model_embedding_generator.label_tag }}
+                                {{ form.model_embedding_generator }}
                             </div>
 
-                            {% if defset.model_recognition %}
-                                <span>Current: <a class="link" href="{{ defset.model_recognition.url }}" target="_blank">{{ defset.model_recognition.name }}</a> </span>
+                            {% if defset.model_embedding_generator %}
+                                <span>Current: <a class="link" href="{{ defset.model_embedding_generator.url }}" target="_blank">{{ defset.model_embedding_generator.name }}</a> </span>
                             {% endif %}
                         </div>
 

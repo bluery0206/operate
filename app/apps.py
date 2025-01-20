@@ -3,6 +3,7 @@ from django.db.utils import OperationalError
 from django.db.models.signals import post_migrate
 from django.conf import settings
 
+import onnxruntime as ort
 
 class AppConfig(AppConfig):
     default_auto_field  = 'django.db.models.BigAutoField'
@@ -20,14 +21,19 @@ class AppConfig(AppConfig):
                     # Load default templates and models
                     template_inmate     = str(list(settings.MEDIA_ROOT.glob("templates/profile_inmate_templa*.docx"))[0])
                     template_personnel  = str(list(settings.MEDIA_ROOT.glob("templates/profile_personnel_templa*.docx"))[0])
-                    model_recognition   = str(list(settings.MEDIA_ROOT.glob("models/*emb_gen*.onnx"))[0])
+                    model_embedding_generator   = str(list(settings.MEDIA_ROOT.glob("models/*emb_gen*.onnx"))[0])
                     model_detection     = str(list(settings.MEDIA_ROOT.glob("models/*face_det*.onnx"))[0])
+
+                    session_options = ort.SessionOptions()
+                    session_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+                    model_embgen = ort.InferenceSession(model_embedding_generator, sess_options=session_options)
 
                     operate_setting.objects.create(
                         template_personnel  = template_personnel if template_personnel else None,
                         template_inmate     = template_inmate if template_inmate else None,
-                        model_recognition   = model_recognition if model_recognition else None,
+                        model_embedding_generator   = model_embedding_generator if model_embedding_generator else None,
                         model_detection     = model_detection if model_detection else None,
+                        input_size          = model_embgen.get_inputs()[0].shape[1]
                     )
 
             except OperationalError:
