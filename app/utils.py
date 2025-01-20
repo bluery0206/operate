@@ -1,21 +1,13 @@
 from django.http import HttpResponse
 from django.conf import settings
-from django.utils import timezone
-from django.db.models import Q
-
 from docx.shared import Inches
 from docx import Document
 from pathlib import Path
-import onnxruntime as ort
-import numpy as np
-import onnx
+
 import string
-import cv2 
 import logging
 
-from profiles import models as profiles_model
 from app import models as app_model
-
 from operate.camera import Camera
 from operate.excepts import *
 from operate import (

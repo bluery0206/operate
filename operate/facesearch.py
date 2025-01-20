@@ -2,10 +2,8 @@
 from django.conf import settings as DJANGO_SETTINGS
 from pathlib import Path
 import logging
-import cv2
 import numpy as np
 
-from app.models import Setting as OPERATE_SETTINGS
 from profiles import models as profiles_model
 from .excepts import *
 

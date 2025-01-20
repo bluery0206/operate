@@ -3,8 +3,6 @@ opencv-python
 python-docx
 numpy
 django-cleanup
-onnx
 onnxruntime
 django-password-eye
 docx2pdf
-onnx
