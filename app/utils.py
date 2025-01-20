@@ -26,7 +26,6 @@ from operate import (
 )
 from operate.excepts import *
 
-# Dont really need
 
 DJANGO_SETTINGS 	= settings
 OPERATE_SETTINGS 	= app_model.Setting
