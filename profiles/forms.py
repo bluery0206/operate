@@ -116,6 +116,28 @@ class PersonnelForm(forms.ModelForm):
 		fields 	= P_FIELDS
 		widgets = WIDGETS
 
+class PersonnelUpdateForm(forms.ModelForm):
+	new_profile = forms.FileField(
+		validators=IMG_VALIDATOR,
+		allow_empty_file	= True,
+		required			= False
+		)
+
+	class Meta:
+		model 	= models.Personnel
+		fields 	= [
+			'new_profile',
+			'f_name',
+			'l_name',
+			'm_name',
+			'suffix',
+			'age',
+			'address',
+			'civil_status',
+			'date_profiled',
+		]
+		widgets = WIDGETS
+
 class InmateForm(forms.ModelForm):
 	raw_image = forms.FileField(
 		validators 			= IMG_VALIDATOR,
