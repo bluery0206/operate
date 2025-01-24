@@ -282,6 +282,7 @@ def profile_add(request, p_type):
 				#	it was in fact because of that.
 				instance = form.save(commit=False)
 				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
+				instance.new_profile.name = "raw_images/" + image_name
 
 				# These fields below somehow needed their save folders to be specified
 				# 	assuming that if we didn't use the django fields for these... fields,
@@ -293,27 +294,13 @@ def profile_add(request, p_type):
 				raw_image_path = DJANGO_SETTINGS.RAW_IMG_ROOT.joinpath(image_name)
 				thumbnail_path = DJANGO_SETTINGS.THUMBNAIL_ROOT.joinpath(image_name)
 
-				if is_option_camera:
-					try:
+				try:
+					if is_option_camera:
 						cam_id = int(request.POST.get("camera", defset.camera))
 						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
 						raw_image = cam.live_feed()
 						imhand.save_image(raw_image_path, raw_image)
-					except CameraShutdownException:
-						messages.warning(request, "Camera shutdown.")
-						messages.warning(request, "Reminder: You need a profile picture to create profile.")
-						instance.delete()
-						return this_page()
-					except ImageNotSavedException:
-						messages.error(request, "Image save operation failed.")
-						instance.delete()
-						return this_page()
-					# except Exception as e:
-					# 	messages.error(request, f"An error occured: {e}")
-					# 	instance.delete()
-					# 	return this_page()
 				
-				try:
 					# Thumbnail create and save
 					thumbnail = imhand.create_thumbnail(str(raw_image_path))
 					imhand.save_image(thumbnail_path, thumbnail)
@@ -321,6 +308,11 @@ def profile_add(request, p_type):
 					# Embedding create and save
 					embedding = emb_gen.get_image_embedding(raw_image_path)
 					emb_gen.save_embedding(embedding, uuid_name)
+				except CameraShutdownException:
+					messages.warning(request, "Camera shutdown.")
+					messages.warning(request, "Reminder: You need a profile picture to create profile.")
+					instance.delete()
+					return this_page()
 				except ImageNotSavedException:
 					messages.error(request, "Image save operation failed.")
 					instance.delete()
@@ -334,10 +326,10 @@ def profile_add(request, p_type):
 					messages.info(request, "Ensure the image includes a clear face.")
 					instance.delete()
 					return this_page()
-				# except Exception as e:
-				# 	messages.error(request, f"An error occured: {e}")
-				# 	instance.delete()
-				# 	return this_page()
+				except Exception as e:
+					messages.error(request, f"An error occured: {e}")
+					instance.delete()
+					return this_page()
 
 			if not is_option_camera and not is_option_upload:
 				messages.error(request, "No profile picture found.")
@@ -370,7 +362,7 @@ def profile_update(request, p_type, pk):
 
 	if p_type == "personnel":
 		p_class 	= profiles_models.Personnel
-		f_class 	= profiles_forms.PersonnelForm
+		f_class 	= profiles_forms.PersonnelUpdateForm
 	elif p_type == "inmate":
 		p_class 	= profiles_models.Inmate
 		f_class 	= profiles_forms.InmateForm
@@ -388,7 +380,9 @@ def profile_update(request, p_type, pk):
 			suffix=request.POST.get("suffix"),
 		).exclude(pk=request.POST.get("pk")).first()
 
-		# Check if profile already exists
+		# Preventing to make another profile
+		# I don't why this works but apparently, putting the one-line code below and above 
+		# Resolves that problem at least from what I have tested
 		if existing_profile and existing_profile.pk != profile.pk:
 			error_message = "A record with the same first, middle, and last name already exists."
 			messages.error(request, error_message)
@@ -396,7 +390,7 @@ def profile_update(request, p_type, pk):
 
 		if form.is_valid():
 			is_option_camera = bool(request.POST.get("option_camera", 0))
-			is_option_upload = 'raw_image' in request.FILES
+			is_option_upload = 'new_profile' in request.FILES
 
 
 			if is_option_camera or is_option_upload:
@@ -404,49 +398,55 @@ def profile_update(request, p_type, pk):
 				image_name = uuid_name + ".png"
 
 				instance = form.save(commit=False)
-				# instance.new_profile.name = "raw_images/" + image_name if is_option_camera else image_name
-				instance.raw_image.name = "raw_images/" + image_name if is_option_camera else image_name
-				instance.embedding.name = "embeddings/" + uuid_name + ".npy"
-				instance.thumbnail.name = "thumbnails/" + image_name
+				instance.new_profile.name = "temp/" + image_name if is_option_camera else image_name
 				instance.save()
-	
-				raw_image_path = DJANGO_SETTINGS.RAW_IMG_ROOT.joinpath(image_name)
-				thumbnail_path = DJANGO_SETTINGS.THUMBNAIL_ROOT.joinpath(image_name)
 
-				if is_option_camera:
-					try:
+				temp_image_path = DJANGO_SETTINGS.TEMP_ROOT.joinpath(image_name)
+				thumbnail_path = DJANGO_SETTINGS.THUMBNAIL_ROOT.joinpath(image_name)
+				raw_img_path = DJANGO_SETTINGS.RAW_IMG_ROOT.joinpath(image_name)
+
+				try:
+					if is_option_camera:
 						cam_id = int(request.POST.get("camera", defset.camera))
 						cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
-						raw_image = cam.live_feed()
-						imhand.save_image(raw_image_path, raw_image)
-					except CameraShutdownException:
-						messages.warning(request, "Camera shutdown.")
-						messages.warning(request, "Reminder: You need a profile picture to create profile.")
-						return this_page()
-					except Exception as e:
-						messages.error(request, f"An error occured: {e}")
-						return this_page()
-				
-				try:
-					# Thumbnail create and save
-					thumbnail = imhand.create_thumbnail(str(raw_image_path))
-					imhand.save_image(thumbnail_path, thumbnail)
+						new_image = cam.live_feed()
+						imhand.save_image(temp_image_path, new_image)
+						
+					# Detecting face
+					image = imhand.open_image(str(temp_image_path), imhand.ColorMode.RGB)
+					facedet.get_face(image)
 
 					# Embedding create and save
-					embedding = emb_gen.get_image_embedding(raw_image_path)
+					embedding = emb_gen.get_image_embedding(temp_image_path)
 					emb_gen.save_embedding(embedding, uuid_name)
-				except MissingFaceError as e:
+
+					# Thumbnail create and save
+					thumbnail = imhand.create_thumbnail(str(temp_image_path))
+					imhand.save_image(thumbnail_path, thumbnail)
+
+					# Save raw image
+					imhand.save_image(raw_img_path, image)
+
+					# Setting new profile images
+					instance.raw_image.name = "raw_images/" + image_name
+					instance.embedding.name = "embeddings/" + uuid_name + ".npy"
+					instance.thumbnail.name = "thumbnails/" + image_name
+					instance.save()
+				except CameraShutdownException:
+					messages.warning(request, "Camera shutdown.")
+					messages.warning(request, "Reminder: You need a profile picture to create profile.")
+					return this_page()
+				except MissingFaceError:
 					messages.error(request, "No face was detected")
 					messages.info(request, "Ensure the image includes a clear face.")
-					# instance.new_profile = profile.new_profile
-					# instance.save()
+					instance.new_profile = None
+					instance.save()
 					return this_page()
 				except Exception as e:
 					messages.error(request, f"An error occured: {e}")
+					instance.new_profile = None
+					instance.save()
 					return this_page()
-				# else:
-				# 	instance.raw_image = profile.new_profile
-				# 	instance.save()
 			else:
 				instance = form.save()
 				
