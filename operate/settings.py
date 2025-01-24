@@ -142,6 +142,7 @@ MEDIA_URL   = '/media/'
 EMBEDDING_ROOT  = MEDIA_ROOT.joinpath("embeddings")
 MODEL_ROOT      = MEDIA_ROOT.joinpath("models")
 RAW_IMG_ROOT    = MEDIA_ROOT.joinpath("raw_images")
+TEMP_ROOT    = MEDIA_ROOT.joinpath("temp")
 TEMPLATE_ROOT   = MEDIA_ROOT.joinpath("templates")
 THUMBNAIL_ROOT  = MEDIA_ROOT.joinpath("thumbnails")
 
@@ -152,6 +153,7 @@ directories = [
     RAW_IMG_ROOT,
     TEMPLATE_ROOT,
     THUMBNAIL_ROOT,
+    TEMP_ROOT
 ]
 
 for dir in directories:
