@@ -39,13 +39,19 @@
 
 		<div class="body">
 			<div class="picture">
-				<img src="{% if profile.thumbnail.url %}{{ profile.thumbnail.url }}{% else %}../../app/static/images/default.png{% endif %}" alt="" id="imagePreview">
+				<img src="
+					{% if profile.thumbnail.url %}
+						{{ profile.thumbnail.url }}
+					{% else %}
+						../../app/static/images/default.png
+					{% endif %}
+				" alt="" id="imagePreview">
 
 				<div class="image-fields">
 					<div class="field">
-						{% if form.raw_image.errors %}
+						{% if form.new_profile.errors %}
 							<div class="alert alert-danger">
-								{% for error in for.raw_image.errors %}
+								{% for error in for.new_profile.errors %}
 									{{ error }}
 								{% endfor %}
 							</div>
@@ -53,7 +59,7 @@
 					</div>
 					<div class="field">
 						<h3>Upload image</h3>
-						<input class="form-control" type="file" name="raw_image" id="raw_image">
+						<input class="form-control" type="file" name="new_profile" id="new_profile">
 					</div>
 	
 					<span>or</span>
@@ -304,7 +310,7 @@
 	<script>
         document.addEventListener("DOMContentLoaded", function() {
             // Get the file input element from the form
-            const fileInput = document.getElementById("raw_image"); // Use the form field's ID
+            const fileInput = document.getElementById("new_profile"); // Use the form field's ID
             const imagePreview = document.getElementById("imagePreview");
 
             fileInput.addEventListener("change", function(event) {
