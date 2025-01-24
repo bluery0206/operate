@@ -30,7 +30,7 @@ def get_face(image:np.ndarray) -> np.ndarray:
 		logger.debug(f"Model input: {model.getInputSize()}")
 
 		# Checking if image is within min and max input shape of the face detector, YuNet
-		if image.shape <= (10, 10, 3) or image.shape >= (300, 300, 3) :
+		if image.shape != (300, 300, 3) :
 			image = imhand.crop_image_from_center(image)
 			image = imhand.resize_image(image, defset.bbox_size)
 
