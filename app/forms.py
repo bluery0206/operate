@@ -8,7 +8,7 @@ from django_password_eye.widgets import PasswordEyeWidget
 from django_password_eye.fields import PasswordEye
 
 from .models import  (
-	Setting 	as OPERATE_SETTINGS,
+	Setting as OPERATE_SETTINGS,
 	SearchImage
 )
 

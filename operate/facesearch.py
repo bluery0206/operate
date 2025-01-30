@@ -11,19 +11,24 @@ from . import (
 	embedding_generator as emb_gen,
 )
 
+
 logger = logging.getLogger(__name__)
+
 
 class Facesearch:
     def __init__(self, input_path:Path, threshold:float=1.0) -> None:
         self.input_path = input_path
         self.threshold = threshold
         self.search_result = []
+
             
     def get_percentage(self, distance:float) -> float:
         return (1 - (distance/self.threshold)) * 100
 
+
     def get_distance(self, inp_emb, db_emb) -> float:
         return float(np.sum(np.square(inp_emb - db_emb), axis=-1)[0])
+
         
     def search(self):
         logger.debug("Initiating Search...")
@@ -56,6 +61,7 @@ class Facesearch:
         else:
             logger.debug(f"Facesearch done. Found {len(self.search_result)} similar faces.")
             return self.search_result
+
         
     def get_profiles(self):
         logger.debug("Retrieving Profiles...")

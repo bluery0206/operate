@@ -3,8 +3,6 @@ from django.db.utils import OperationalError
 from django.db.models.signals import post_migrate
 from django.conf import settings
 
-import onnxruntime as ort
-
 class AppConfig(AppConfig):
     default_auto_field  = 'django.db.models.BigAutoField'
     name                = 'app'
@@ -17,6 +15,7 @@ class AppConfig(AppConfig):
         def create_initial_settings(sender, **kwargs):
             try:
                 if not operate_setting.objects.exists():
+                    import onnxruntime as ort
                     
                     # Load default templates and models
                     template_inmate     = str(list(settings.MEDIA_ROOT.glob("templates/profile_inmate_templa*.docx"))[0])

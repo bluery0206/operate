@@ -17,6 +17,7 @@ from operate import (
 
 logger = logging.getLogger(__name__)
 
+
 def get_image_embedding(image:Path) -> np.ndarray:
     defset = OPERATE_SETTINGS.objects.first()
 
@@ -36,6 +37,7 @@ def get_image_embedding(image:Path) -> np.ndarray:
     else:
         return embedding
 
+
 def generate_embedding(image:np.ndarray) -> np.ndarray:
     try: 
         model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
@@ -45,6 +47,7 @@ def generate_embedding(image:np.ndarray) -> np.ndarray:
         raise e
     else:
         return model.run([output_name], {input_name: image})[0]
+
     
 def save_embedding(embedding:np.ndarray, name:str) -> bool:
     output_path = DJANGO_SETTINGS.EMBEDDING_ROOT.joinpath(name + '.npy')
@@ -57,6 +60,7 @@ def save_embedding(embedding:np.ndarray, name:str) -> bool:
         exception_message = "Failed to save the embedding to the specified location."
         logger.exception(exception_message)
         raise EmbeddingNotSavedException(exception_message)
+
     
 def update_embeddings() -> None:
     from profiles.models import Personnel, Inmate

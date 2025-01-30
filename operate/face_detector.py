@@ -20,7 +20,9 @@ from . import (
 	image_handler as imhand,
 )
 
+
 logger = logging.getLogger(__name__)
+
 
 def get_face(image:np.ndarray) -> np.ndarray:
 	defset = OPERATE_SETTINGS.objects.first()
@@ -56,6 +58,7 @@ def get_face(image:np.ndarray) -> np.ndarray:
 	else:
 		logger.debug("Face retrieved successfuly.")
 		return face
+
 	
 def extract_face_bbox(image:np.ndarray, bbox:np.ndarray|list) -> np.ndarray:
 	if len(bbox) != 4: 

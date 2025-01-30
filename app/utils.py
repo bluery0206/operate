@@ -8,14 +8,7 @@ import string
 import logging
 
 from app import models as app_model
-from operate.camera import Camera
 from operate.excepts import *
-from operate import (
-    model_loader as mload,
-    image_handler as imhand,
-    face_detector as facedet,
-	embedding_generator as emb_gen
-)
 from operate.excepts import *
 
 

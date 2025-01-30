@@ -9,14 +9,15 @@ from .excepts import *
 
 logger = logging.getLogger(__name__)
 
+
 class ModelType(Enum):
 	EMBEDDING_GENERATOR = 0
 	DETECTION = 1
 
+
 def get_model(type:ModelType):
 	defset = OPERATE_SETTINGS.objects.first()
 	logger.debug(f"Getting {type}...")
-
 	
 	try:
 		if type == ModelType.EMBEDDING_GENERATOR:

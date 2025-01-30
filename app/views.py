@@ -5,7 +5,6 @@ from django.contrib.auth import authenticate, login
 from django.utils.http import urlsafe_base64_decode
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.utils import timezone
 from django.conf import settings as DJANGO_SETTINGS
 
 from pathlib import Path
@@ -14,7 +13,6 @@ from uuid import uuid4
 from . import (
     models 	as app_models,
     forms 	as app_forms,
-	utils	as app_utils
 )
 from profiles.models import (
     Personnel, 
@@ -31,6 +29,7 @@ from operate import (
 	model_loader as mload,
 	image_handler as imhand,
 )
+
 
 logging.basicConfig(level=logging.DEBUG) 
 logger = logging.getLogger(__name__)
@@ -187,10 +186,10 @@ def facesearch(request):
 			except ImageNotSavedException:
 				messages.error(request, "Image save operation failed. Search cancelled.")
 				return redirect(curr)
-			# except Exception as e:
-			# 	messages.error(request, "An error occured. Search cancelled.")
-			# 	messages.error(request, e)
-			# 	return redirect(curr)
+			except Exception as e:
+				messages.error(request, "An error occured. Search cancelled.")
+				messages.error(request, e)
+				return redirect(curr)
 
 		# Upload option
 		elif 'image' in request.FILES: 
@@ -216,15 +215,12 @@ def facesearch(request):
 		except ProfileNotFoundError:
 			messages.success(request, "Search profile does not exist in the system.")
 			return redirect(curr)
-		except (UnrecognizedModelError, FileNotFoundError, ModelNotFoundError) as e:
+		except Exception as e:
+			messages.error(request, "An error occured. Search cancelled.")
 			messages.error(request, e)
 			return redirect(curr)
-		# except Exception as e:
-		# 	messages.error(request, "An error occured. Search cancelled.")
-		# 	messages.error(request, e)
-		# 	return redirect(curr)
 		finally:
-			# Delete the image after use
+			# Delete the image after use whether if search is successful or not
 			logger.debug("Deleting input image...")
 			instance.delete() if instance else Path(input_path).unlink()
 	

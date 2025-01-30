@@ -156,6 +156,7 @@ directories = [
     TEMP_ROOT
 ]
 
+# Initialize folders by creating them for later use
 for dir in directories:
     if not dir.exists():
         dir.mkdir()

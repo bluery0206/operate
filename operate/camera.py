@@ -70,6 +70,7 @@ class Camera:
 			# Display frame
 			cv2.imshow(self.wnd_title, frame)
 
+			# Exit through keyboard (q)
 			if (cv2.waitKey(1) & 0XFF == ord('q')):
 				break
 

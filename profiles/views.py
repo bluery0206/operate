@@ -32,8 +32,6 @@ from operate.camera import Camera
 from operate.excepts import *
 from operate import (
 	embedding_generator as emb_gen,
-	facesearch as fsearch,
-	model_loader as mload,
 	image_handler as imhand,
 	face_detector as facedet,
 )
@@ -391,7 +389,6 @@ def profile_update(request, p_type, pk):
 		if form.is_valid():
 			is_option_camera = bool(request.POST.get("option_camera", 0))
 			is_option_upload = 'new_profile' in request.FILES
-
 
 			if is_option_camera or is_option_upload:
 				uuid_name = str(uuid4())
