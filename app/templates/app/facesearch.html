@@ -91,9 +91,9 @@
 								<div class="details">
 									<span class="name detail">
 										<span class="distance 
-											{% if forloop.counter == 1 and dist > 89 %}
+											{% if forloop.counter == 1 and percentage > 89 %}
 												distance-primary
-											{% elif dist > 89 and forloop.counter != 1 %}
+											{% elif percentage > 89 and forloop.counter != 1 %}
 												distance-secondary
 											{%endif%}
 										">{{ percentage|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
