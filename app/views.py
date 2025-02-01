@@ -102,6 +102,26 @@ def settings(request):
 	return render(request, "app/settings.html", context)
 
 
+@login_required
+def settings_update_embeddings(request):
+	next = request.GET.get("next", "")
+
+	if request.method == "POST":
+		update_embeddings()
+
+		messages.success(request, "Profile image iembeddings successfully updated.")
+		return redirect(next) if next else redirect(f"profiles-all-{p_type}")
+
+	context = {
+		'page_title'	: "Update image embeddings",
+		'title'			: "Update image embeddings",
+		'warning' 		: "Updating all image embeddings will overwrite existing data and may take significant time.",
+		'prev'			: next,
+		'danger'		: False
+	}
+	return render(request, "app/base_confirmation.html", context)
+
+
 def user_login(request):
 	login_form = app_forms.LoginForm
 
@@ -233,13 +253,5 @@ def facesearch(request):
 		"search_result"	: search_result,
 	}
 	return render(request, "app/facesearch.html", context)
-
-
-
-
-
-
-
-
 
 
