@@ -7,8 +7,8 @@ from app.utils import get_full_name
 
 
 
-NAME_VALIDATOR = [RegexValidator(r'^[a-zA-Z\-]+$')]
-ADDRESS_VALIDATOR = [RegexValidator(r"^[a-zA-Z0-9\s\-.,/#]+$")]
+NAME_VALIDATOR = [RegexValidator(r'^[a-zA-Z\-\s*]+$')]
+ADDRESS_VALIDATOR = [RegexValidator(r"^[a-zA-Z0-9\s*\-.,/#]+$")]
 
 CIVIL_STATUS_CHOICES = [
 	('single', 'Single'),

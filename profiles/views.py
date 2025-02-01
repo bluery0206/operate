@@ -456,6 +456,7 @@ def profile_update(request, p_type, pk):
 					instance.save()
 					return this_page()
 			else:
+				instance.new_profile = None
 				instance = form.save()
 				
 			message = f"Profile successfully updated: {instance}"
