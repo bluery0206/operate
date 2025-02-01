@@ -117,6 +117,25 @@
                             <small>Whether to crop the camera or not.</small>
                         </div>
                     </div>
+
+                    <div>
+                        {% if form.face_cropping.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.face_cropping.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.face_cropping.label_tag }}
+                                {{ form.face_cropping }}
+                            </div>
+
+                            <small>Whether to crop the face from image or not. This is used to make embeddings.</small>
+                        </div>
+                    </div>
                 </div>
             </div>
             

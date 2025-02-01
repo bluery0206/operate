@@ -13,6 +13,7 @@ class Setting(models.Model):
     # Camera and Cropping
     camera              = models.IntegerField(default = 0)
     cam_clipping        = models.BooleanField(default = True)
+    face_cropping       = models.BooleanField(default = True)
     clip_size           = models.IntegerField(default = 200)
 
     # Search

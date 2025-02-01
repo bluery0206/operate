@@ -49,15 +49,22 @@ def get_face(image:np.ndarray) -> np.ndarray:
 			logger.exception(exception_message)
 			raise MissingFaceError(exception_message)
 
-		# Extracting bounding box and crop face
-		bbox = result[0][0][:4].astype(np.int32)
-		face = extract_face_bbox(image, bbox)
-		face = imhand.crop_image_from_center(face)
+		logger.debug(f"Face cropping is :{defset.face_cropping}")
+
+		# Extracting bounding box and crop face if enabled
+		if defset.face_cropping:
+			logger.debug("Cropping face...")
+			bbox = result[0][0][:4].astype(np.int32)
+			face = extract_face_bbox(image, bbox)
+			image = imhand.crop_image_from_center(face)
+		else:
+			logger.debug("Skipping face cropping...")
+
 	except Exception as e:
 		raise e
 	else:
 		logger.debug("Face retrieved successfuly.")
-		return face
+		return image
 
 	
 def extract_face_bbox(image:np.ndarray, bbox:np.ndarray|list) -> np.ndarray:

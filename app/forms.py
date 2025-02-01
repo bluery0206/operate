@@ -71,6 +71,11 @@ class OperateSettingsForm(forms.ModelForm):
 				},
 				choices=[(False, 'Use camera size'), (True, 'Clip camera')]
 			),
+			'face_cropping': forms.Select(attrs={
+					'class': COMMON_CLASS,
+				},
+				choices=[(False, 'Do not crop face'), (True, 'Crop face')]
+			),
 			'threshold': forms.NumberInput(attrs={
 					'class' : COMMON_CLASS,
 					'min'   : 0,
@@ -111,6 +116,7 @@ class OperateSettingsForm(forms.ModelForm):
 			"thumbnail_size",
 			"camera",
 			"cam_clipping",
+			"face_cropping",
 			"threshold",
 			"template_personnel",
 			"template_inmate",
