@@ -1,10 +1,14 @@
 from django.db.models.constraints import UniqueConstraint
+from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.db import models
 
 from app.utils import get_full_name
 
 
+
+NAME_VALIDATOR = [RegexValidator(r'^[a-zA-Z\-]+$')]
+ADDRESS_VALIDATOR = [RegexValidator(r"^[a-zA-Z0-9\s\-.,/#]+$")]
 
 CIVIL_STATUS_CHOICES = [
 	('single', 'Single'),
@@ -67,13 +71,13 @@ class Profile(models.Model):
 	)
 
 	# Common details
-	f_name			= models.CharField(max_length=30)
-	m_name			= models.CharField(max_length=20, blank=True, default=None)
-	l_name			= models.CharField(max_length=20)
-	suffix			= models.CharField(max_length=10, blank=True, default=None)
+	f_name			= models.CharField(max_length=30, validators=NAME_VALIDATOR)
+	m_name			= models.CharField(max_length=20, blank=True, default=None, validators=NAME_VALIDATOR)
+	l_name			= models.CharField(max_length=20, validators=NAME_VALIDATOR)
+	suffix			= models.CharField(max_length=10, blank=True, default=None, validators=NAME_VALIDATOR)
 
 	age 			= models.IntegerField()
-	address			= models.CharField(max_length=250)
+	address			= models.CharField(max_length=250, validators=ADDRESS_VALIDATOR)
 	civil_status	= models.CharField(blank=True, max_length=20, choices=CIVIL_STATUS_CHOICES, default='single')
 
 	class Meta:
