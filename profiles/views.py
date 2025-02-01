@@ -324,6 +324,11 @@ def profile_add(request, p_type):
 					messages.info(request, "Ensure the image includes a clear face.")
 					instance.delete()
 					return this_page()
+				except TooManyFacesError as e:
+					messages.error(request, e)
+					messages.info(request, "Ensure there is only one face in the image.")
+					instance.delete()
+					return this_page()
 				except Exception as e:
 					messages.error(request, f"An error occured: {e}")
 					instance.delete()
@@ -436,6 +441,12 @@ def profile_update(request, p_type, pk):
 				except MissingFaceError:
 					messages.error(request, "No face was detected")
 					messages.info(request, "Ensure the image includes a clear face.")
+					instance.new_profile = None
+					instance.save()
+					return this_page()
+				except TooManyFacesError as e:
+					messages.error(request, e)
+					messages.info(request, "Ensure there is only one face in the image.")
 					instance.new_profile = None
 					instance.save()
 					return this_page()

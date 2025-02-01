@@ -38,16 +38,16 @@ def get_face(image:np.ndarray) -> np.ndarray:
 
 		# Detection
 		result = model.detect(image)[1:]
-		
+
 		# Ensuring there's one face in the image
-		if len(result) > 1: 
-			exception_message = "Too many faces in an image detected."
-			logger.exception(exception_message)
-			raise TooManyFacesError(exception_message)
-		elif result[0] is None: 
+		if result[0] is None: 
 			exception_message = "No face was detected."
 			logger.exception(exception_message)
 			raise MissingFaceError(exception_message)
+		elif len(result[0]) > 1: 
+			exception_message = "Too many faces in an image detected."
+			logger.exception(exception_message)
+			raise TooManyFacesError(exception_message)
 
 		logger.debug(f"Face cropping is :{defset.face_cropping}")
 

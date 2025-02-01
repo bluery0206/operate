@@ -235,6 +235,10 @@ def facesearch(request):
 		except ProfileNotFoundError:
 			messages.success(request, "Search profile does not exist in the system.")
 			return redirect(curr)
+		except TooManyFacesError as e:
+			messages.error(request, e)
+			messages.info(request, "Ensure there is only one face in the image.")
+			return redirect(curr)
 		except Exception as e:
 			messages.error(request, "An error occured. Search cancelled.")
 			messages.error(request, e)
