@@ -81,3 +81,5 @@ def update_embeddings() -> None:
             raise MissingFaceError(e, profile_id=profile.pk, profile_type=profile.p_type)
         except Exception as e:
             raise e
+        
+    logger.debug("Profile image embeddings successfully updated.")
