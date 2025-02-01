@@ -709,11 +709,13 @@ body {
             /* border: 1px solid red; */
             width: 300px;
 
-            /* .header { */
+            .header {
                 /* border: 1px solid red; */
-        
-                /* .title { */
+
+                .title {
+                    display: grid;
                     /* border: 1px solid red; */
+                    justify-items: center;
             
                     /* img { */
                         /* border: 1px solid red; */
@@ -722,8 +724,8 @@ body {
                     /* h3 { */
                         /* border: 1px solid red; */
                     /* } */
-                /* } */
-            /* } */
+                }
+            }
 
             .body {
                 /* border: 1px solid blue; */
@@ -750,12 +752,23 @@ body {
                             /* border: 1px solid red; */
                             
                             .form-control {
+                                /* border: 1px solid red; */
                                 width: 100%;
                             }
                         }
 
-                        /* .django_password_eye { */
-                        /* } */
+                        .django_password_eye{
+                            height: 2em;
+
+                            .input-group-addon {
+                                /* border: 1px solid red; */
+                                padding: 0;
+                                margin: 0;
+                                display: grid;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                        }
                     }
                 }
                 
