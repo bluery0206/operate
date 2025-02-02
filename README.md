@@ -7,7 +7,7 @@ OPeraTE (Optimized Personnel and Inmate Tracking Efficiency) is a centralized, w
 * Profile Management: Enables creating, editing, searching, and archiving personnel and inmate profiles.
 
 ### Links
-* [SYSTEM REQUIREMENTS](SYSTEM_REQUIREMENTS.md)
+* [System Requirements](SYSTEM_REQUIREMENTS.md)
 * [Installation Guide](INSTALL_GUIDE.md)
 
 
