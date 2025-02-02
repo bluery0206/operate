@@ -6,16 +6,8 @@ OPeraTE (Optimized Personnel and Inmate Tracking Efficiency) is a centralized, w
 * Face Search: Powered by a Siamese Neural Network (SNN) with Triplet Loss for profile matching using images.
 * Profile Management: Enables creating, editing, searching, and archiving personnel and inmate profiles.
 
-## System Requirements
-### Hardware Requirements:
-* Storage: At least 500mb free space.
-
-### Software Requirements
-* Operating System: Windows 10 or higher (Linux not tested)
-* Python 3.12.3
-* Dependencies are automatically downloaded and are listed in `requirements.txt`
-
 ### Links
+* [SYSTEM REQUIREMENTS](SYSTEM_REQUIREMENTS.md)
 * [Installation Guide](INSTALL_GUIDE.md)
 
 
