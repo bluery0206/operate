@@ -103,18 +103,28 @@
 										Address: {{ profile.address|title }}
 									</span>
 									<span class="detail" title="{{ profile|full_name }}'s profiled date">
-										<!-- <i class="fa-solid fa-square-person-confined"></i> -->
 										<i class="fa-solid fa-clock"></i>
 										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
 									</span>
-									<span class="detail" title="{{ profile|full_name }}'s assigned date">
-										<i class="fa-solid fa-clipboard-check"></i>
-										Assigned: {{ profile.date_assigned|date:"M j, Y" }}
-									</span>
-									<span class="detail" title="{{ profile|full_name }}'s designation">
-										<i class="fa-solid fa-id-card"></i>
-										Designation: {{ profile.designation }}
-									</span>
+									{% if profile.p_type == 'personnel' %}
+										<span class="detail" title="{{ profile|full_name }}'s assigned date">
+											<i class="fa-solid fa-clipboard-check"></i>
+											Assigned: {{ profile.date_assigned|date:"M j, Y" }}
+										</span>
+										<span class="detail" title="{{ profile|full_name }}'s designation">
+											<i class="fa-solid fa-id-card"></i>
+											Designation: {{ profile.designation }}
+										</span>
+									{% else %}
+										<span class="detail" title="{{ profile|full_name }}'s arrested date">
+											<i class="fa-solid fa-people-robbery"></i>
+											Arrested: {{ profile.date_arrested|date:"M j, Y" }}
+										</span>
+										<span class="detail" title="{{ profile|full_name }}'s crime violation(s)">
+											<i class="fa-solid fa-gavel"></i>
+											Violation(s): {{ profile.crime_violated }}
+										</span>
+									{% endif %}
 								</div>
 							</a>
 						</div>
@@ -124,9 +134,11 @@
 		</div>
 
 		<div class="filter-bar">
-			<!-- <img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;"> -->
-
-			<!-- 
+			{% comment %} 
+				<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
+			{% endcomment %}
+			 
+			{% comment %} 
 				<div class="form">
 					<div class="fields">
 						<div class="field">
@@ -142,8 +154,8 @@
 							</select>
 						</div>
 					</div>
-				</div> 
-			-->
+				</div>
+			{% endcomment %}
 
 			<form method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
