@@ -24,7 +24,7 @@ def get_image_embedding(image:Path) -> np.ndarray:
     try:
         image = imhand.open_image(image, imhand.ColorMode.RGB)
         
-        if image.shape[:1] is not (defset.bbox_size, defset.bbox_size):
+        if image.shape[:2] is not (defset.bbox_size, defset.bbox_size):
             image = imhand.crop_image_from_center(image)
             image = imhand.resize_image(image, defset.bbox_size)
                     
