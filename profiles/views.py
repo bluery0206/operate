@@ -285,7 +285,7 @@ def profile_add(request, p_type):
 				# These fields below somehow needed their save folders to be specified
 				# 	assuming that if we didn't use the django fields for these... fields,
 				# 	then django just saves these in the `MEDIA_ROOT` (as observed as well).
-				instance.embedding.name = "embeddings/" + uuid_name + ".npy"
+				instance.embedding.name = f"embeddings/{p_type}/{uuid_name}.npy"
 				instance.thumbnail.name = "thumbnails/" + image_name
 				instance.save()
 	
@@ -305,7 +305,7 @@ def profile_add(request, p_type):
 
 					# Embedding create and save
 					embedding = emb_gen.get_image_embedding(raw_image_path)
-					emb_gen.save_embedding(embedding, uuid_name)
+					emb_gen.save_embedding(embedding, uuid_name, p_type)
 				except CameraShutdownException:
 					messages.warning(request, "Camera shutdown.")
 					messages.warning(request, "Reminder: You need a profile picture to create profile.")
@@ -420,7 +420,7 @@ def profile_update(request, p_type, pk):
 
 					# Embedding create and save
 					embedding = emb_gen.get_image_embedding(temp_image_path)
-					emb_gen.save_embedding(embedding, uuid_name)
+					emb_gen.save_embedding(embedding, uuid_name, p_type)
 
 					# Thumbnail create and save
 					thumbnail = imhand.create_thumbnail(str(temp_image_path))
@@ -429,9 +429,12 @@ def profile_update(request, p_type, pk):
 					# Save raw image
 					imhand.save_image(raw_img_path, image)
 
+					# Delete old embedding file
+					Path(DJANGO_SETTINGS.MEDIA_ROOT.joinpath(instance.embedding.name)).unlink()
+
 					# Setting new profile images
 					instance.raw_image.name = "raw_images/" + image_name
-					instance.embedding.name = "embeddings/" + uuid_name + ".npy"
+					instance.embedding.name = f"embeddings/{p_type}/{uuid_name}.npy"
 					instance.thumbnail.name = "thumbnails/" + image_name
 					instance.save()
 				except CameraShutdownException:
