@@ -110,7 +110,7 @@ def settings_update_embeddings(request):
 		update_embeddings()
 
 		messages.success(request, "Profile image iembeddings successfully updated.")
-		return redirect(next) if next else redirect(f"profiles-all-{p_type}")
+		return redirect("operate-settings")
 
 	context = {
 		'page_title'	: "Update image embeddings",
@@ -181,13 +181,14 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def facesearch(request):
-	defset = OPERATE_SETTINGS.objects.first()
-	curr = request.build_absolute_uri()
-	form = app_forms.SearchImageForm()
-	threshold = defset.threshold
-	cam_id = defset.camera
-	search_result = []
-	instance = None
+	defset 			= OPERATE_SETTINGS.objects.first()
+	curr 			= request.build_absolute_uri()
+	form 			= app_forms.SearchImageForm()
+	threshold 		= defset.threshold
+	cam_id 			= defset.camera
+	search_result 	= []
+	instance 		= None
+	search_category	= request.POST.get("search_category", "inmate")
 
 	if request.method == "POST":
 		uuid_name = str(uuid4())
@@ -222,7 +223,7 @@ def facesearch(request):
 				input_path = Path(instance.image.path)
 
 		try:
-			fsearch = Facesearch(input_path, defset.threshold)
+			fsearch = Facesearch(search_category, input_path, defset.threshold)
 			search_result = fsearch.search()
 			messages.success(request, f"Facesearch done. Found {len(search_result)} similar faces.")
 		except MissingFaceError:
@@ -249,12 +250,13 @@ def facesearch(request):
 			instance.delete() if instance else Path(input_path).unlink()
 	
 	context = {
-		"page_title"	: "Facesearch",
-		'active'		: 'facesearch',
-		"form"			: form,
-		"threshold"		: threshold,
-		"camera"		: cam_id,
-		"search_result"	: search_result,
+		"page_title"		: "Facesearch",
+		'active'			: 'facesearch',
+		"form"				: form,
+		"threshold"			: threshold,
+		"camera"			: cam_id,
+		"search_result"		: search_result,
+		"search_category"	: search_category,
 	}
 	return render(request, "app/facesearch.html", context)
 
