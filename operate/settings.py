@@ -139,12 +139,14 @@ LOGIN_URL           = 'user-login'
 MEDIA_ROOT  = BASE_DIR.joinpath('media')
 MEDIA_URL   = '/media/'
 
-EMBEDDING_ROOT  = MEDIA_ROOT.joinpath("embeddings")
-MODEL_ROOT      = MEDIA_ROOT.joinpath("models")
-RAW_IMG_ROOT    = MEDIA_ROOT.joinpath("raw_images")
-TEMP_ROOT    = MEDIA_ROOT.joinpath("temp")
-TEMPLATE_ROOT   = MEDIA_ROOT.joinpath("templates")
-THUMBNAIL_ROOT  = MEDIA_ROOT.joinpath("thumbnails")
+EMBEDDING_ROOT      = MEDIA_ROOT.joinpath("embeddings")
+EMBEDDING_PERSONNEL = EMBEDDING_ROOT.joinpath("personnel")
+EMBEDDING_INMATE    = EMBEDDING_ROOT.joinpath("inmate")
+MODEL_ROOT          = MEDIA_ROOT.joinpath("models")
+RAW_IMG_ROOT        = MEDIA_ROOT.joinpath("raw_images")
+TEMP_ROOT           = MEDIA_ROOT.joinpath("temp")
+TEMPLATE_ROOT       = MEDIA_ROOT.joinpath("templates")
+THUMBNAIL_ROOT      = MEDIA_ROOT.joinpath("thumbnails")
 
 directories = [
     MEDIA_ROOT,
@@ -153,7 +155,9 @@ directories = [
     RAW_IMG_ROOT,
     TEMPLATE_ROOT,
     THUMBNAIL_ROOT,
-    TEMP_ROOT
+    TEMP_ROOT,
+    EMBEDDING_PERSONNEL,
+    EMBEDDING_INMATE,
 ]
 
 # Initialize folders by creating them for later use
