@@ -49,8 +49,17 @@ def generate_embedding(image:np.ndarray) -> np.ndarray:
         return model.run([output_name], {input_name: image})[0]
 
     
-def save_embedding(embedding:np.ndarray, name:str) -> bool:
-    output_path = DJANGO_SETTINGS.EMBEDDING_ROOT.joinpath(name + '.npy')
+def save_embedding(embedding:np.ndarray, name:str, p_type:str) -> bool:
+    logger.debug(f"Saving embedding: p_type={p_type}, name={name}...")
+    if p_type == "personnel":
+        output_path = DJANGO_SETTINGS.EMBEDDING_PERSONNEL.joinpath(name + '.npy')
+    elif p_type == "inmate":
+        output_path = DJANGO_SETTINGS.EMBEDDING_INMATE.joinpath(name + '.npy')
+    else:
+        exception_message = "Invalid `p_type` detected."
+        logger.exception(exception_message)
+        raise InvalidProfileType(exception_message)
+
     np.save(output_path, embedding)
 
     if output_path.exists():
@@ -75,7 +84,7 @@ def update_embeddings() -> None:
 
         try:
             embedding = get_image_embedding(image_path)
-            save_embedding(embedding, image_path.stem)
+            save_embedding(embedding, image_path.stem, profile.p_type)
             logger.debug(f"Image: {image_path.name} successfully saved.")
         except MissingFaceError as e:
             raise MissingFaceError(e, profile_id=profile.pk, profile_type=profile.p_type)

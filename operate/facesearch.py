@@ -16,10 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 class Facesearch:
-    def __init__(self, input_path:Path, threshold:float=1.0) -> None:
+    def __init__(self, search_category:str, input_path:Path, threshold:float=1.0) -> None:
         self.input_path = input_path
         self.threshold = threshold
         self.search_result = []
+        self.search_category = search_category
 
             
     def get_percentage(self, distance:float) -> float:
@@ -31,12 +32,22 @@ class Facesearch:
 
         
     def search(self):
-        logger.debug("Initiating Search...")
+        logger.debug(f"Initiating {self.search_category.capitalize()} Search...")
         
         try:
             inp_emb = emb_gen.get_image_embedding(self.input_path)
-            db_embeddings = list(DJANGO_SETTINGS.EMBEDDING_ROOT.glob("*"))
+
+            if self.search_category == "personnel":
+                db_embeddings = list(DJANGO_SETTINGS.EMBEDDING_PERSONNEL.glob("*"))
+            elif self.search_category == "inmate":
+                db_embeddings = list(DJANGO_SETTINGS.EMBEDDING_INMATE.glob("*"))
+
             db_embeddings = [[emb_path, np.load(emb_path)] for emb_path in db_embeddings]
+
+            if len(db_embeddings) == 0:
+                err_msg = f"There are no embeddings in the selected search catergory."
+                logger.debug(err_msg)
+                raise EmptyDatabase(err_msg)
 
             while len(db_embeddings) > 0:
                 emb_path, db_emb = db_embeddings[0]

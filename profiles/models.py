@@ -59,11 +59,6 @@ class Profile(models.Model):
 		blank		= True,
 		null		= True,
 	)
-	embedding = models.FileField(
-		upload_to	= "embeddings",
-		blank		= True,
-		null		= True,
-	)
 	new_profile = models.FileField(
 		upload_to	= "temp",
 		blank		= True,
@@ -90,6 +85,12 @@ class Personnel(Profile):
 	date_relieved	= models.DateTimeField(blank=True, null=True)
 	designation		= models.CharField(max_length=250)
 
+	embedding = models.FileField(
+		upload_to	= "embeddings/personnel",
+		blank		= True,
+		null		= True,
+	)
+
 	class Meta:
 		constraints = [
 			UniqueConstraint(
@@ -106,6 +107,12 @@ class Inmate(Profile):
 	date_arrested	= models.DateTimeField(default=timezone.now)
 	date_committed	= models.DateTimeField(null=True, blank=True)
 	crime_violated	= models.CharField(max_length=250)
+
+	embedding = models.FileField(
+		upload_to	= "embeddings/inmate",
+		blank		= True,
+		null		= True,
+	)
 
 	class Meta:
 		# Makes the entire row with specified fields unique.

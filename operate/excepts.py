@@ -1,3 +1,5 @@
+# Trying out exceptions
+
 class UnrecognizedModelError(Exception): pass
 class UnrecognizedColorMode(Exception): pass
 class InvalidInputSizeError(Exception): pass
@@ -10,6 +12,8 @@ class InvalidImageFormatError(Exception): pass
 class ProfileNotFoundError(Exception): pass 
 class CameraShutdownException(Exception): pass 
 class ModelNotFoundError(Exception): pass 
+class InvalidProfileType(Exception): pass 
+class EmptyDatabase(Exception): pass 
 
 class MissingFaceError(Exception): 
     def __init__(self, *args, profile_id:int|None=None, profile_type:str|None=None):

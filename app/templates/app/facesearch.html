@@ -134,36 +134,30 @@
 		</div>
 
 		<div class="filter-bar">
-			{% comment %} 
+			{% comment %}
 				<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
 			{% endcomment %}
-			 
-			{% comment %} 
-				<div class="form">
-					<div class="fields">
-						<div class="field">
-							<label for="threshold">Threshold: </label>
-							<input class="form-control form-control-secondary" type="number" id="threshold_input" value="{{ threshold }}" min="0.1" max="100" step="0.1">
-							<small class="muted"><em>The Confidence Level (CL) is relative to the threshold.</em></small>
-						</div>
-						<div class="field">
-							<label for="embedding">Search method: </label>
-							<select name="search_method_input" id="search_method_input" class="form-control form-control-secondary">
-								<option value="1" {% if search_method == 1 %}selected{% endif %}>Embedding (Faster)</option>
-								<option value="0" {% if search_method == 0 %}selected{% endif %}>Images</option>
-							</select>
-						</div>
+
+			<div class="form">
+				<div class="fields">
+					<div class="field">
+						<h4>Search Category</h4>
+						<select name="search_category" id="tagSource" class="form-control form-control-secondary">
+							{% if has_inmate %}<option value="inmate" {% if search_category == "inmate" %}selected{% endif %}>Inmate</option>{% endif %}
+							{% if has_personnel %}<option value="personnel" {% if search_category == "personnel" %}selected{% endif %}>Personnel</option>{% endif %}
+						</select>
 					</div>
 				</div>
-			{% endcomment %}
+			</div>
 
 			<form method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
+				<input type="hidden" name="search_category" id="search_category_1" value="{{ search_category }}">
 
 				<h4>Upload an image</h4>
-		
+
 				{{ form.image }}
-		
+
 				<div class="actions">
 					<button class="btn btn-secondary" type="submit" name="option_upload" id="option_upload" value="1">
 						<i class="fa-solid fa-upload"></i>
@@ -171,17 +165,18 @@
 					</button>
 				</div>
 			</form>
-	
+
 			<form method="POST">
 				{% csrf_token %}
-	
+				<input type="hidden" name="search_category" id="search_category_2" value="{{ search_category }}">
+
 				<h4>Capture image</h4>
-	
+
 				<button class="btn btn-secondary" name="option_camera" value="1" type="submit">
 						<i class="fa-solid fa-camera"></i>
 					<span>Take a Picture and Search</span>
 				</button>
-	
+
 				<div class="fields">
 					<div class="form-field">
 						<label for="camera">Camera: </label>
@@ -192,4 +187,20 @@
 			</form>
 		</div>
 	</div>
+
+
+	<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the file input element from the form
+            const tagSource = document.getElementById("tagSource"); // Use the form field's ID
+            const target_1 = document.getElementById("search_category_1");
+            const target_2 = document.getElementById("search_category_2");
+
+            tagSource.addEventListener("change", function(event) {
+				target_1.value = tagSource.value;
+				target_2.value = tagSource.value;
+            });
+        });
+    </script>
+	
 {% endblock content %}
