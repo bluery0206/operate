@@ -10,32 +10,24 @@ from django.conf import settings as DJANGO_SETTINGS
 from pathlib import Path
 from uuid import uuid4
 
-from . import (
-    models 	as app_models,
-    forms 	as app_forms,
-)
-from profiles.models import (
-    Personnel, 
-    Inmate
-)
-
 import logging
+
+
+from .models import Setting as OPERATE_SETTINGS
+from .forms import OperateSettingsForm, LoginForm, PasswordResetForm, SearchImageForm
+
+from profiles.models import Personnel, Inmate
 
 from operate.excepts import *
 from operate.facesearch import Facesearch
 from operate.embedding_generator import update_embeddings
 from operate.camera import Camera 
-from operate import (
-	model_loader as mload,
-	image_handler as imhand,
-)
+from operate.model_loader import get_model, ModelType
+from operate.image_handler import save_image
 
 
 logging.basicConfig(level=logging.DEBUG) 
 logger = logging.getLogger(__name__)
-
-OPERATE_SETTINGS_FORM 	= app_forms.OperateSettingsForm
-OPERATE_SETTINGS 		= app_models.Setting
 
 
 
@@ -58,7 +50,7 @@ def settings(request):
 	defset 	= OPERATE_SETTINGS.objects.first()
 
 	if request.method == "POST":
-		form = OPERATE_SETTINGS_FORM(request.POST, request.FILES, instance=defset)
+		form = OperateSettingsForm(request.POST, request.FILES, instance=defset)
 
 		if form.is_valid():
 			if request.FILES.get('model_detection') or request.FILES.get('model_embedding_generator'):
@@ -75,14 +67,17 @@ def settings(request):
 					instance.save()
 
 					try:
-						model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
+						model = get_model(ModelType.EMBEDDING_GENERATOR)
 						defset.input_size = model.get_inputs()[0].shape[1]
 						defset.save()
+
+						# Different models, different embeddings even if we used the same image
+						# and therefore, updating embeddings when new model is uploaded is very important.
 						update_embeddings()
 					except MissingFaceError as e:
 						messages.warning(request, "No face was detected. Please update the profile and reupload the model in the settings.")
 						return redirect('profile-update', e.profile_type, e.profile_id)
-					except (UnrecognizedModelError, FileNotFoundError, EmbeddingNotSavedException) as e:
+					except Exception as e:
 						messages.error(request, e)
 						return redirect('operate-settings')
 			else:
@@ -91,7 +86,7 @@ def settings(request):
 			messages.success(request, "Settings updated.")
 			return redirect('operate-settings')
 	else:
-		form = OPERATE_SETTINGS_FORM(instance=defset)
+		form = OperateSettingsForm(instance=defset)
 
 	context = {
 		'page_title'	: 'Settings',
@@ -122,8 +117,9 @@ def settings_update_embeddings(request):
 	return render(request, "app/base_confirmation.html", context)
 
 
+# Had to use a custom login view method because of the password eye
 def user_login(request):
-	login_form = app_forms.LoginForm
+	login_form = LoginForm
 
 	if request.method == "POST":
 		form = login_form(request, data=request.POST)
@@ -150,7 +146,7 @@ def user_login(request):
 
 
 def password_reset_confirm(request, uidb64, token):
-	login_form = app_forms.PasswordResetForm
+	login_form = PasswordResetForm
 
 	try:
 		uid = urlsafe_base64_decode(uidb64).decode()
@@ -181,18 +177,19 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def facesearch(request):
-	defset = OPERATE_SETTINGS.objects.first()
-	has_inmate = Inmate.objects.all().count()
-	has_personnel = Personnel.objects.all().count()
-	curr = request.build_absolute_uri()
-	form = app_forms.SearchImageForm()
-	threshold = defset.threshold
-	cam_id = defset.camera
-	search_result = []
-	instance = None
+	defset	 		= OPERATE_SETTINGS.objects.first()
+	has_inmate 		= Inmate.objects.all().count()
+	has_personnel 	= Personnel.objects.all().count()
+	can_search		= has_inmate or has_personnel
+	curr 			= request.build_absolute_uri()
+	form 			= SearchImageForm()
+	threshold 		= defset.threshold
+	cam_id 			= defset.camera
+	search_result 	= []
+	instance 		= None
 	search_category	= request.POST.get("search_category", "inmate")
 
-	# So that it will auto-select what search is available if one search is not available
+	# So that it will auto-select what search categort is available if one search is not available
 	if not has_personnel or not has_inmate:
 		if not has_personnel:
 			search_category = "inmate"
@@ -209,11 +206,11 @@ def facesearch(request):
 				cam_id = int(request.POST.get("camera", defset.camera))
 				cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
 				input_image = cam.live_feed()
-				imhand.save_image(input_path, input_image)
+				save_image(input_path, input_image)
 
 			# Upload option
 			elif 'image' in request.FILES: 
-				form = app_forms.SearchImageForm(request.POST, request.FILES)
+				form = SearchImageForm(request.POST, request.FILES)
 
 				if form.is_valid():
 					instance = form.save(commit=False)
@@ -265,6 +262,7 @@ def facesearch(request):
 		"search_category"	: search_category,
 		"has_inmate"		: has_inmate,
 		"has_personnel"		: has_personnel,
+		"can_search"		: can_search,
 	}
 	return render(request, "app/facesearch.html", context)
 
