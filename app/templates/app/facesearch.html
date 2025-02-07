@@ -134,6 +134,14 @@
 		</div>
 
 		<div class="filter-bar">
+
+			{% if not can_search %}
+				<div class="disabler disabler-filter-bar">
+					<h2>Create profiles first to enable search</h2>
+				</div>
+			{% endif %}
+
+
 			{% comment %}
 				<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
 			{% endcomment %}

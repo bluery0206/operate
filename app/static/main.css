@@ -1231,3 +1231,36 @@ h4 {
         }
     }
 }
+
+.disabler {
+    border: 1px solid red;
+    position: absolute;
+    width: 100%;
+    height: calc(100% * 1.5);
+    z-index: 99;
+    backdrop-filter: blur(20px);
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: -2em;
+    display: flex;
+    padding: 4em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
