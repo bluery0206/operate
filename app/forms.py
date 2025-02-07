@@ -69,7 +69,7 @@ class OperateSettingsForm(forms.ModelForm):
 			'cam_clipping': forms.Select(attrs={
 					'class': COMMON_CLASS,
 				},
-				choices=[(False, 'Use camera size'), (True, 'Clip camera')]
+				choices=[(False, 'Use default OpenCV camera size (640x480)'), (True, 'Clip camera (300x300)')]
 			),
 			'face_cropping': forms.Select(attrs={
 					'class': COMMON_CLASS,
