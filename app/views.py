@@ -181,51 +181,54 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def facesearch(request):
-	defset 			= OPERATE_SETTINGS.objects.first()
-	curr 			= request.build_absolute_uri()
-	form 			= app_forms.SearchImageForm()
-	threshold 		= defset.threshold
-	cam_id 			= defset.camera
-	search_result 	= []
-	instance 		= None
+	defset = OPERATE_SETTINGS.objects.first()
+	has_inmate = Inmate.objects.all().count()
+	has_personnel = Personnel.objects.all().count()
+	curr = request.build_absolute_uri()
+	form = app_forms.SearchImageForm()
+	threshold = defset.threshold
+	cam_id = defset.camera
+	search_result = []
+	instance = None
 	search_category	= request.POST.get("search_category", "inmate")
+
+	# So that it will auto-select what search is available if one search is not available
+	if not has_personnel or not has_inmate:
+		if not has_personnel:
+			search_category = "inmate"
+		elif not has_inmate:
+			search_category = "personnel"
 
 	if request.method == "POST":
 		uuid_name = str(uuid4())
-		input_path	= DJANGO_SETTINGS.MEDIA_ROOT.joinpath(uuid_name + ".png")
+		input_path = DJANGO_SETTINGS.MEDIA_ROOT.joinpath(uuid_name + ".png")
 
-		# Camera option
-		if int(request.POST.get("option_camera", 0)):
-			try:
+		try:
+			# Camera option
+			if int(request.POST.get("option_camera", 0)):
 				cam_id = int(request.POST.get("camera", defset.camera))
 				cam = Camera(cam_id, defset.cam_clipping, defset.clip_size)
 				input_image = cam.live_feed()
 				imhand.save_image(input_path, input_image)
-			except CameraShutdownException:
-				messages.info(request, "Camera shutdown. Search cancelled.")
-				return redirect(curr)
-			except ImageNotSavedException:
-				messages.error(request, "Image save operation failed. Search cancelled.")
-				return redirect(curr)
-			except Exception as e:
-				messages.error(request, "An error occured. Search cancelled.")
-				messages.error(request, e)
-				return redirect(curr)
 
-		# Upload option
-		elif 'image' in request.FILES: 
-			form = app_forms.SearchImageForm(request.POST, request.FILES)
-			
-			if form.is_valid():
-				instance = form.save(commit=False)
-				instance.image.name = uuid_name
-				instance.save()
-				input_path = Path(instance.image.path)
+			# Upload option
+			elif 'image' in request.FILES: 
+				form = app_forms.SearchImageForm(request.POST, request.FILES)
 
-		try:
-			fsearch = Facesearch(search_category, input_path, defset.threshold)
-			search_result = fsearch.search()
+				if form.is_valid():
+					instance = form.save(commit=False)
+					instance.image.name = uuid_name
+					instance.save()
+					input_path = Path(instance.image.path)
+
+			search_result = Facesearch(search_category, input_path, defset.threshold).search()
 			messages.success(request, f"Facesearch done. Found {len(search_result)} similar faces.")
+		except CameraShutdownException:
+			messages.info(request, "Camera shutdown. Search cancelled.")
+			return redirect(curr)
+		except ImageNotSavedException:
+			messages.error(request, "Image save operation failed. Search cancelled.")
+			return redirect(curr)
 		except MissingFaceError:
 			messages.error(request, "No face was detected.")
 			messages.info(request, "Ensure the image includes a clear face.")
@@ -234,7 +237,10 @@ def facesearch(request):
 			messages.success(request, "No matching face detected during the search.")
 			return redirect(curr)
 		except ProfileNotFoundError:
-			messages.success(request, "Search profile does not exist in the system.")
+			messages.error(request, "Search profile does not exist in the system.")
+			return redirect(curr)
+		except EmptyDatabase as e:
+			messages.error(request, e)
 			return redirect(curr)
 		except TooManyFacesError as e:
 			messages.error(request, e)
@@ -248,7 +254,7 @@ def facesearch(request):
 			# Delete the image after use whether if search is successful or not
 			logger.debug("Deleting input image...")
 			instance.delete() if instance else Path(input_path).unlink()
-	
+
 	context = {
 		"page_title"		: "Facesearch",
 		'active'			: 'facesearch',
@@ -257,7 +263,17 @@ def facesearch(request):
 		"camera"			: cam_id,
 		"search_result"		: search_result,
 		"search_category"	: search_category,
+		"has_inmate"		: has_inmate,
+		"has_personnel"		: has_personnel,
 	}
 	return render(request, "app/facesearch.html", context)
+
+
+
+
+
+
+
+
 
 

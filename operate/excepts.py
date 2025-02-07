@@ -1,3 +1,5 @@
+# Trying out exceptions
+
 class UnrecognizedModelError(Exception): pass
 class UnrecognizedColorMode(Exception): pass
 class InvalidInputSizeError(Exception): pass
