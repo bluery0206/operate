@@ -94,6 +94,8 @@ P_FIELDS = COMMON_FIELDS + [
 	'date_relieved',
 	'designation',
 ]
+P_FIELDS[0] = 'new_profile'
+
 I_FIELDS = COMMON_FIELDS + [
 	'date_arrested',
 	'date_committed',
@@ -125,17 +127,7 @@ class PersonnelUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model 	= models.Personnel
-		fields 	= [
-			'new_profile',
-			'f_name',
-			'l_name',
-			'm_name',
-			'suffix',
-			'age',
-			'address',
-			'civil_status',
-			'date_profiled',
-		]
+		fields 	= P_FIELDS
 		widgets = WIDGETS
 
 class InmateForm(forms.ModelForm):
