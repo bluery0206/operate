@@ -2,7 +2,15 @@
 {% load custom_filters %}
 
 {% block content %}
+
+
 	<div class="profiles facesearch">
+		{% if not can_search %}
+			<div class="disabler disabler-filter-bar">
+				<h2>Create profiles first to enable search</h2>
+			</div>
+		{% endif %}
+
 		<div class="card-list-wrapper">
 			<div class="header">
 				<h2>Facesearch</h2>	
@@ -134,14 +142,6 @@
 		</div>
 
 		<div class="filter-bar">
-
-			{% if not can_search %}
-				<div class="disabler disabler-filter-bar">
-					<h2>Create profiles first to enable search</h2>
-				</div>
-			{% endif %}
-
-
 			{% comment %}
 				<img src="" alt="" id="imagePreview" style="width: 225px; display: none; object-fit: contain;">
 			{% endcomment %}
@@ -198,17 +198,17 @@
 
 
 	<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the file input element from the form
-            const tagSource = document.getElementById("tagSource"); // Use the form field's ID
-            const target_1 = document.getElementById("search_category_1");
-            const target_2 = document.getElementById("search_category_2");
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     // Get the file input element from the form
+        //     const tagSource = document.getElementById("tagSource"); // Use the form field's ID
+        //     const target_1 = document.getElementById("search_category_1");
+        //     const target_2 = document.getElementById("search_category_2");
 
-            tagSource.addEventListener("change", function(event) {
-				target_1.value = tagSource.value;
-				target_2.value = tagSource.value;
-            });
-        });
+        //     tagSource.addEventListener("change", function(event) {
+		// 		target_1.value = tagSource.value;
+		// 		target_2.value = tagSource.value;
+        //     });
+        // });
     </script>
 	
 {% endblock content %}
