@@ -96,16 +96,14 @@ body {
     background: var(--white-1);
     font-family: var(--font-regular);
     height: 100dvh;
-    width: 100dvw;
 }
 
 
 
 /* Because we have a page with no side-nav */
-.body {
+body > .body {
+    /* border: 1px solid blue; */
     display: flex;
-    justify-content: space-between;
-    gap: 0;
 }
 
 
@@ -346,9 +344,10 @@ body {
 /* For facesearch, personnel and inmate pages */
 .profiles {
     display: flex;
+    /* border: 1px solid red; */
 
     .card-list-wrapper {
-        /* border: 1px solid red; */
+        /* border: 1px solid green; */
         width: 75%;
 
         .header {
@@ -470,7 +469,7 @@ body {
         }
     }
 
-    .body {
+    > .body {
         display         : grid;
         grid-template-columns: var(--img-size-r) 1px auto;
         gap             : 1em;
@@ -553,6 +552,7 @@ body {
 
 .settings {
     /* border: 1px solid red; */
+    overflow-x: hidden;
 
     > .header {
         position: sticky;
@@ -567,6 +567,7 @@ body {
         padding: 1em 1em;
         display: flex;
         justify-content: space-between;
+        width: auto;
 
         .actions {
             display: flex;
@@ -574,11 +575,10 @@ body {
         }
     }
 
-    .body {
+    > .body {
         /* border: 1px solid green; */
         display: flex;
         flex-direction: column;
-        gap: 1em;
         margin: 1em;
         border-radius: 10px;
         padding: 1em 1em;
@@ -601,15 +601,23 @@ body {
 
                     > div {
                         /* border: 1px solid green; */
+                        overflow-x: hidden;
 
                         > .item {
                             /* border: 1px solid red; */
+                            padding: 0.125em 0 ;
                             display: flex;
                             align-items: center;
                             gap: 1em;
 
                             .form-control {
                                 width: 200px;
+                            }
+
+                            .link-container {
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
                             }
                         }
                 }
@@ -660,7 +668,7 @@ body {
             color: var(--white);
         }
 
-        .body {
+        > .body {
             /* border: 1px solid red; */
             padding: 0.5em 1em;
             display: flex;
@@ -727,7 +735,7 @@ body {
                 }
             }
 
-            .body {
+            > .body {
                 /* border: 1px solid blue; */
                 padding: 0.5em 1em;
                 display: flex;
@@ -794,9 +802,12 @@ body {
 
 
 footer {
+    /* border: 1px solid red; */
+    /* width: calc(100dvw - (200px + 2em)); */
+
     .footer-wrapper {
-        padding: 2em;
         /* border: 1px solid blue; */
+        padding: 2em;
         color: var(--text-white-2);
         display: grid;
         row-gap: 4em;
@@ -814,7 +825,7 @@ footer {
             }
         }
 
-        .body {
+        > .body {
             /* border: 1px solid green; */
             display: grid;
             row-gap: 3em;
@@ -1232,18 +1243,18 @@ h4 {
     }
 }
 
-.disabler {
-    border: 1px solid red;
+.facesearch > .disabler {
+    /* border: 1px solid red; */
     position: absolute;
-    width: 100%;
-    height: calc(100% * 1.5);
-    z-index: 99;
+    height: 100%;
+    z-index: 100;
     backdrop-filter: blur(20px);
     background-size: cover;
     background-repeat: no-repeat;
-    margin: -2em;
     display: flex;
-    padding: 4em;
+    align-items: center;
+    justify-content: center;
+    width: calc(100dvw - (200px + (2em)));
 }
 
 
