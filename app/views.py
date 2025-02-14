@@ -250,7 +250,11 @@ def facesearch(request):
 		finally:
 			# Delete the image after use whether if search is successful or not
 			logger.debug("Deleting input image...")
-			instance.delete() if instance else Path(input_path).unlink()
+
+			if instance:
+				instance.delete()
+			elif input_path.exists():
+				input_path.unlink()
 
 	context = {
 		"page_title"		: "Facesearch",
