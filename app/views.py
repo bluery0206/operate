@@ -93,6 +93,7 @@ def settings(request):
 		'active'		: 'settings',
 		'defset'		: defset,
 		'form'			: form,
+		'is_dev_mode'	: DJANGO_SETTINGS.DEV_MODE,
 	}
 	return render(request, "app/settings.html", context)
 

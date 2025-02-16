@@ -227,59 +227,60 @@
             </div>
             
             
-            
-            <div class="section">
-                <div class="header">
-                    <h4>Model</h4>
-                </div>
-
-                <div class="block">
-                    <div>
-                        {% if form.model_detection.errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.model_detection.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="item">
-                            <div class="form-field">
-                                {{ form.model_detection.label_tag }}
-                                {{ form.model_detection }}
-                            </div>
-
-                            {% if defset.model_detection %}
-                                <div class="link-container">Current: <a class="link" href="{{ defset.model_detection.url }}" target="_blank">{{ defset.model_detection.name }}</a> </div>
-                            {% endif %}
-                        </div>
-
-                        <small>The AI Model used to detect faces in images.</small>
+            {% if is_dev_mode %}
+                <div class="section">
+                    <div class="header">
+                        <h4>Model</h4>
                     </div>
-                    <div>
-                        {% if form.model_embedding_generator.errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.model_embedding_generator.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
- 
-                        <div class="item">
-                            <div class="form-field">
-                                {{ form.model_embedding_generator.label_tag }}
-                                {{ form.model_embedding_generator }}
-                            </div>
 
-                            {% if defset.model_embedding_generator %}
-                                <div class="link-container">Current: <a class="link" href="{{ defset.model_embedding_generator.url }}" target="_blank">{{ defset.model_embedding_generator.name }}</a> </div>
+                    <div class="block">
+                        <div>
+                            {% if form.model_detection.errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.model_detection.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
                             {% endif %}
-                        </div>
 
-                        <small>The AI Model used to recognize individuals.</small>
+                            <div class="item">
+                                <div class="form-field">
+                                    {{ form.model_detection.label_tag }}
+                                    {{ form.model_detection }}
+                                </div>
+
+                                {% if defset.model_detection %}
+                                    <div class="link-container">Current: <a class="link" href="{{ defset.model_detection.url }}" target="_blank">{{ defset.model_detection.name }}</a> </div>
+                                {% endif %}
+                            </div>
+
+                            <small>The AI Model used to detect faces in images.</small>
+                        </div>
+                        <div>
+                            {% if form.model_embedding_generator.errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.model_embedding_generator.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+    
+                            <div class="item">
+                                <div class="form-field">
+                                    {{ form.model_embedding_generator.label_tag }}
+                                    {{ form.model_embedding_generator }}
+                                </div>
+
+                                {% if defset.model_embedding_generator %}
+                                    <div class="link-container">Current: <a class="link" href="{{ defset.model_embedding_generator.url }}" target="_blank">{{ defset.model_embedding_generator.name }}</a> </div>
+                                {% endif %}
+                            </div>
+
+                            <small>The AI Model used to recognize individuals.</small>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </form>
 {% endblock content %}
