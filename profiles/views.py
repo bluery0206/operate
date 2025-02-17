@@ -561,7 +561,7 @@ def archive_add(request, p_type, pk):
 	context = {
 		'page_title'	: "Archive: " + str(profile),
 		'title' 		: "Archive: " + str(profile),
-		'warning' 		: "You will not be able to see this profile in the \"Profile\" Page anymore.",
+		'warning' 		: f"You will not be able to see this profile in the Active {p_type.capitalize()} 'Profiles' anymore. You can still access it by selecting 'All' or 'Archived' in the filter bar on the page's right side and click 'Apply filter'.",
 		'p_type'		: p_type,
 		'active'		: p_type
 	}
@@ -592,6 +592,7 @@ def archive_remove(request, p_type, pk):
 	context = {
 		'page_title'	: "Unarchive: " + str(profile),
 		'title' 		: "Unarchive: " + str(profile),
+		'warning' 		: f"This profile will be moved back to Active {p_type.capitalize()} 'Profiles' and will no longer be listed under 'Archived.' You can view it in the active list or use filters to locate it.",
 		'p_type'		: p_type,
 		'active'		: p_type,
 	}
