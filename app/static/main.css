@@ -701,8 +701,12 @@ body > .body {
             .actions {
                 /* border: 1px solid red; */
                 display: grid;
-                grid-template-columns: 20% 79%;
-                column-gap: 0.5em;
+                grid-template-columns: 49% 49%;
+                justify-content: space-between;
+
+                .btn {
+                    justify-content: center;
+                }
             }
         }
     }
@@ -783,7 +787,6 @@ body > .body {
                 .actions {
                     /* border: 1px solid red; */
                     display: grid;
-                    grid-template-columns: auto auto;
                 }
 
                 .vertical {
