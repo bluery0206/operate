@@ -64,6 +64,7 @@ INMATE_SORT_CHOICES = COMMON_SORT_CHOICES + [
 
 @login_required
 def all_personnel(request):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	personnels		= profiles_models.Personnel.objects.all().order_by("-date_profiled")
 	ranks			= [rank[0] for rank in profiles_models.RANKS]
 	sort_choices	= PERSONNEL_SORT_CHOICES
@@ -116,7 +117,8 @@ def all_personnel(request):
 		'sort_by'		: sort_by,
 		'sort_order'	: sort_order,
 		'state'			: state,
-		"search"		: search
+		"search"		: search,
+		'defset'		: defset,
 	}
 	
 	page		= request.GET.get('page', 1)
@@ -142,6 +144,7 @@ def all_personnel(request):
 		'order_choices'	: order_choices,
 		'filters'		: filters,
 		'is_paginated'	: is_paginated,
+		'defset'		: defset,
 		'query_params'	: f"search={search}&state={state}&designation={designation}&rank={rank}&sort_by={sort_by}&sort_order={sort_order}"
 	}
 	return render(request, "profiles/all_personnel.html", context)
@@ -149,6 +152,7 @@ def all_personnel(request):
 
 @login_required
 def all_inmate(request):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	inmates			= profiles_models.Inmate.objects.all().order_by("-date_profiled")
 	sort_choices	= INMATE_SORT_CHOICES
 	order_choices	= ORDER_CHOICES
@@ -199,7 +203,8 @@ def all_inmate(request):
 		'crime_violated': crime_violated,
 		'sort_by'		: sort_by,
 		'sort_order'	: sort_order,
-		"search"		: search
+		"search"		: search,
+		'defset'		: defset,
 	}
 
 	page		= request.GET.get('page', 1)
@@ -223,7 +228,8 @@ def all_inmate(request):
 		'sort_choices'	: sort_choices,
 		'order_choices'	: order_choices,
 		'filters'		: filters,
-		'is_paginated'	: is_paginated,
+		'is_paginated'	: is_paginated, 
+		'defset'		: defset,
 		'query_params'	: f"search={search}&state={state}&sort_by={sort_by}&sort_order={sort_order}&crime_violated={crime_violated}"
 	}
 	return render(request, "profiles/all_inmate.html", context)
@@ -231,6 +237,7 @@ def all_inmate(request):
 
 @login_required
 def profile(request, p_type, pk):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	prev = request.GET.get("prev", None)
 
 	p_class = profiles_models.Personnel if p_type == "personnel" else profiles_models.Inmate
@@ -241,12 +248,14 @@ def profile(request, p_type, pk):
 		'profile'		: profile,
 		'p_type'		: p_type,
 		'prev'			: prev,
+		'defset'		: defset,
 	}
 	return render(request, "profiles/profile.html", context)
 
 
 @login_required
 def profile_add(request, p_type):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	def this_page():
 		context = {
 			'page_title'	: "Add " + p_type.title() + " Profile",
@@ -254,6 +263,7 @@ def profile_add(request, p_type):
 			'p_type'		: p_type,
 			'form'			: form,
 			'camera'		: cam_id,
+			'defset'		: defset,
 		}
 		return render(request, "profiles/profile_add.html", context)
 	
@@ -349,13 +359,15 @@ def profile_add(request, p_type):
 
 @login_required
 def profile_update(request, p_type, pk):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	def this_page():
 		context = {
 			'page_title'	: "Update " + str(profile),
 			'p_type'		: p_type,
 			'form'			: form,
 			'camera'		: cam_id,
-			'profile'		: profile
+			'profile'		: profile,
+			'defset'		: defset,
 		}
 		return render(request, "profiles/profile_update.html", context)
 	
@@ -476,6 +488,7 @@ def profile_update(request, p_type, pk):
 
 @login_required
 def profile_delete(request, p_type, pk):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	next = request.GET.get("next", "")
 
 	p_class = profiles_models.Personnel if p_type == "personnel" else profiles_models.Inmate
@@ -496,7 +509,8 @@ def profile_delete(request, p_type, pk):
 		'warning' 		: "You can't retrieve this profile once its deleted. Why not archive it first if you're not sure and haven't done it yet?",
 		'prev'			: next,
 		'p_type'		: p_type,
-		'danger'		: True
+		'danger'		: True,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
@@ -504,6 +518,7 @@ def profile_delete(request, p_type, pk):
 
 @login_required
 def profile_delete_all(request, p_type):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	prev	= request.GET.get("prev", "")
 	state	= request.GET.get("state", "open")
 
@@ -532,7 +547,8 @@ def profile_delete_all(request, p_type):
 		'page_title'	: "Delete All Profile",
 		'warning' 		: "You can't retrieve all profiles once they're deleted. Why not archive them first if you're not sure and haven't done it yet?",
 		'p_type'		: p_type,
-		'danger'		: True
+		'danger'		: True,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
@@ -540,6 +556,7 @@ def profile_delete_all(request, p_type):
 
 @login_required
 def archive_add(request, p_type, pk):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	next 	= request.GET.get("next", "")
 
 	personnel	= profiles_models.Personnel
@@ -563,7 +580,8 @@ def archive_add(request, p_type, pk):
 		'title' 		: "Archive: " + str(profile),
 		'warning' 		: f"You will not be able to see this profile in the Active {p_type.capitalize()} 'Profiles' anymore. You can still access it by selecting 'All' or 'Archived' in the filter bar on the page's right side and click 'Apply filter'.",
 		'p_type'		: p_type,
-		'active'		: p_type
+		'active'		: p_type,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
@@ -571,6 +589,7 @@ def archive_add(request, p_type, pk):
 
 @login_required
 def archive_remove(request, p_type, pk):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	next = request.GET.get("next", "")
 
 	personnel	= profiles_models.Personnel
@@ -595,6 +614,7 @@ def archive_remove(request, p_type, pk):
 		'warning' 		: f"This profile will be moved back to Active {p_type.capitalize()} 'Profiles' and will no longer be listed under 'Archived.' You can view it in the active list or use filters to locate it.",
 		'p_type'		: p_type,
 		'active'		: p_type,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
@@ -602,6 +622,7 @@ def archive_remove(request, p_type, pk):
 
 @login_required
 def archive_add_all(request, p_type):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	if request.method == "POST":
 		if p_type == "personnel":
 			profiles = profiles_models.Personnel.objects.filter(is_archived=False).all() 
@@ -624,6 +645,7 @@ def archive_add_all(request, p_type):
 		'warning' 		: f"You will not be able to see all profiles in the \"Profile\" Page anymore. You can still view them in the \"Archives section\"",
 		'p_type'		: p_type,
 		'active'		: p_type,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
@@ -631,6 +653,7 @@ def archive_add_all(request, p_type):
 
 @login_required
 def archive_remove_all(request, p_type):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	if request.method == "POST":
 		if p_type == "personnel":
 			profiles = profiles_models.Personnel.objects.filter(is_archived=True).all() 
@@ -652,6 +675,7 @@ def archive_remove_all(request, p_type):
 		'title'			: f"Unarchive all {p_type}s",
 		'p_type'		: p_type,
 		'active'		: p_type,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 

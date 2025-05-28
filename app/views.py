@@ -33,11 +33,13 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def index(request):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	# Get five (5) recently created profiles that are not archived
 	personnels = Personnel.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
 	inmates = Inmate.objects.filter(is_archived=False).order_by("-date_profiled")[:5]
 	context = {
 		'page_title'	: "Home",
+		'defset'		: defset,
 		'active'		: "home",
 		"personnels"	: personnels,
 		"inmates"		: inmates,
@@ -100,6 +102,7 @@ def settings(request):
 
 @login_required
 def settings_update_embeddings(request):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	next = request.GET.get("next", "")
 
 	if request.method == "POST":
@@ -113,13 +116,15 @@ def settings_update_embeddings(request):
 		'title'			: "Update image embeddings",
 		'warning' 		: "Updating all image embeddings will overwrite existing data and may take significant time.",
 		'prev'			: next,
-		'danger'		: False
+		'danger'		: False,
+		'defset'		: defset,
 	}
 	return render(request, "app/base_confirmation.html", context)
 
 
 # Had to use a custom login view method because of the password eye
 def user_login(request):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	login_form = LoginForm
 
 	if request.method == "POST":
@@ -139,6 +144,7 @@ def user_login(request):
 		form = login_form()
 
 	context = {
+		'defset'		: defset,
 		'page_title'	: 'User login',
 		'title'			: 'User login',
 		'form'			: form,
@@ -147,6 +153,7 @@ def user_login(request):
 
 
 def password_reset_confirm(request, uidb64, token):
+	defset 	= OPERATE_SETTINGS.objects.first()
 	login_form = PasswordResetForm
 
 	try:
@@ -169,6 +176,7 @@ def password_reset_confirm(request, uidb64, token):
 		form = login_form(user)
 
 	context = {
+		'defset'		: defset,
 		'page_title'	: 'User login',
 		'title'			: 'User login',
 		'form'			: form,
@@ -268,6 +276,7 @@ def facesearch(request):
 		"has_inmate"		: has_inmate,
 		"has_personnel"		: has_personnel,
 		"can_search"		: can_search,
+		'defset'		: defset,
 	}
 	return render(request, "app/facesearch.html", context)
 

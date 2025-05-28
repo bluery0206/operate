@@ -14,41 +14,56 @@
 			
 			<div class="actions">
 				<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}&prev={{ prev }}" title="Edit {{ profile }}">
-					<i class="fa-solid fa-pen-to-square"></i>
+					{% if defset.show_icons == "show" %}
+						<i class="fa-solid fa-pen-to-square"></i> 
+					{% endif %}
 					<span>Edit</span>
 				</a>
 			
 				{% if profile.is_archived %}
 					<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}" title="Unarchive {{ profile }}">
-						<span class="material-symbols-rounded">unarchive</span>
+						{% if defset.show_icons == "show" %}
+							<span class="material-symbols-rounded">unarchive</span> 
+						{% endif %}
 						<span>Unarchive</span>
 					</a>
 				{% else %}
 					<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}" title="Archive {{ profile }}">
-						<span class="material-symbols-rounded">archive</span>
+						{% if defset.show_icons == "show" %}
+							<span class="material-symbols-rounded">archive</span> 
+						{% endif %}
 						<span>Archive</span>
 					</a>
 				{% endif %}
 				
 				<div class="dropdown">
 					<button class="btn">
-						<i class="fa-solid fa-download"></i>
+						{% if defset.show_icons == "show" %}
+							<i class="fa-solid fa-download"></i> 
+						{% endif %}
 						<span>Download</span>	
 					</button>
 
 					<div class="content">
 						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
-							<i class="fa-solid fa-file-word"></i>
+							{% if defset.show_icons == "show" %}
+								<i class="fa-solid fa-file-word"></i> 
+							{% endif %}
 							<span>as .docx</span>
 						</a>
 						<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
-							<i class="fa-solid fa-file-pdf"></i>
+							{% if defset.show_icons == "show" %}
+								<i class="fa-solid fa-file-pdf"></i> 
+							{% endif %}
 							<span>as .pdf</span>
 						</a>
 					</div>
 				</div>
 				<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?prev={{ prev }}" title="Delete {{ profile }}">
-					<i class="fa-solid fa-trash"></i>
+					{% if defset.show_icons == "show" %}
+						<i class="fa-solid fa-trash"></i> 
+					{% endif %}
+					Delete
 				</a>
 			</div>
 		</div>

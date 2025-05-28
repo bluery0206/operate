@@ -13,8 +13,8 @@ pkgs = list(cwd.glob("venv/Lib/site-packages/*"))
 print(f"{venv=}")
 
 # Set environment to project's environment
-env = os.environ.copy()
-env['PATH'] = f"{cwd / 'venv/Scripts'};{env['PATH']}"
+# env = os.environ.copy()
+# env['PATH'] = f"{cwd / 'venv/Scripts'};{env['PATH']}"
 
 commands = []
 
@@ -40,5 +40,6 @@ for idx, command in enumerate(commands):
         # Open browser
         webbrowser.open("http://localhost:8000/")
 
-    process = subprocess.run(command, cwd=cwd, env=env)
+    process = subprocess.run(command, cwd=cwd)
+    # process = subprocess.run(command, cwd=cwd, env=env)
     

@@ -94,10 +94,10 @@ class OperateSettingsForm(forms.ModelForm):
 					'max'   : 1000,
 					'step'  : "any",
 			}),
-			# 'search_mode': forms.Select(attrs={
-			# 		'class': COMMON_CLASS,
-			# 	},
-			# ),
+			'show_icons': forms.Select(attrs={
+					'class': COMMON_CLASS,
+				},
+			),
 			'template_personnel' : forms.FileInput(attrs={
 				'class': COMMON_CLASS,
 			}),
@@ -121,6 +121,7 @@ class OperateSettingsForm(forms.ModelForm):
 			"template_personnel",
 			"template_inmate",
 			"model_detection",
+			"show_icons",
 			"model_embedding_generator",
 		]
 

@@ -31,11 +31,15 @@
                     
                     <div class="actions">
                         <button class="btn btn-{% if danger %}danger{%else%}success{% endif %}" type="submit">
-							<i class="fa-solid fa-check"></i>
+							{% if defset.show_icons == "show" %}
+							    <i class="fa-solid fa-check"></i>
+							{% endif %}
                             <span>Confirm</span>
                         </button>
                         <a class="btn" href="{% if prev %}{{ prev }}{% else %}javascript:history.go(-1){% endif %}">
-							<i class="fa-solid fa-xmark"></i>
+							{% if defset.show_icons == "show" %}
+							    <i class="fa-solid fa-xmark"></i>
+							{% endif %}
                             <span>Cancel</span>
                         </a>
                     </div>

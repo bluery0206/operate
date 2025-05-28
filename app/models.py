@@ -21,6 +21,11 @@ class Setting(models.Model):
     input_size          = models.IntegerField(default = 105)
     bbox_size           = models.IntegerField(default = 300)
 
+    show_icons           = models.CharField(max_length=4, choices=[
+        ("show", "Show icons"),
+        ("hide", "Hide icons"),
+    ], default="show")
+
     # Templates
     template_personnel  = models.FileField(
         blank       = True,

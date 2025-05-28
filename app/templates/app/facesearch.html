@@ -57,37 +57,61 @@
 
 							<div class="actions">
 								<a class="btn" href="{% url 'profile-update' profile.p_type profile.pk %}?next={{ request.path }}" title="Edit {{ profile }}">
-									<i class="fa-solid fa-pen-to-square"></i>
+									{% if defset.show_icons == "show" %}
+										<i class="fa-solid fa-pen-to-square"></i>
+									{% else %}
+										Edit
+									{% endif %}
 								</a>
 							
 								{% if profile.is_archived %}
 									<a class="btn" href="{% url 'archive-remove' profile.p_type profile.pk %}?next={{ request.path }}" title="Unarchive {{ profile }}">
-										<span class="material-symbols-rounded">unarchive</span>
+										{% if defset.show_icons == "show" %}
+											<span class="material-symbols-rounded">unarchive</span>
+										{% else %}
+											Unarchive
+										{% endif %}
 									</a>
 								{% else %}
 									<a class="btn" href="{% url 'archive-add' profile.p_type profile.pk %}?next={{ request.path }}" title="Archive {{ profile }}">
-										<span class="material-symbols-rounded">archive</span>
+										{% if defset.show_icons == "show" %}
+											<span class="material-symbols-rounded">archive</span>
+										{% else %}
+											Archive
+										{% endif %}
 									</a>
 								{% endif %}
 								
 								<div class="dropdown">
 									<button class="btn">
-										<i class="fa-solid fa-download"></i>
+										{% if defset.show_icons == "show" %}
+											<i class="fa-solid fa-download"></i>
+										{% else %}
+											Download
+										{% endif %}
 									</button>
 				
 									<div class="content">
 										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'docx' %}" title="Download {{ profile }} as .docx">
-											<i class="fa-solid fa-file-word"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-file-word"></i>
+											{% endif %}
 											<span>as .docx</span>
 										</a>
 										<a class="btn" href="{% url 'profile-download' profile.p_type profile.pk 'pdf' %}" title="Download {{ profile }} as .pdf">
-											<i class="fa-solid fa-file-pdf"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-file-pdf"></i>
+											{% endif %}
 											<span>as .pdf</span>
 										</a>
 									</div>
 								</div>
 								<a class="btn btn-danger" href="{% url 'profile-delete' profile.p_type profile.pk %}?next={{ request.path }}" title="Delete {{ profile }}">
-									<i class="fa-solid fa-trash"></i>
+									{% if defset.show_icons == "show" %}
+										<i class="fa-solid fa-trash"></i>
+									{% else %}
+										Delete
+									{% endif %}
 								</a>
 							</div>
 	
@@ -107,29 +131,41 @@
 										">{{ percentage|floatformat:0 }}%</span> {{ profile.rank|upper }} {{ profile|full_name }}
 									</span>
 									<span class="detail" title="{{ profile|full_name }}'s home address">
-										<i class="fa-solid fa-location-dot"></i>
+										{% if defset.show_icons == "show" %}
+											<i class="fa-solid fa-location-dot"></i>
+										{% endif %}
 										Address: {{ profile.address|title }}
 									</span>
 									<span class="detail" title="{{ profile|full_name }}'s profiled date">
-										<i class="fa-solid fa-clock"></i>
+										{% if defset.show_icons == "show" %}
+											<i class="fa-solid fa-clock"></i>
+										{% endif %}
 										Profiled: {{ profile.date_profiled|date:"M j, Y" }}
 									</span>
 									{% if profile.p_type == 'personnel' %}
 										<span class="detail" title="{{ profile|full_name }}'s assigned date">
-											<i class="fa-solid fa-clipboard-check"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-clipboard-check"></i>
+											{% endif %}
 											Assigned: {{ profile.date_assigned|date:"M j, Y" }}
 										</span>
 										<span class="detail" title="{{ profile|full_name }}'s designation">
-											<i class="fa-solid fa-id-card"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-id-card"></i>
+											{% endif %}
 											Designation: {{ profile.designation }}
 										</span>
 									{% else %}
 										<span class="detail" title="{{ profile|full_name }}'s arrested date">
-											<i class="fa-solid fa-people-robbery"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-people-robbery"></i>
+											{% endif %}
 											Arrested: {{ profile.date_arrested|date:"M j, Y" }}
 										</span>
 										<span class="detail" title="{{ profile|full_name }}'s crime violation(s)">
-											<i class="fa-solid fa-gavel"></i>
+											{% if defset.show_icons == "show" %}
+												<i class="fa-solid fa-gavel"></i>
+											{% endif %}
 											Violation(s): {{ profile.crime_violated }}
 										</span>
 									{% endif %}
@@ -168,7 +204,9 @@
 
 				<div class="actions">
 					<button class="btn btn-secondary" type="submit" name="option_upload" id="option_upload" value="1">
-						<i class="fa-solid fa-upload"></i>
+						{% if defset.show_icons == "show" %}
+							<i class="fa-solid fa-upload"></i>
+						{% endif %}
 						<span>Search Using Uploaded Image</span>
 					</button>
 				</div>
@@ -181,7 +219,9 @@
 				<h4>Capture image</h4>
 
 				<button class="btn btn-secondary" name="option_camera" value="1" type="submit">
+					{% if defset.show_icons == "show" %}
 						<i class="fa-solid fa-camera"></i>
+					{% endif %}
 					<span>Take a Picture and Search</span>
 				</button>
 

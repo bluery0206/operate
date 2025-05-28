@@ -59,7 +59,9 @@
 		
 						<div class="actions vertical">
 							<button class="btn btn-primary" type="submit">
-								<i class="fa-solid fa-right-to-bracket"></i>
+								{% if defset.show_icons == "show" %}
+									<i class="fa-solid fa-right-to-bracket"></i>
+								{% endif %}
 								Login
 							</button>
 						</div>

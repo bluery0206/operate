@@ -9,11 +9,15 @@
             
             <div class="actions">
                 <a href="{% url 'operate-settings-update-embeddings' %}?next={{ request.path }}" class="btn btn-light">
-                    <i class="fa-solid fa-wrench"></i>
+                    {% if defset.show_icons == "show" %}
+                        <i class="fa-solid fa-wrench"></i> 
+                    {% endif %}
                     <span>Update image embeddings</span>
                 </a>
                 <button type="submit" class="btn btn-success">
-                    <i class="fa-solid fa-floppy-disk"></i>
+                    {% if defset.show_icons == "show" %}
+                        <i class="fa-solid fa-floppy-disk"></i> 
+                    {% endif %}
                     <span>Save Changes</span>
                 </button>
             </div>
@@ -28,7 +32,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-
         <div class="body">
             <div class="section">
                 <div class="header">
@@ -281,6 +284,35 @@
                     </div>
                 </div>
             {% endif %}
+
+
+
+            <div class="section">
+                <div class="header">
+                    <h4>Miscellaneous</h4>
+                </div>
+
+                <div class="block">
+                    <div>
+                        {% if form.show_icons.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.show_icons.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="item">
+                            <div class="form-field">
+                                {{ form.show_icons.label_tag }}
+                                {{ form.show_icons }}
+                            </div>
+
+                            <small>Whether to show the icons or not. Disabling icons will make the website load faster because it can be affected by the internet speed it show_icons are enabled.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 {% endblock content %}

@@ -20,7 +20,9 @@
 		
 					<div class="actions vertical">
 						<a href="{% url 'user-login' %}" class="btn btn-primary center">
-							<i class="fa-solid fa-right-to-bracket"></i>
+							{% if defset.show_icons == "show" %}
+								<i class="fa-solid fa-right-to-bracket"></i>
+							{% endif %}
 							Back to login
 						</a>
 					</div>

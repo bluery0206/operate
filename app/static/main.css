@@ -197,6 +197,7 @@ body > .body {
     background      : var(--white-1);
     height          : calc(2em + var(--img-size-s) + (.125em * 2));
     gap             : 0em;
+    justify-content: start;
     transition      : all 0.3s;
     
     .actions {
@@ -209,11 +210,12 @@ body > .body {
         transition  : all 0.3s;
         background: var(--white);
         border-radius: 10px;
+        width: fit-content; 
 
         > .btn,
         > .dropdown > .btn {
             padding : 0.125em;
-            width   : 25px;
+            /* width   : 25px; */
         }
     }
 
@@ -296,11 +298,14 @@ body > .body {
     transition          : all 0.3s;
 }
 .card:hover {
+    /* border  : 1px solid red; */
     background-size : 25% 100%;
-    grid-template-columns: calc(25px + (0.125em * 2)) calc(100% - (25px + (0.125em * 2) + 0.5em));
+    /* grid-template-columns: calc(25px + (0.125em * 2)) calc(100% - (25px + (0.125em * 2) + 0.5em)); */
+    grid-template-columns: auto auto;
     gap             : 0.5em;
 
     .actions {
+        /* border  : 1px solid red; */
         visibility: visible;
         opacity: 100%;
     }
