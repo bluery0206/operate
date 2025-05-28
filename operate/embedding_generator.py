@@ -18,7 +18,7 @@ from operate import (
 logger = logging.getLogger(__name__)
 
 
-def get_image_embedding(image:Path) -> np.ndarray:
+def get_image_embedding(image:Path, face_det_model=None, emb_gen_model=None) -> np.ndarray:
     defset = OPERATE_SETTINGS.objects.first()
 
     try:
@@ -28,19 +28,19 @@ def get_image_embedding(image:Path) -> np.ndarray:
             image = imhand.crop_image_from_center(image)
             image = imhand.resize_image(image, defset.bbox_size)
                     
-        image = facedet.get_face(image)
+        image = facedet.get_face(image, face_det_model)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image = imhand.preprocess_input_image(image)
-        embedding = emb_gen.generate_embedding(image)
+        embedding = emb_gen.generate_embedding(image, emb_gen_model)
     except Exception as e :
         raise e
     else:
         return embedding
 
 
-def generate_embedding(image:np.ndarray) -> np.ndarray:
+def generate_embedding(image:np.ndarray, model=None) -> np.ndarray:
     try: 
-        model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
+        model = model if model else mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
         input_name = model.get_inputs()[0].name
         output_name = model.get_outputs()[0].name
     except Exception as e:
@@ -73,8 +73,15 @@ def save_embedding(embedding:np.ndarray, name:str, p_type:str) -> bool:
     
 def update_embeddings() -> None:
     from profiles.models import Personnel, Inmate
-    
+
     logger.debug("Updating embeddings...")
+    
+    # Caching the models to reduce search time due to model reinitialization unlike previous logic
+    logger.debug("Retreiving models for embedding generation and face detection...")
+    emb_gen_model = mload.get_model(mload.ModelType.EMBEDDING_GENERATOR)
+    face_det_model = mload.get_model(mload.ModelType.DETECTION)
+    logger.debug("Model retreived successfully...")
+
     personnel = Personnel.objects.all()
     inmate = Inmate.objects.all()
     profiles = list(personnel) + list(inmate)
@@ -83,12 +90,12 @@ def update_embeddings() -> None:
         image_path = Path(profile.raw_image.path)
 
         try:
-            embedding = get_image_embedding(image_path)
+            embedding = get_image_embedding(image_path, face_det_model, emb_gen_model)
             save_embedding(embedding, image_path.stem, profile.p_type)
             logger.debug(f"Image: {image_path.name} successfully saved.")
         except MissingFaceError as e:
             raise MissingFaceError(e, profile_id=profile.pk, profile_type=profile.p_type)
         except Exception as e:
             raise e
-        
+
     logger.debug("Profile image embeddings successfully updated.")

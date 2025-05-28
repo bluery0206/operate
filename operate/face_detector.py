@@ -24,11 +24,11 @@ from . import (
 logger = logging.getLogger(__name__)
 
 
-def get_face(image:np.ndarray) -> np.ndarray:
+def get_face(image:np.ndarray, model=None) -> np.ndarray:
 	defset = OPERATE_SETTINGS.objects.first()
 	
 	try:
-		model = mload.get_model(mload.ModelType.DETECTION)
+		model = model if model else mload.get_model(mload.ModelType.DETECTION)
 		logger.debug(f"Model input: {model.getInputSize()}")
 
 		# Checking if image is within min and max input shape of the face detector, YuNet
